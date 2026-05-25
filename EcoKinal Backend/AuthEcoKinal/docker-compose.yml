@@ -1,0 +1,16 @@
+services:
+  ecokinal_db:
+    image: postgres:16
+    container_name: AuthEcoKinal
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: AuthEcoKinal
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
