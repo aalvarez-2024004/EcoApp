@@ -11,7 +11,7 @@ import { config } from '../../configs/config.js'
  
  
 export const registerUser = async (data) => {
-  const { name, username, email, password } = data
+  const { name, username, email, password, image } = data
  
   if (!username) throw new Error('El nombre de usuario es obligatorio');
  
@@ -33,7 +33,8 @@ export const registerUser = async (data) => {
     email,
     password: hashedPassword,
     roleId: clientRole.id,
-    isActive: false
+    isActive: false,
+    image: image || null
   })
  
  const verificationToken = generateVerificationToken(user)

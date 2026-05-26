@@ -8,6 +8,8 @@ import {
 } from './auth.controller.js'
 
 import { validateJWT } from '../../middlewares/validate-jwt.js'
+import { cleanUploaderFileOnFinish, deleteFileOnError } from '../../middlewares/delete-file-on-error.js'
+import { createCloudinaryUploader } from '../../middlewares/file-uploader.js'
 
 const router = Router()
 
@@ -29,7 +31,11 @@ const router = Router()
  *       400:
  *         description: Error de validación
  */
-router.post('/register', register)
+router.post(
+  '/register', 
+  uploadUserImage.single('image'),
+  register
+)
 
 /**
  * @swagger

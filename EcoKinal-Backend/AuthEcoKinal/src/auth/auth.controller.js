@@ -4,6 +4,8 @@ export const register = async (req, res) => {
   try {
     const { name, username, email, password } = req.body
 
+    const image =  req.file?.path || null
+
 
     if (!name || name.trim() === '') {
       return res.status(400).json({
@@ -39,7 +41,8 @@ export const register = async (req, res) => {
       name: name.trim(),
       username: username.trim(),
       email: email.trim(),
-      password
+      password,
+      image
     })
 
     res.status(201).json(result)
