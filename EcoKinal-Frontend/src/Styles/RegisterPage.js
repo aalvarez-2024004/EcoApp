@@ -50,5 +50,54 @@ export const css = `
   .ek-toast--error { background:#dc2626; color:white; }
   .ek-toast--success { background:var(--eco-green); color:white; }
   @keyframes toastIn { from{opacity:0;transform:translate(-50%,-10px);} to{opacity:1;transform:translate(-50%,0);} }
+  .ek-back-btn {
+    width: 192px;
+    height: 56px;
+    background: #fff;
+    border: none;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    transition: transform .15s ease;
+  }
+
+  .ek-back-btn:active {
+    transform: scale(.98);
+  }
+
+  .ek-back-slider {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 48px;
+    height: 48px;
+    background: #40916c;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: width .5s ease;
+  }
+
+  .ek-back-btn:hover .ek-back-slider {
+    width: 184px;
+  }
+
+  .ek-back-text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(8px);
+    position: relative;
+    z-index: 1;
+  }
   @media (max-width:768px) { .ek-right { display:none; } .ek-left { max-width:100%; padding:36px 24px; } .ek-row-fields { grid-template-columns:1fr; } }
 `

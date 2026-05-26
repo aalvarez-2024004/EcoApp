@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
 import {css} from '../../../Styles/LoginPage.js'
-import { ArrowLeftIcon, LeafIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '../../../icons/IconsLogin.jsx'
+import { ArrowLeftIcon, LeafIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -63,7 +63,7 @@ export default function LoginPage() {
               </div>
 
               <span className="ek-back-text">
-                Inicio
+                Volver
               </span>
             </button>
           </Link>
