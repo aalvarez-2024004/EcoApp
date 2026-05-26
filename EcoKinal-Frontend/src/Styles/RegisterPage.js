@@ -65,11 +65,7 @@ export const css = `
     box-shadow: 0 4px 15px rgba(0,0,0,.08);
     transition: transform .15s ease;
   }
-
-  .ek-back-btn:active {
-    transform: scale(.98);
-  }
-
+  .ek-back-btn:active { transform: scale(.98); }
   .ek-back-slider {
     position: absolute;
     left: 4px;
@@ -84,11 +80,7 @@ export const css = `
     z-index: 2;
     transition: width .5s ease;
   }
-
-  .ek-back-btn:hover .ek-back-slider {
-    width: 184px;
-  }
-
+  .ek-back-btn:hover .ek-back-slider { width: 184px; }
   .ek-back-text {
     width: 100%;
     height: 100%;
@@ -99,5 +91,75 @@ export const css = `
     position: relative;
     z-index: 1;
   }
+
+  /* ── Upload de imagen de perfil ── */
+  .ek-upload-area {
+    margin-top: 28px;
+    cursor: pointer;
+    border: 2px dashed rgba(255,255,255,0.4);
+    border-radius: 16px;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.06);
+  }
+  .ek-upload-area:hover {
+    border-color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.1);
+  }
+  .ek-upload-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ek-upload-avatar--preview {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .ek-upload-label {
+    color: white;
+    font-weight: 600;
+    margin: 0;
+    font-size: 14px;
+    text-align: center;
+  }
+  .ek-upload-hint {
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .ek-upload-filename {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #b7e4c7;
+    font-size: 13px;
+  }
+  .ek-upload-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.15s;
+  }
+  .ek-upload-remove:hover { color: #ef4444; }
+
   @media (max-width:768px) { .ek-right { display:none; } .ek-left { max-width:100%; padding:36px 24px; } .ek-row-fields { grid-template-columns:1fr; } }
 `

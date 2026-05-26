@@ -224,63 +224,25 @@ export default function RegisterPage() {
             <h2>Foto de perfil</h2>
             <p>Agrega una imagen para personalizar tu cuenta</p>
 
-            {/* Upload area */}
             <div
               className="ek-upload-area"
               onClick={() => document.getElementById('profileImageInput').click()}
-              style={{
-                marginTop: 28,
-                cursor: 'pointer',
-                border: '2px dashed rgba(255,255,255,0.4)',
-                borderRadius: 16,
-                padding: '28px 20px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 12,
-                transition: 'border-color 0.2s',
-                background: 'rgba(255,255,255,0.06)',
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.75)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'}
             >
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Vista previa"
-                  style={{
-                    width: 110,
-                    height: 110,
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '3px solid rgba(255,255,255,0.6)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.12)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                  </svg>
-                </div>
-              )}
+              {imagePreview
+                ? <img src={imagePreview} alt="Vista previa" className="ek-upload-avatar--preview" />
+                : (
+                  <div className="ek-upload-avatar">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round">
+                      <circle cx="12" cy="8" r="4"/>
+                      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                  </div>
+                )
+              }
 
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ color: 'white', fontWeight: 600, margin: 0, fontSize: 14 }}>
-                  {imagePreview ? 'Cambiar foto' : 'Subir foto de perfil'}
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12, marginTop: 4 }}>
-                  JPG, PNG, WEBP · Máx. 10MB
-                </p>
+              <div>
+                <p className="ek-upload-label">{imagePreview ? 'Cambiar foto' : 'Subir foto de perfil'}</p>
+                <p className="ek-upload-hint">JPG, PNG, WEBP · Máx. 10MB</p>
               </div>
 
               <input
@@ -292,30 +254,20 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Indicador si hay imagen seleccionada */}
             {profileImage && (
-              <div style={{
-                marginTop: 14,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                color: '#b7e4c7',
-                fontSize: 13
-              }}>
+              <div className="ek-upload-filename">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#74c69d" strokeWidth="2.5" strokeLinecap="round">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
                 {profileImage.name}
                 <button
                   type="button"
+                  className="ek-upload-remove"
                   onClick={() => { setProfileImage(null); setImagePreview(null) }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', fontSize: 16, lineHeight: 1 }}
                 >×</button>
               </div>
             )}
 
-            {/* Features debajo */}
             <div className="ek-features" style={{ marginTop: 32 }}>
               {['Gestión inteligente de recursos', 'Reportes ambientales en tiempo real', 'Comunidad comprometida con el planeta'].map((f) => (
                 <div className="ek-feature" key={f}>
