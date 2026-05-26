@@ -69,6 +69,12 @@ export default function RegisterPage() {
       <div className="ek-wrap">
         {/* ── LEFT ── */}
         <div className="ek-left">
+          <Link to="/" className="ek-back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Volver al inicio
+          </Link>
           {/* Brand */}
           <div className="ek-brand">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
