@@ -7,6 +7,7 @@ import RegisterPage       from '../../features/auth/pages/RegisterPage'
 import VerifyPage       from '../../features/auth/pages/VerifyPage'
 import ForgotPasswordPage from '../../features/auth/pages/ForgotPasswordPage'
 import ResetPasswordPage  from '../../features/auth/pages/ResetPasswordPage'
+import DashboardPage from '../../features/user/pages/DashboardPage'
 
 export const AppRoutes = () => {
     return (
@@ -18,6 +19,7 @@ export const AppRoutes = () => {
             <Route path="/verify/:token"    element={<VerifyPage />} />
             <Route path="/forgot-password"  element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
 
             {/* Fallback */}
             <Route path="*"                 element={<LandingPage />} />

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
 import {css} from '../../../Styles/LoginPage.js'
+import icon from "../../../assets/icon.png";
 import { ArrowLeftIcon, LeafIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function LoginPage() {
@@ -70,12 +71,7 @@ export default function LoginPage() {
 
           {/* Brand */}
           <div className="ek-brand">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="16" fill="#2d6a4f" />
-              <path d="M8 24C8 24 10 10 24 8C24 8 26 22 8 24Z" fill="white" />
-              <path d="M8 24C16 16 22 12 24 8" stroke="#b7e4c7" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            <span className="ek-brand-name">EcoKinal</span>
+            
           </div>
 
           {/* Heading */}
@@ -138,18 +134,12 @@ export default function LoginPage() {
 
         {/* ── RIGHT ── */}
         <div className="ek-right">
-          <LeafIcon style={{ position: 'absolute', top: 30, right: 40, width: 120, height: 120, color: '#b7e4c7' }} />
-          <LeafIcon style={{ position: 'absolute', bottom: 60, left: 30, width: 90, height: 90, color: '#95d5b2', transform: 'rotate(200deg)' }} />
-
           <div className="ek-image-slot">
-            <svg width="180" height="180" viewBox="0 0 180 180" fill="none" style={{ opacity: 0.25 }}>
-              <circle cx="90" cy="90" r="70" stroke="white" strokeWidth="2" strokeDasharray="8 6" />
-              <path d="M40 140C40 140 50 60 140 40C140 40 150 120 40 140Z" fill="white" />
-              <path d="M40 140C90 90 130 65 140 40" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 12, fontFamily: 'inherit' }}>
-              Tu imagen va aquí
-            </p>
+            <img
+              src={icon}
+              alt="Logo"
+              className="ek-right-icon"
+            />
           </div>
 
           <div className="ek-right-text">

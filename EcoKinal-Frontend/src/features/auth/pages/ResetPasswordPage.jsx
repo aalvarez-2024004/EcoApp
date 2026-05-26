@@ -85,8 +85,7 @@ export default function ResetPasswordPage() {
           </Link>
 
           <div className="ek-brand">
-            <LeafIcon size={32} />
-            <span className="ek-brand-name">EcoKinal</span>
+            
           </div>
 
           <div className="ek-heading">

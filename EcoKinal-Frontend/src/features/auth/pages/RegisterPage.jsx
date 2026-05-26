@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
 import {css} from '../../../Styles/RegisterPage.js'
+import logo from "../../../assets/logo_3.png";
+import icon from "../../../assets/icon.png";
 import { ArrowLeftIcon, LeafIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function RegisterPage() {
@@ -107,12 +109,7 @@ export default function RegisterPage() {
           </Link>
           {/* Brand */}
           <div className="ek-brand">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="16" fill="#2d6a4f" />
-              <path d="M8 24C8 24 10 10 24 8C24 8 26 22 8 24Z" fill="white" />
-              <path d="M8 24C16 16 22 12 24 8" stroke="#b7e4c7" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            <span className="ek-brand-name">EcoKinal</span>
+            
           </div>
 
           <div className="ek-heading">
@@ -216,11 +213,11 @@ export default function RegisterPage() {
         {/* ── RIGHT ── */}
         <div className="ek-right">
           <div className="ek-right-text">
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style={{ marginBottom: 16 }}>
-              <circle cx="32" cy="32" r="32" fill="rgba(255,255,255,0.1)" />
-              <path d="M16 48C16 48 20 20 48 16C48 16 52 44 16 48Z" fill="white" opacity="0.7" />
-              <path d="M16 48C32 32 44 24 48 16" stroke="#b7e4c7" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <img
+              src={icon}
+              alt="Logo"
+              className="ek-right-icon"
+            />
             <h2>Foto de perfil</h2>
             <p>Agrega una imagen para personalizar tu cuenta</p>
 

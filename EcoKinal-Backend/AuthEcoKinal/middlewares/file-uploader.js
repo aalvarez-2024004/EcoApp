@@ -25,7 +25,7 @@ const MIMETYPES = [
  
 const MAX_FILE_SIZE = 10 * 1024 * 1024; //10MB
  
-const createCloudinaryUploader = (folder) => {
+export const createCloudinaryUploader = (folder) => {
     const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: (req, file) => {
