@@ -12,10 +12,19 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', username: '', email: '', password: '', confirm: '' })
   const [showPass, setShowPass] = useState(false)
   const [toast, setToast] = useState(null)
+  const [profileImage, setProfileImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
 
   const handleChange = (e) => {
     clearError()
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }))
+  }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setProfileImage(file)
+    setImagePreview(URL.createObjectURL(file))
   }
 
   const showToast = (msg, type = 'error') => {
@@ -27,17 +36,22 @@ export default function RegisterPage() {
     e.preventDefault()
     const { name, username, email, password, confirm } = form
 
-    if (!name || !username || !email || !password || !confirm) {
+    if (!name || !username || !email || !password || !confirm)
       return showToast('Completa todos los campos')
-    }
-    if (password.length < 8) {
+    if (password.length < 8)
       return showToast('La contraseña debe tener al menos 8 caracteres')
-    }
-    if (password !== confirm) {
+    if (password !== confirm)
       return showToast('Las contraseñas no coinciden')
-    }
 
-    const result = await register({ name, username, email, password })
+    // Construir FormData 
+    const formData = new FormData()
+    formData.append('name', name.trim())
+    formData.append('username', username.trim())
+    formData.append('email', email.trim())
+    formData.append('password', password)
+    if (profileImage) formData.append('profileImage', profileImage)
+
+    const result = await register(formData) 
     if (result.success) {
       showToast('¡Cuenta creada! Revisa tu correo para verificarla.', 'success')
       setTimeout(() => navigate('/login'), 2200)
@@ -207,13 +221,107 @@ export default function RegisterPage() {
               <path d="M16 48C16 48 20 20 48 16C48 16 52 44 16 48Z" fill="white" opacity="0.7" />
               <path d="M16 48C32 32 44 24 48 16" stroke="#b7e4c7" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            <h2>Juntos por un<br />mundo más verde</h2>
-            <p>Tu cuenta te da acceso a herramientas diseñadas para promover la sostenibilidad y el cuidado del medio ambiente.</p>
+            <h2>Foto de perfil</h2>
+            <p>Agrega una imagen para personalizar tu cuenta</p>
 
-            <div className="ek-features">
+            {/* Upload area */}
+            <div
+              className="ek-upload-area"
+              onClick={() => document.getElementById('profileImageInput').click()}
+              style={{
+                marginTop: 28,
+                cursor: 'pointer',
+                border: '2px dashed rgba(255,255,255,0.4)',
+                borderRadius: 16,
+                padding: '28px 20px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 12,
+                transition: 'border-color 0.2s',
+                background: 'rgba(255,255,255,0.06)',
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.75)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'}
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Vista previa"
+                  style={{
+                    width: 110,
+                    height: 110,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid rgba(255,255,255,0.6)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                  </svg>
+                </div>
+              )}
+
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ color: 'white', fontWeight: 600, margin: 0, fontSize: 14 }}>
+                  {imagePreview ? 'Cambiar foto' : 'Subir foto de perfil'}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12, marginTop: 4 }}>
+                  JPG, PNG, WEBP · Máx. 10MB
+                </p>
+              </div>
+
+              <input
+                id="profileImageInput"
+                type="file"
+                accept="image/jpg,image/jpeg,image/png,image/webp,image/avif"
+                style={{ display: 'none' }}
+                onChange={handleImageChange}
+              />
+            </div>
+
+            {/* Indicador si hay imagen seleccionada */}
+            {profileImage && (
+              <div style={{
+                marginTop: 14,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                color: '#b7e4c7',
+                fontSize: 13
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#74c69d" strokeWidth="2.5" strokeLinecap="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {profileImage.name}
+                <button
+                  type="button"
+                  onClick={() => { setProfileImage(null); setImagePreview(null) }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', fontSize: 16, lineHeight: 1 }}
+                >×</button>
+              </div>
+            )}
+
+            {/* Features debajo */}
+            <div className="ek-features" style={{ marginTop: 32 }}>
               {['Gestión inteligente de recursos', 'Reportes ambientales en tiempo real', 'Comunidad comprometida con el planeta'].map((f) => (
                 <div className="ek-feature" key={f}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#74c69d" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#74c69d" strokeWidth="2.5" strokeLinecap="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
                   <span>{f}</span>
                 </div>
               ))}
