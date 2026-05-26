@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 import LandingPage        from '../../features/auth/pages/LandingPage'
 import LoginPage          from '../../features/auth/pages/LoginPage'
 import RegisterPage       from '../../features/auth/pages/RegisterPage'
+import VerifyPage       from '../../features/auth/pages/VerifyPage'
 
 export const AppRoutes = () => {
     return (
@@ -12,6 +13,7 @@ export const AppRoutes = () => {
             <Route path="/"                 element={<LandingPage />} />
             <Route path="/login"            element={<LoginPage />} />
             <Route path="/register"         element={<RegisterPage />} />
+            <Route path="/verify/:token"    element={<VerifyPage />} />
 
             {/* Fallback */}
             <Route path="*"                 element={<LandingPage />} />

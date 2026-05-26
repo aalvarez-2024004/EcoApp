@@ -40,6 +40,21 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  // ─── VERIFY EMAIL ───────────────────────────────────────────────────────
+  // GET http://localhost:3005/api/v1/auth/verify/:token
+  verifyEmail: async (token) => {
+    set({ isLoading: true, error: null })
+    try {
+      const { data } = await AuthApi.get(`/auth/verify/${token}`)
+      set({ isLoading: false })
+      return { success: true, message: data.message }
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error al verificar la cuenta'
+      set({ error: message, isLoading: false })
+      return { success: false, message }
+    }
+  },
+
   // ─── FORGOT PASSWORD ───────────────────────────────────────────────────
   // POST http://localhost:3005/api/v1/auth/forgot-password
   forgotPassword: async (email) => {
