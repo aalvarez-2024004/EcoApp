@@ -6,6 +6,7 @@ import { css } from '../../../Styles/RegisterPage.js'
 import logo from "../../../assets/logo_3.png"
 import icon from "../../../assets/icon.png"
 import { ArrowLeftIcon } from '../../../icons/IconsAuth.jsx'
+import LoginPageBack from "../../../assets/LoginPageBack.png"
 
 /* ── Avatar default ── */
 const DefaultAvatar = () => (
@@ -299,16 +300,18 @@ export default function RegisterPage() {
 
         </div>
 
-        {/* ── RIGHT (solo decorativo — pon tu imagen de fondo en RegisterPage.css) ── */}
+        {/* ── RIGHT ── */}
         <div className="ek-right">
-          {/* El contenido visual va en tu CSS como background-image en .ek-right */}
-          {/* El texto de abajo lo puedes dejar o quitar según tu imagen */}
+          <img
+            src={LoginPageBack}
+            alt=""
+            className="ek-right-bg"
+          />
           <div className="ek-right-text">
             <h2>Únete al<br />cambio verde.</h2>
             <p>Gestiona tus recursos de forma inteligente y sostenible.</p>
           </div>
         </div>
-
       </div>
     </>
   )
