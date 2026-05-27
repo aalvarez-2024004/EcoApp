@@ -357,5 +357,41 @@ export const css = `
   }
   .ek-upload-remove:hover { color: #ef4444; }
 
+  /* ── Indicador de pasos ── */
+  .ek-steps {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .ek-step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(89,177,48,.18);
+    flex-shrink: 0;
+    transition: background .3s;
+  }
+  .ek-step-dot--active {
+    background: var(--green-600);
+  }
+  .ek-step-line {
+    width: 28px;
+    height: 2px;
+    background: rgba(89,177,48,.18);
+    border-radius: 2px;
+    transition: background .3s;
+  }
+  .ek-step-line--done {
+    background: var(--green-600);
+  }
+  .ek-step-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
   @media (max-width:768px) { .ek-right { display:none; } .ek-left { max-width:100%; padding:36px 24px; } .ek-row-fields { grid-template-columns:1fr; } }
 `
