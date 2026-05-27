@@ -7,21 +7,18 @@ import logo from "../../../assets/logo_3.png"
 import icon from "../../../assets/icon.png"
 import { ArrowLeftIcon } from '../../../icons/IconsAuth.jsx'
 import LoginPageBack from "../../../assets/LoginPageBack.png"
+import defaultAvatar from "../../../assets/defaultAvatar.png"
 
 /* ── Avatar default ── */
 const DefaultAvatar = () => (
-  <div style={{
-    width: 110, height: 110, borderRadius: '50%',
-    background: 'linear-gradient(135deg, #d8ede3, #b7d9c6)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    border: '3px solid #c8ddd2', flexShrink: 0,
-  }}>
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
-      stroke="rgba(45,106,79,0.5)" strokeWidth="1.4" strokeLinecap="round">
-      <circle cx="12" cy="8" r="4"/>
-      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-    </svg>
-  </div>
+  <img
+    src={defaultAvatar}
+    alt="Avatar por defecto"
+    style={{
+      width: 110, height: 110, borderRadius: '50%',
+      objectFit: 'cover', border: '3px solid #c8ddd2',
+    }}
+  />
 )
 
 export default function RegisterPage() {
@@ -70,7 +67,17 @@ export default function RegisterPage() {
     formData.append('username', username.trim())
     formData.append('email', email.trim())
     formData.append('password', password)
-    if (!skipImage && profileImage) formData.append('profileImage', profileImage)
+
+    if (profileImage) {
+      // El usuario subió su propia foto
+      formData.append('profileImage', profileImage)
+    } else {
+      // Convierte la imagen default a File y la manda
+      const res = await fetch(defaultAvatar)
+      const blob = await res.blob()
+      const file = new File([blob], 'default_avatar.png', { type: blob.type })
+      formData.append('profileImage', file)
+    }
 
     const result = await register(formData)
     if (result.success) {
