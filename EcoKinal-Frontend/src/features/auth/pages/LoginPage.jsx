@@ -33,7 +33,7 @@ export default function LoginPage() {
 
     if (result.success) {
       showToast('¡Bienvenido de nuevo!', 'success')
-      const role = result.user?.role
+      const role = result.user?.role?.name  // 👈 role.name, no role directo
 
       setTimeout(() => {
         if (role === 'ADMIN_GENERAL') {

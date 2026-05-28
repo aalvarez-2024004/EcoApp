@@ -17,7 +17,7 @@ const useAuthStore = create((set) => ({
       setToken(data.token)
       setUser(data.user)
       set({ user: data.user, token: data.token, isLoading: false })
-      return { success: true, user: data.user }  // 👈 solo agrega "user: data.user"
+      return { success: true, user: data.user }  // 👈 agrega user aquí
     } catch (error) {
       const message = error.response?.data?.message || 'Error al iniciar sesión'
       set({ error: message, isLoading: false })
