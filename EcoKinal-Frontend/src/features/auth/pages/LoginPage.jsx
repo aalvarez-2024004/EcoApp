@@ -28,10 +28,20 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.email || !form.password) return showToast('Completa todos los campos')
+
     const result = await login(form.email, form.password)
+
     if (result.success) {
       showToast('¡Bienvenido de nuevo!', 'success')
-      setTimeout(() => navigate('/dashboard'), 800)
+      const role = result.user?.role
+
+      setTimeout(() => {
+        if (role === 'ADMIN_GENERAL') {
+          navigate('/dashboard/admin')
+        } else {
+          navigate('/dashboard/usuario')
+        }
+      }, 800)
     } else {
       showToast(result.message)
     }
