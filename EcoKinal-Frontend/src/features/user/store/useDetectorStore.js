@@ -11,33 +11,30 @@ export const useDetectorReciclaje = create((set) => ({
 
   seleccionarImagen: (file) => {
     if (!file) return
-
     set((state) => {
       if (state.preview) URL.revokeObjectURL(state.preview)
       return {
         imagen: file,
         preview: URL.createObjectURL(file),
         resultado: null,
-        error: null
+        error: null,
       }
     })
   },
 
   clasificar: async () => {
     const { imagen } = useDetectorReciclaje.getState()
-
     if (!imagen) {
       set({ error: 'Por favor selecciona una imagen primero' })
       return
     }
-
     try {
       set({ isLoading: true, error: null })
       const response = await clasificarImagen(imagen)
-      if (response.data.success) {
+      if (response.success) {
         set({ resultado: response.data })
       }
-      return response.data
+      return response
     } catch (error) {
       console.log('ERROR CLASIFICAR IMAGEN:', error)
       set({ error: error.response?.data?.message || 'Error al clasificar la imagen' })
@@ -55,9 +52,8 @@ export const useDetectorReciclaje = create((set) => ({
         preview: null,
         resultado: null,
         error: null,
-        isLoading: false
+        isLoading: false,
       }
     })
-  }
-
+  },
 }))
