@@ -2,40 +2,63 @@ import * as authService from './auth.service.js'
 
 export const register = async (req, res) => {
   try {
+
     const { name, username, email, password } = req.body
 
-    const image =  req.file?.path || null
+    const image = req.file?.path || null
 
+    // =========================
+    // VALIDACIONES
+    // =========================
 
     if (!name || name.trim() === '') {
       return res.status(400).json({
+        ok: false,
         message: 'El nombre es obligatorio'
       })
     }
 
     if (!username || username.trim() === '') {
       return res.status(400).json({
+        ok: false,
         message: 'El nombre de usuario es obligatorio'
       })
     }
 
     if (!email || email.trim() === '') {
       return res.status(400).json({
+        ok: false,
         message: 'El correo electrónico es obligatorio'
       })
     }
 
     if (!password || password.trim() === '') {
       return res.status(400).json({
+        ok: false,
         message: 'La contraseña no puede ir nula o vacía'
       })
     }
 
     if (password.length < 8) {
       return res.status(400).json({
+        ok: false,
         message: 'La contraseña debe tener al menos 8 caracteres'
       })
     }
+
+    // =========================
+    // DEBUG BODY
+    // =========================
+
+    console.log('========= BODY =========')
+    console.log(req.body)
+
+    console.log('========= FILE =========')
+    console.log(req.file)
+
+    // =========================
+    // REGISTER
+    // =========================
 
     const result = await authService.registerUser({
       name: name.trim(),
@@ -45,23 +68,85 @@ export const register = async (req, res) => {
       image
     })
 
-    res.status(201).json(result)
+    return res.status(201).json({
+      ok: true,
+      message: 'Usuario registrado correctamente',
+      data: result
+    })
 
   } catch (error) {
 
+    console.error('\n========== ERROR REGISTER ==========')
+
+    console.error('MENSAJE:')
+    console.error(error.message)
+
+    console.error('\nNOMBRE:')
+    console.error(error.name)
+
+    console.error('\nSTACK:')
+    console.error(error.stack)
+
+    console.error('\nERROR COMPLETO:')
+    console.error(error)
+
+    // =========================
+    // SEQUELIZE VALIDATION
+    // =========================
+
     if (error.name === 'SequelizeValidationError') {
+
+      console.error('\nSEQUELIZE VALIDATION ERRORS:')
+      console.error(error.errors)
+
       return res.status(400).json({
+        ok: false,
+        type: 'SequelizeValidationError',
         message: error.errors.map(e => e.message)
       })
     }
+
+    // =========================
+    // SEQUELIZE UNIQUE
+    // =========================
 
     if (error.name === 'SequelizeUniqueConstraintError') {
+
+      console.error('\nSEQUELIZE UNIQUE ERRORS:')
+      console.error(error.errors)
+
       return res.status(400).json({
+        ok: false,
+        type: 'SequelizeUniqueConstraintError',
         message: error.errors.map(e => e.message)
       })
     }
 
-    res.status(400).json({ message: error.message })
+    // =========================
+    // MULTER ERROR
+    // =========================
+
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        ok: false,
+        type: 'MulterError',
+        message: 'La imagen excede el tamaño permitido'
+      })
+    }
+
+    // =========================
+    // ERROR GENERAL
+    // =========================
+
+    return res.status(500).json({
+      ok: false,
+      type: error.name || 'InternalServerError',
+      message: error.message || 'Error interno del servidor',
+      stack:
+        process.env.NODE_ENV === 'development'
+          ? error.stack
+          : undefined
+    })
   }
 }
 

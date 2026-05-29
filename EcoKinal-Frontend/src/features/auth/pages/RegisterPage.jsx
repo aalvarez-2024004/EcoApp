@@ -69,14 +69,12 @@ export default function RegisterPage() {
     formData.append('password', password)
 
     if (profileImage) {
-      // El usuario subió su propia foto
-      formData.append('profileImage', profileImage)
+      formData.append('image', profileImage)
     } else {
-      // Convierte la imagen default a File y la manda
-      const res = await fetch(defaultAvatar)
+      const res  = await fetch(defaultAvatar)
       const blob = await res.blob()
       const file = new File([blob], 'default_avatar.png', { type: blob.type })
-      formData.append('profileImage', file)
+      formData.append('image', file)
     }
 
     const result = await register(formData)

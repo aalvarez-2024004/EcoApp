@@ -1,13 +1,18 @@
 import axios from 'axios'
 
 export const AuthApi = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_URL,
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: import.meta.env.VITE_AUTH_URL
 })
 
 AuthApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`
+
+  // 👇 Solo pone JSON si NO es FormData
+  if (!(config.data instanceof FormData)) {
+    config.headers['Content-Type'] = 'application/json'
+  }
+
   return config
 })
 

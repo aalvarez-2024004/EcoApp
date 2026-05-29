@@ -1,225 +1,58 @@
-import { css } from '../../../Styles/DashboardPage.js'
+import { useNavigate } from 'react-router-dom'
+import { useUser } from '../store/useUserStore'
+import Avatar from '../components/Avatar'
+
+const MODULES = [
+  { to: '/dashboard/usuario/detector', icon: 'ti-camera',    label: 'Detector de reciclaje', desc: 'Escanea objetos con IA',      bg: '#E1F5EE', color: '#0F6E56' },
+  { to: '/dashboard/usuario/foro',     icon: 'ti-messages',  label: 'Foro eco',               desc: 'Publicaciones y comentarios', bg: '#E6F1FB', color: '#185FA5' },
+  { to: '/dashboard/usuario/puntos',   icon: 'ti-trophy',    label: 'Gamificación',           desc: 'Puntos y leaderboard',        bg: '#FAEEDA', color: '#854F0B' },
+  { to: '/dashboard/usuario/impacto',  icon: 'ti-chart-bar', label: 'Mi impacto',             desc: 'Estadísticas de reciclaje',   bg: '#EAF3DE', color: '#3B6D11' },
+  { to: '/dashboard/usuario/mapa',     icon: 'ti-map-pin',   label: 'Mapa reciclaje',         desc: 'Centros cercanos a ti',       bg: '#EEEDFE', color: '#534AB7' },
+]
 
 export default function DashboardPage() {
+  const { name, username, image, initials } = useUser()
+  const navigate = useNavigate()
 
-    const stats = [
-        {
-        title: 'Objetos reciclados',
-        value: '128',
-        desc: 'Este mes'
-        },
-        {
-        title: 'Puntos ecológicos',
-        value: '2,450',
-        desc: 'Nivel Verde'
-        },
-        {
-        title: 'CO₂ Ahorrado',
-        value: '54kg',
-        desc: 'Impacto positivo'
-        }
-    ]
+  return (
+    <div style={{ padding: 24, maxWidth: 820 }}>
 
-    const history = [
-        'Botella plástica → Reciclable',
-        'Caja de cartón → Papel',
-        'Lata de aluminio → Metal',
-        'Botella de vidrio → Vidrio'
-    ]
-
-    const badges = [
-        '🌱 Reciclador Inicial',
-        '♻️ Eco Experto',
-        '🏆 Guardián Verde'
-    ]
-
-    return (
-        <>
-        <style>{css}</style>
-
-        <div className="db-layout">
-
-            {/* SIDEBAR */}
-            <aside className="db-sidebar">
-
-            <div className="db-logo">
-                <div className="db-logo-icon"></div>
-
-                <div>
-                <h2>EcoKinal</h2>
-                <p>Smart Recycling</p>
-                </div>
-            </div>
-
-            <nav className="db-nav">
-                <button className="db-nav-item active">
-                Dashboard
-                </button>
-
-                <button className="db-nav-item">
-                Escanear residuos
-                </button>
-
-                <button className="db-nav-item">
-                Historial
-                </button>
-
-                <button className="db-nav-item">
-                Centros de reciclaje
-                </button>
-
-                <button className="db-nav-item">
-                Educación ambiental
-                </button>
-            </nav>
-
-            <div className="db-sidebar-card">
-                <h4>Nivel actual</h4>
-                <strong>Eco Hero</strong>
-
-                <div className="db-progress">
-                <div className="db-progress-bar"></div>
-                </div>
-
-                <p>75% para subir de nivel</p>
-            </div>
-
-            </aside>
-
-            {/* MAIN */}
-            <main className="db-main">
-
-            {/* TOP */}
-            <div className="db-topbar">
-
-                <div>
-                <h1>Bienvenido de nuevo 👋</h1>
-
-                <p>
-                    Tu impacto ambiental sigue creciendo.
-                </p>
-                </div>
-
-                <div className="db-user">
-                <div className="db-avatar"></div>
-
-                <div>
-                    <strong>Usuario Eco</strong>
-                    <span>Miembro verde</span>
-                </div>
-                </div>
-
-            </div>
-
-            {/* HERO */}
-            <section className="db-hero">
-
-                <div className="db-hero-content">
-
-                <span className="db-badge">
-                    Inteligencia Artificial
-                </span>
-
-                <h2>
-                    Escanea residuos y descubre dónde reciclarlos
-                </h2>
-
-                <p>
-                    Usa la cámara o sube una imagen para clasificar materiales automáticamente.
-                </p>
-
-                <button className="db-scan-btn">
-                    Iniciar escaneo
-                </button>
-
-                </div>
-
-                <div className="db-hero-visual">
-                ♻️
-                </div>
-
-            </section>
-
-            {/* STATS */}
-            <section className="db-stats">
-
-                {
-                stats.map((s) => (
-                    <div className="db-stat-card" key={s.title}>
-                    <p>{s.title}</p>
-
-                    <h3>{s.value}</h3>
-
-                    <span>{s.desc}</span>
-                    </div>
-                ))
-                }
-
-            </section>
-
-            {/* GRID */}
-            <section className="db-grid">
-
-                {/* HISTORY */}
-                <div className="db-card">
-
-                <div className="db-card-header">
-                    <h3>Historial reciente</h3>
-                </div>
-
-                <div className="db-history">
-
-                    {
-                    history.map((h) => (
-                        <div className="db-history-item" key={h}>
-                        {h}
-                        </div>
-                    ))
-                    }
-
-                </div>
-
-                </div>
-
-                {/* BADGES */}
-                <div className="db-card">
-
-                <div className="db-card-header">
-                    <h3>Logros obtenidos</h3>
-                </div>
-
-                <div className="db-badges">
-
-                    {
-                    badges.map((b) => (
-                        <div className="db-badge-item" key={b}>
-                        {b}
-                        </div>
-                    ))
-                    }
-
-                </div>
-
-                </div>
-
-                {/* MAP */}
-                <div className="db-card db-map-card">
-
-                <div className="db-card-header">
-                    <h3>Centros de reciclaje</h3>
-                </div>
-
-                <div className="db-map-placeholder">
-                    🌍 Mapa interactivo próximamente
-                </div>
-
-                </div>
-
-            </section>
-
-            </main>
-
+      {/* Bienvenida */}
+      <div style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 12, padding: '20px 24px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <Avatar image={image} initials={initials} size={52} />
+        <div style={{ flex: 1 }}>
+          <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 4 }}>
+            Bienvenido, {name} 👋
+          </h1>
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>
+            @{username} · Sigue reciclando y sumando puntos para el planeta.
+          </p>
         </div>
-        </>
-    )
+      </div>
+
+      {/* Módulos */}
+      <p style={{ fontSize: 11, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 12, letterSpacing: '.06em' }}>
+        MÓDULOS DISPONIBLES
+      </p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+        {MODULES.map(({ to, icon, label, desc, bg, color }) => (
+          <button
+            key={to}
+            onClick={() => navigate(to)}
+            style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'flex-start', gap: 14, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+          >
+            <div style={{ width: 40, height: 40, borderRadius: 8, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <i className={`ti ${icon}`} style={{ fontSize: 20, color }} aria-hidden="true" />
+            </div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 500, marginBottom: 4 }}>{label}</p>
+              <p style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>{desc}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+
+    </div>
+  )
 }
