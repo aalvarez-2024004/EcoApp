@@ -12,6 +12,7 @@ import ResetPasswordPage  from '../../features/auth/pages/ResetPasswordPage'
 // User
 import DashboardLayout from '../../features/user/layout/DashboardLayout'
 import DashboardPage   from '../../features/user/pages/DashboardPage'
+import ForoPage        from '../../features/user/pages/ForoPage'
 
 export const AppRoutes = () => {
   return (
@@ -33,7 +34,7 @@ export const AppRoutes = () => {
       }>
         <Route index         element={<DashboardPage />} />
         <Route path="detector" element={<div style={{ padding: 24 }}>Detector (próximamente)</div>} />
-        <Route path="foro"     element={<div style={{ padding: 24 }}>Foro (próximamente)</div>} />
+        <Route path="foro"     element={<ForoPage />} />
         <Route path="puntos"   element={<div style={{ padding: 24 }}>Gamificación (próximamente)</div>} />
         <Route path="impacto"  element={<div style={{ padding: 24 }}>Mi impacto (próximamente)</div>} />
         <Route path="mapa"     element={<div style={{ padding: 24 }}>Mapa (próximamente)</div>} />
