@@ -13,6 +13,7 @@ import ResetPasswordPage  from '../../features/auth/pages/ResetPasswordPage'
 import DashboardLayout from '../../features/user/layout/DashboardLayout'
 import DashboardPage   from '../../features/user/pages/DashboardPage'
 import ForoPage        from '../../features/user/pages/ForoPage'
+import DetectorReciclaje from '../../features/user/pages/DetectorReciclajePage'
 
 export const AppRoutes = () => {
   return (
@@ -33,7 +34,7 @@ export const AppRoutes = () => {
         </PrivateRoute>
       }>
         <Route index         element={<DashboardPage />} />
-        <Route path="detector" element={<div style={{ padding: 24 }}>Detector (próximamente)</div>} />
+        <Route path="detector" element={<DetectorReciclaje />} />
         <Route path="foro"     element={<ForoPage />} />
         <Route path="puntos"   element={<div style={{ padding: 24 }}>Gamificación (próximamente)</div>} />
         <Route path="impacto"  element={<div style={{ padding: 24 }}>Mi impacto (próximamente)</div>} />

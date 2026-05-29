@@ -9,7 +9,7 @@ import path from "path";
 
 let model;
 
-const loadModel = async () => {
+export const loadModel = async () => {
     if (!model) {
         model = await mobilenet.load();
         console.log("Modelo MobileNet cargado correctamente");

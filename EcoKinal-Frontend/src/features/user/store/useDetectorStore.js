@@ -57,3 +57,4 @@ export const useDetectorReciclaje = create((set) => ({
     })
   },
 }))
+

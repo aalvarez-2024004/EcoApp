@@ -19,11 +19,11 @@ export const detectorStyles = `
 `
 
 export const CONTENEDOR_COLORS = {
-  Verde:    { light: 'bg-emerald-50',  text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-400', hex: '#16a34a' },
-  Azul:     { light: 'bg-blue-50',     text: 'text-blue-700',    border: 'border-blue-200',    dot: 'bg-blue-400',    hex: '#2563eb' },
-  Amarillo: { light: 'bg-amber-50',    text: 'text-amber-700',   border: 'border-amber-200',   dot: 'bg-amber-400',   hex: '#d97706' },
-  Rojo:     { light: 'bg-red-50',      text: 'text-red-700',     border: 'border-red-200',     dot: 'bg-red-400',     hex: '#dc2626' },
-  Gris:     { light: 'bg-slate-50',    text: 'text-slate-700',   border: 'border-slate-200',   dot: 'bg-slate-400',   hex: '#64748b' },
+  Verde:    { light: 'bg-emerald-50',  text: 'text-emerald-400', border: 'border-emerald-700', dot: 'bg-emerald-400', hex: '#34d399', rgb: '52,211,153' },
+  Azul:     { light: 'bg-blue-50',     text: 'text-blue-400',    border: 'border-blue-700',    dot: 'bg-blue-400',    hex: '#60a5fa', rgb: '96,165,250' },
+  Amarillo: { light: 'bg-amber-50',    text: 'text-amber-400',   border: 'border-amber-700',   dot: 'bg-amber-400',   hex: '#fbbf24', rgb: '251,191,36' },
+  Rojo:     { light: 'bg-red-50',      text: 'text-red-400',     border: 'border-red-700',     dot: 'bg-red-400',     hex: '#f87171', rgb: '248,113,113' },
+  Gris:     { light: 'bg-slate-50',    text: 'text-slate-400',   border: 'border-slate-700',   dot: 'bg-slate-400',   hex: '#94a3b8', rgb: '148,163,184' },
 }
 
 export const CONSEJOS = {

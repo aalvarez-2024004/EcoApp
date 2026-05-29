@@ -6,7 +6,7 @@ const AuthApi = axios.create({
 
 const DetectorApi = axios.create({
   baseURL: import.meta.env.VITE_DETECTOR_URL,
-  timeout: 8000,
+  timeout: 60000, 
   headers: {
     'Content-Type': 'application/json'
   }
