@@ -1,58 +1,105 @@
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../store/useUserStore'
-import Avatar from '../components/Avatar'
 
 const MODULES = [
-  { to: '/dashboard/usuario/detector', icon: 'ti-camera',    label: 'Detector de reciclaje', desc: 'Escanea objetos con IA',      bg: '#E1F5EE', color: '#0F6E56' },
-  { to: '/dashboard/usuario/foro',     icon: 'ti-messages',  label: 'Foro eco',               desc: 'Publicaciones y comentarios', bg: '#E6F1FB', color: '#185FA5' },
-  { to: '/dashboard/usuario/puntos',   icon: 'ti-trophy',    label: 'Gamificación',           desc: 'Puntos y leaderboard',        bg: '#FAEEDA', color: '#854F0B' },
-  { to: '/dashboard/usuario/impacto',  icon: 'ti-chart-bar', label: 'Mi impacto',             desc: 'Estadísticas de reciclaje',   bg: '#EAF3DE', color: '#3B6D11' },
-  { to: '/dashboard/usuario/mapa',     icon: 'ti-map-pin',   label: 'Mapa reciclaje',         desc: 'Centros cercanos a ti',       bg: '#EEEDFE', color: '#534AB7' },
+  {
+    to: '/dashboard/usuario/detector',
+    icon: 'ti-camera',
+    label: 'Detector de reciclaje',
+    desc: 'Escanea objetos con IA en tiempo real para clasificarlos correctamente.',
+    color: '#0f6e56',
+    bg: 'rgba(15, 110, 86, 0.08)',
+    tag: 'Popular'
+  },
+  {
+    to: '/dashboard/usuario/foro',
+    icon: 'ti-messages',
+    label: 'Foro eco',
+    desc: 'Comparte tips, publica fotos y debate soluciones con la comunidad verde.',
+    color: '#185fa5',
+    bg: 'rgba(24, 95, 165, 0.08)',
+    tag: 'Comunidad'
+  },
+  {
+    to: '/dashboard/usuario/puntos',
+    icon: 'ti-trophy',
+    label: 'Gamificación',
+    desc: 'Revisa tus eco-puntos acumulados y escala posiciones en el podio.',
+    color: '#854f0b',
+    bg: 'rgba(133, 79, 11, 0.08)',
+    tag: 'Retos'
+  },
+  {
+    to: '/dashboard/usuario/impacto',
+    icon: 'ti-chart-bar',
+    label: 'Mi impacto',
+    desc: 'Estadísticas analíticas detalladas del CO2 y residuos que has salvado.',
+    color: '#3b6d11',
+    bg: 'rgba(59, 109, 17, 0.08)',
+    tag: null
+  },
+  {
+    to: '/dashboard/usuario/mapa',
+    icon: 'ti-map-pin',
+    label: 'Mapa reciclaje',
+    desc: 'Encuentra los contenedores inteligentes y centros limpios más cercanos.',
+    color: '#534ab7',
+    bg: 'rgba(83, 74, 183, 0.08)',
+    tag: 'Nuevo'
+  }
 ]
 
 export default function DashboardPage() {
-  const { name, username, image, initials } = useUser()
+  const { name, username } = useUser()
   const navigate = useNavigate()
 
   return (
-    <div style={{ padding: 24, maxWidth: 820 }}>
+    <div className="db-page-container">
 
-      {/* Bienvenida */}
-      <div style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 12, padding: '20px 24px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 16 }}>
-        <Avatar image={image} initials={initials} size={52} />
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: 18, fontWeight: 500, marginBottom: 4 }}>
-            Bienvenido, {name} 👋
-          </h1>
-          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>
-            @{username} · Sigue reciclando y sumando puntos para el planeta.
+      <section className="db-hero-banner">
+        <div className="db-hero-text">
+          <span className="db-hero-badge">
+            <i className="ti ti-shield-check" aria-hidden="true" />
+            <span>Panel Ecológico Verificado</span>
+          </span>
+          <h2>¡Bienvenido de vuelta, {name}! 👋</h2>
+          <p>
+            @{username} · Tu cuenta está activa. Cada residuo procesado mitiga el calentamiento global. Revisa los accesos directos abajo para comenzar.
           </p>
         </div>
-      </div>
+        <div className="db-hero-illustration">
+          <i className="ti ti-seeding" aria-hidden="true" />
+        </div>
+      </section>
 
-      {/* Módulos */}
-      <p style={{ fontSize: 11, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 12, letterSpacing: '.06em' }}>
-        MÓDULOS DISPONIBLES
-      </p>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-        {MODULES.map(({ to, icon, label, desc, bg, color }) => (
+      <p className="db-section-title">MÓDULOS DE SISTEMA DISPONIBLES</p>
+      <div className="db-modules-grid">
+        {MODULES.map(({ to, icon, label, desc, color, bg, tag }) => (
           <button
             key={to}
             onClick={() => navigate(to)}
-            style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'flex-start', gap: 14, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+            className="db-module-card"
+            style={{
+              '--brand-color': color,
+              '--brand-bg': bg
+            }}
           >
-            <div style={{ width: 40, height: 40, borderRadius: 8, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <i className={`ti ${icon}`} style={{ fontSize: 20, color }} aria-hidden="true" />
+            {tag && <span className="db-card-badge">{tag}</span>}
+
+            <div className="db-card-icon-box">
+              <i className={`ti ${icon}`} aria-hidden="true" />
             </div>
-            <div>
-              <p style={{ fontSize: 14, fontWeight: 500, marginBottom: 4 }}>{label}</p>
-              <p style={{ fontSize: 12, color: 'var(--color-text-secondary)' }}>{desc}</p>
-            </div>
+
+            <h3>{label}</h3>
+            <p>{desc}</p>
+
+            <span className="db-card-arrow">
+              <i className="ti ti-arrow-up-right" aria-hidden="true" />
+            </span>
           </button>
         ))}
       </div>
 
     </div>
   )
-}
+} 
