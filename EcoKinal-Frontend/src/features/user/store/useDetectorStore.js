@@ -56,5 +56,42 @@ export const useDetectorReciclaje = create((set) => ({
       }
     })
   },
+  // Nuevos estados
+camaraActiva: false,
+streamRef: null,
+
+// Nueva acción
+activarCamara: async (videoRef) => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' },
+      audio: false
+    })
+    if (videoRef.current) videoRef.current.srcObject = stream
+    set({ camaraActiva: true, streamRef: stream, error: null })
+  } catch {
+    set({ error: 'No se pudo acceder a la cámara. Revisa los permisos.' })
+  }
+},
+
+capturarFoto: (videoRef) => {
+    const video = videoRef.current
+    const canvas = document.createElement('canvas')
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    canvas.getContext('2d').drawImage(video, 0, 0)
+    canvas.toBlob((blob) => {
+      const file = new File([blob], 'captura.jpg', { type: 'image/jpeg' })
+      useDetectorReciclaje.getState().seleccionarImagen(file)
+    }, 'image/jpeg', 0.9)
+  },
+
+  detenerCamara: () => {
+    const { streamRef } = useDetectorReciclaje.getState()
+    if (streamRef) streamRef.getTracks().forEach(t => t.stop())
+    set({ camaraActiva: false, streamRef: null })
+  },
 }))
+
+
 
