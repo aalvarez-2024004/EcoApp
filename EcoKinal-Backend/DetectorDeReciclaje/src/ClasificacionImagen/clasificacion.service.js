@@ -16,16 +16,16 @@ export const loadModel = async () => {
     }
 };
 
-const imageToTensor = (imagePath) => {
-    //se detecta el tipo de imagen
+const imageToTensor = async (imagePath) => {
+    // Se detecta el tipo de imagen
     const ext = path.extname(imagePath).toLowerCase();
-    //es la imagen leida en formato binario
+
+    // Imagen leída en formato binario
     const buffer = fs.readFileSync(imagePath);
 
     let width, height, data;
 
     if (ext === ".jpg" || ext === ".jpeg") {
-        //useTArray esto le dice que devuelva los datos como Uint8Array
         const raw = jpeg.decode(buffer, { useTArray: true });
         width = raw.width;
         height = raw.height;
@@ -37,19 +37,31 @@ const imageToTensor = (imagePath) => {
         height = raw.height;
         data = raw.data;
     } 
+    else if (ext === ".webp") {
+        // Convierte WEBP a JPEG usando Sharp
+        const sharp = await import("sharp");
+
+        const converted = await sharp.default(buffer)
+            .jpeg()
+            .toBuffer();
+
+        const raw = jpeg.decode(converted, { useTArray: true });
+
+        width = raw.width;
+        height = raw.height;
+        data = raw.data;
+    } 
     else {
         throw new Error("Formato de imagen no soportado");
     }
-    //se multiplica *3 porque solo se necesitan los canales RGB = 3
+
+    // Solo se necesitan los canales RGB
     const buffer3 = new Uint8Array(width * height * 3);
 
     for (let i = 0; i < width * height; i++) {
-        //canal rojo
-        buffer3[i * 3] = data[i * 4];
-        //canal verde
-        buffer3[i * 3 + 1] = data[i * 4 + 1];
-        //canal azul
-        buffer3[i * 3 + 2] = data[i * 4 + 2];
+        buffer3[i * 3] = data[i * 4];       // Rojo
+        buffer3[i * 3 + 1] = data[i * 4 + 1]; // Verde
+        buffer3[i * 3 + 2] = data[i * 4 + 2]; // Azul
     }
 
     return tf.tensor3d(buffer3, [height, width, 3]);
@@ -65,7 +77,7 @@ export const detectarLabels = async (imagePath) => {
         await loadModel();
 
         //se convierte la imagen a tensor
-        const imageTensor = imageToTensor(imagePath);
+        const imageTensor = await imageToTensor(imagePath);
         //se envia al modelo de MobileNet
         const predictions = await model.classify(imageTensor);
         //extrae los classname y los convierte a minusculas

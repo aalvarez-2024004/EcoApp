@@ -17,9 +17,41 @@ export const clasificarImagen = async (req, res) => {
             });
         }
 
+        // Validaciones de seguridad
+        const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+        const ALLOWED_TYPES = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!ALLOWED_TYPES.includes(req.file.mimetype)) {
+            return res.status(400).json({
+                success: false,
+                message: "Formato no permitido. Solo JPG, PNG y WEBP."
+            });
+        }
+
+        if (req.file.size > MAX_SIZE) {
+            return res.status(400).json({
+                success: false,
+                message: "Imagen demasiado grande (máximo 5 MB)."
+            });
+        }
+
+        if (!req.file.size || req.file.size === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "La imagen está vacía o dañada."
+            });
+        }
+
         imagePath = req.file.path;
 
-        const labels = await detectarLabels(imagePath, req.file.mimetype);
+        const labels = await detectarLabels(
+            imagePath,
+            req.file.mimetype
+        );
 
         if (imagePath && fs.existsSync(imagePath)) {
             fs.unlinkSync(imagePath);
@@ -33,21 +65,43 @@ export const clasificarImagen = async (req, res) => {
             tipo: resultado.tipo,
             contenedor: resultado.contenedor
         });
-        
+
+        // Gamificación
         try {
-            await axios.post('http://localhost:3008/GamificationEcoKinal/v1/gamification/add-points', {}, {
-                headers: { Authorization: req.headers.authorization }
-            });
-        } catch (error) {
-            console.error('Error al sumar puntos en gamificación:', error.message);
-        }
-        try {
-            await axios.post('http://localhost:3002/api/impacto/registrar',
-                { tipo: resultado.tipo },
-                { headers: { Authorization: req.headers.authorization } }
+            await axios.post(
+                'http://localhost:3008/GamificationEcoKinal/v1/gamification/add-points',
+                {},
+                {
+                    headers: {
+                        Authorization: req.headers.authorization
+                    }
+                }
             );
         } catch (error) {
-            console.error('Error al registrar impacto ambiental:', error.response?.data || error.message);
+            console.error(
+                'Error al sumar puntos en gamificación:',
+                error.message
+            );
+        }
+
+        // Impacto ambiental
+        try {
+            await axios.post(
+                'http://localhost:3002/api/impacto/registrar',
+                {
+                    tipo: resultado.tipo
+                },
+                {
+                    headers: {
+                        Authorization: req.headers.authorization
+                    }
+                }
+            );
+        } catch (error) {
+            console.error(
+                'Error al registrar impacto ambiental:',
+                error.response?.data || error.message
+            );
         }
 
         return res.status(200).json({
@@ -57,6 +111,7 @@ export const clasificarImagen = async (req, res) => {
         });
 
     } catch (error) {
+
         if (imagePath && fs.existsSync(imagePath)) {
             fs.unlinkSync(imagePath);
         }

@@ -17,11 +17,16 @@ const storage = multer.diskStorage({
  
 const upload = multer({
   storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) cb(null, true);
-    else cb(new Error("Solo se permiten imágenes"), false);
+    const allowed = ['image/jpeg', 'image/png', 'image/webp']
+    if (allowed.includes(file.mimetype)) cb(null, true)
+    else cb(new Error('Formato no permitido. Usa JPG, PNG o WEBP.'), false)
   }
-});
+})
+
+
+
  
 /**
  * @swagger
@@ -58,12 +63,18 @@ const upload = multer({
  *         description: Error en la petición
  */
  
-router.post(
-    "/clasificar",
-    verifyToken,
-    upload.single("imagen"),
-    clasificarImagen
-);
+router.post('/clasificar', verifyToken,
+  (req, res, next) => {
+    upload.single('imagen')(req, res, (err) => {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE')
+        return res.status(400).json({ success: false, message: 'La imagen supera los 5 MB.' })
+      if (err)
+        return res.status(400).json({ success: false, message: err.message })
+      next()
+    })
+  },
+  clasificarImagen
+)
  
 export default router;
  
