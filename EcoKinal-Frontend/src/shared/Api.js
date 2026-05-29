@@ -1,11 +1,15 @@
 import axios from 'axios'
 
-export const AuthApi = axios.create({
+const AuthApi = axios.create({
   baseURL: import.meta.env.VITE_AUTH_URL
 })
 
-export const DetectorApi = axios.create({
-  baseURL: import.meta.env.VITE_DETECTOR_URL
+const DetectorApi = axios.create({
+  baseURL: import.meta.env.VITE_DETECTOR_URL,
+  timeout: 8000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })
 
 AuthApi.interceptors.request.use((config) => {
@@ -34,9 +38,10 @@ AuthApi.interceptors.response.use(
 DetectorApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`
-
   if (!(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json'
   }
   return config
 })
+
+export { AuthApi, DetectorApi }
