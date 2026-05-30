@@ -38,10 +38,11 @@ export default function DetectorReciclajePage() {
   }
 
   return (
-    <div style={{ background: '#EAF3DE', minHeight: '100vh', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
+    <div style={{ background: '#EAF3DE', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
       <style>{detectorStyles}</style>
 
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+      <div style={{ width: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
 
         {/* ── Header ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

@@ -59,9 +59,9 @@ body {
 
 .db-main-content {
   flex: 1;
-  padding: 60px 50px;
+  padding: 0;        
   overflow-y: auto;
-  scroll-behavior: smooth;
+  min-width: 0;      
 }
 
 /* MAIN CONTENT SCROLLBAR OVERRIDE */
