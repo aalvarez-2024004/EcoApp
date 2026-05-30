@@ -72,51 +72,71 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     }
 
     return (
-        <div className="border-t border-slate-100">
-            
+        <div style={{ borderTop: '0.5px solid #C0DD97' }}>
+            <style>{`
+                .comment-action { opacity: 0; transition: opacity 0.2s; }
+                .comment-row:hover .comment-action { opacity: 1; }
+                .comment-btn:hover { color: #3B6D11 !important; }
+                .comment-del-btn:hover { color: #791F1F !important; }
+                
+                @keyframes spin { 100% { transform: rotate(360deg); } }
+                .spin-loader { animation: spin 1s linear infinite; }
+            `}</style>
+
             {/* Comments list */}
             {loadingComments ? (
-                <div className="px-5 py-5 flex items-center gap-2 text-slate-400">
-                    <div className="w-4 h-4 rounded-full border-2 border-slate-200 border-t-slate-400 animate-spin" />
-                    <p className="text-xs font-medium">Cargando comentarios…</p>
+                <div style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: 10, color: '#639922' }}>
+                    <div className="spin-loader" style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid #C0DD97', borderTopColor: '#3B6D11' }} />
+                    <p style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Cargando comentarios…</p>
                 </div>
             ) : comments.length > 0 ? (
-                <div className="px-5 py-4 flex flex-col gap-3">
+                <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
                     {comments.map(comment => {
                         const isMyComment = String(comment.autorId) === String(currentUserId)
                         return (
-                            <div key={comment._id} className="flex gap-3 group/comment">
+                            <div key={comment._id} className="comment-row" style={{ display: 'flex', gap: 12 }}>
                                 <Avatar 
                                     image={comment._authorImage || comment.authorImage} 
                                     initials={comment._authorInitials || 'U'} 
-                                    size={30} 
+                                    size={32} 
                                 />
-                                <div className="flex-1 min-w-0">
-                                    <div className={`px-3.5 py-2.5 rounded-2xl rounded-tl-sm transition-all
-                                        ${isMyComment
-                                            ? 'bg-emerald-50 border border-emerald-100'
-                                            : 'bg-slate-50 border border-slate-100'
-                                        }`}>
-                                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                                            <span className="text-xs font-bold text-slate-800">
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{
+                                        padding: '10px 14px',
+                                        borderRadius: '4px 14px 14px 14px',
+                                        transition: 'all 0.2s',
+                                        background: isMyComment ? '#F1F7E8' : '#fff',
+                                        border: `0.5px solid ${isMyComment ? '#C0DD97' : '#EAF3DE'}`,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.01)'
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
+                                            <span style={{ fontSize: 13, fontWeight: 800, color: '#173404' }}>
                                                 {comment._authorName || 'Usuario'}
                                             </span>
+                                            
                                             {isMyComment && (
-                                                <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600 border border-emerald-200 tracking-wider uppercase">
+                                                <span style={{
+                                                    fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 10,
+                                                    background: '#EAF3DE', color: '#3B6D11', border: '0.5px solid #C0DD97',
+                                                    letterSpacing: '0.05em', textTransform: 'uppercase'
+                                                }}>
                                                     Tú
                                                 </span>
                                             )}
+                                            
                                             {isMyComment && editingCommentId !== comment._id && (
-                                                <div className="ml-auto flex gap-2 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                                                <div className="comment-action" style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
                                                     <button
                                                         onClick={() => { setEditingCommentId(comment._id); setEditingCommentText(comment.content) }}
-                                                        className="text-[11px] font-bold text-slate-400 hover:text-emerald-600 transition-colors"
+                                                        className="comment-btn"
+                                                        style={{ background: 'transparent', border: 'none', fontSize: 11, fontWeight: 700, color: '#97C459', cursor: 'pointer', padding: 0 }}
                                                     >
                                                         Editar
                                                     </button>
                                                     <button
                                                         onClick={() => deleteComment(comment._id)}
-                                                        className="text-[11px] font-bold text-slate-400 hover:text-red-500 transition-colors"
+                                                        className="comment-del-btn"
+                                                        style={{ background: 'transparent', border: 'none', fontSize: 11, fontWeight: 700, color: '#F09595', cursor: 'pointer', padding: 0 }}
                                                     >
                                                         Eliminar
                                                     </button>
@@ -125,31 +145,33 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                                         </div>
 
                                         {editingCommentId === comment._id ? (
-                                            <div className="mt-1.5 flex flex-col gap-2">
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
                                                 <textarea
                                                     autoFocus
                                                     value={editingCommentText}
                                                     onChange={e => setEditingCommentText(e.target.value)}
                                                     rows={2}
-                                                    className="w-full border border-emerald-300 rounded-xl px-3 py-2 text-sm bg-white outline-none resize-none text-slate-700 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+                                                    style={{ width: '100%', padding: '8px 12px', fontSize: 13, border: '0.5px solid #C0DD97', borderRadius: 10, background: '#fff', color: '#27500A', resize: 'none', outline: 'none' }}
                                                 />
-                                                <div className="flex gap-2 justify-end">
+                                                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                                                     <button
                                                         onClick={() => setEditingCommentId(null)}
-                                                        className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+                                                        style={{ padding: '6px 12px', fontSize: 11, fontWeight: 600, color: '#639922', background: '#fff', border: '0.5px solid #C0DD97', borderRadius: 8, cursor: 'pointer' }}
                                                     >
                                                         Cancelar
                                                     </button>
                                                     <button
                                                         onClick={saveCommentEdit}
-                                                        className="px-3.5 py-1.5 text-xs font-black text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 active:scale-95 transition-all"
+                                                        style={{ padding: '6px 12px', fontSize: 11, fontWeight: 700, color: '#fff', background: '#3B6D11', border: 'none', borderRadius: 8, cursor: 'pointer' }}
                                                     >
                                                         Guardar
                                                     </button>
                                                 </div>
                                             </div>
                                         ) : (
-                                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{comment.content}</p>
+                                            <p style={{ fontSize: 13, color: '#27500A', margin: 0, whiteSpace: 'pre-line', lineHeight: 1.5 }}>
+                                                {comment.content}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -158,23 +180,23 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                     })}
                 </div>
             ) : (
-                <div className="px-5 py-5 flex items-center gap-2.5 text-slate-400">
-                    <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center">
-                        <i className="ti ti-message-circle text-sm text-slate-400" />
+                <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 12, color: '#639922' }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#F1F7E8', border: '0.5px solid #C0DD97', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" /></svg>
                     </div>
-                    <p className="text-xs font-medium">Aún no hay comentarios. ¡Sé el primero en aportar!</p>
+                    <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>Aún no hay comentarios. ¡Sé el primero en aportar!</p>
                 </div>
             )}
 
             {/* Input box */}
-            <div className="px-5 py-3.5 border-t border-slate-100 bg-white flex gap-3 items-end">
-                <Avatar image={currentUser?.image} initials={currentUser?.initials || 'U'} size={30} />
-                <div className={`flex-1 flex gap-2 items-end border rounded-2xl px-3.5 py-2 transition-all duration-200
-                    ${commentText.trim()
-                        ? 'border-emerald-400 bg-emerald-50/30 shadow-sm shadow-emerald-500/5'
-                        : 'border-slate-200 bg-slate-50/50'
-                    }`}
-                >
+            <div style={{ padding: '14px 24px', borderTop: '0.5px solid #C0DD97', background: '#fff', display: 'flex', gap: 12, alignItems: 'flex-end' }}>
+                <Avatar image={currentUser?.image} initials={currentUser?.initials || 'U'} size={32} />
+                <div style={{
+                    flex: 1, display: 'flex', gap: 8, alignItems: 'flex-end',
+                    padding: '8px 12px', borderRadius: 16, transition: 'all 0.2s',
+                    background: commentText.trim() ? '#F1F7E8' : '#FAFCF7',
+                    border: `0.5px solid ${commentText.trim() ? '#97C459' : '#C0DD97'}`
+                }}>
                     <textarea 
                         ref={textRef} 
                         rows={1} 
@@ -182,18 +204,23 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                         onChange={e => { setCommentText(e.target.value); autoResize(e) }} 
                         onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmitComment() } }} 
                         placeholder="Escribe un comentario..." 
-                        className="flex-1 border-none outline-none bg-transparent text-sm text-slate-700 resize-none max-h-24 py-0.5 placeholder:text-slate-400" 
+                        style={{
+                            flex: 1, border: 'none', outline: 'none', background: 'transparent',
+                            fontSize: 13, color: '#173404', resize: 'none', maxHeight: 96, padding: '4px 0',
+                            fontFamily: 'inherit'
+                        }} 
                     />
                     <button 
                         onClick={handleSubmitComment} 
                         disabled={!commentText.trim()} 
-                        className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all active:scale-95 flex-shrink-0
-                            ${commentText.trim()
-                                ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm shadow-emerald-500/20'
-                                : 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                            }`}
+                        style={{
+                            width: 28, height: 28, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                            border: 'none', cursor: commentText.trim() ? 'pointer' : 'not-allowed', transition: 'all 0.2s',
+                            background: commentText.trim() ? '#3B6D11' : '#EAF3DE',
+                            color: commentText.trim() ? '#fff' : '#97C459'
+                        }}
                     >
-                        <i className="ti ti-send text-xs" />
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 14, height: 14 }} stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
                     </button>
                 </div>
             </div>
