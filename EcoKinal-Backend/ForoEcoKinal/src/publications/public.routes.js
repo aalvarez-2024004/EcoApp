@@ -4,6 +4,7 @@ import {
     getPublications,
     updatePublication,
     deletePublication,
+    toggleLikePublication
 } from "./publi.controller.js";
 
 import { verifyToken } from "../../middlewares/validate-JWT.js";
@@ -132,5 +133,7 @@ router.put(
  *         description: Publicación no encontrada
  */
 router.delete("/delete/:id", verifyToken, deletePublication);
+
+router.post("/like/:id", verifyToken, toggleLikePublication);
 
 export default router;

@@ -11,6 +11,9 @@ const commentSchema = Schema(
             type: String, // Manteniendo tu estándar de String para UIDs
             required: true
         },
+        _authorName: {
+            type: String // Firma persistente para renderizar el nombre correcto del creador
+        },
         publicationId: {
             type: Schema.Types.ObjectId,
             ref: 'Publication',

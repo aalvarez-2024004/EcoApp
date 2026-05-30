@@ -1,23 +1,14 @@
 import Comment from './comments.model.js';
 
-// Listar comentarios de una publicación
+// Listar comentarios de una publicación de manera consistente
 export const getCommentsByPublication = async (req, res) => {
     try {
         const { publicationId } = req.params;
 
-        // Buscamos los comentarios y solo seleccionamos el campo 'content'
-        const comments = await Comment.find({ publicationId })
-            .select('content -_id');
+        // Traemos todos los campos necesarios para que el Frontend los maneje
+        const comments = await Comment.find({ publicationId }).sort({ createdAt: 1 });
 
-        // Si no hay comentarios, devolvemos un mensaje claro o el arreglo vacío
-        if (comments.length === 0) {
-            return res.status(200).json({ message: "Aún no hay comentarios para esta publicación" });
-        }
-
-        // Si solo quieres que devuelva el primer comentario encontrado como un objeto:
-        // return res.status(200).json(comments[0]);
-
-        // O si quieres la lista de todos los contenidos:
+        // Retornamos la lista siempre como un arreglo (aunque esté vacío) para evitar romper el .map() en React
         return res.status(200).json(comments);
         
     } catch (error) {
@@ -25,7 +16,7 @@ export const getCommentsByPublication = async (req, res) => {
     }
 };
 
-// Agregar Comentario
+// Agregar Comentario guardando la firma del creador
 export const addComment = async (req, res) => {
     try {
         const { content, publicationId } = req.body;
@@ -37,10 +28,14 @@ export const addComment = async (req, res) => {
             });
         }
 
+        // Obtener nombre del token para que se mantenga desde cualquier sesión de usuario
+        const authorName = req.user.name || req.user.username || 'Usuario de EcoKinal';
+
         const comment = new Comment({
             content,
             publicationId,
-            autorId: req.user.uid
+            autorId: req.user.uid,
+            _authorName: authorName
         });
 
         await comment.save();
@@ -55,7 +50,7 @@ export const addComment = async (req, res) => {
     }
 };
 
-// Editar Comentario (Solo contenido)
+// Editar Comentario (Solo contenido) validando la autoría
 export const updateComment = async (req, res) => {
     try {
         const { id } = req.params;
@@ -65,8 +60,8 @@ export const updateComment = async (req, res) => {
 
         if (!comment) return res.status(404).json({ success: false, message: 'Comentario no encontrado' });
 
-        // Validación de autoría
-        if (comment.autorId !== req.user.uid) {
+        // Validación de autoría comparando strings de forma segura
+        if (comment.autorId.toString() !== req.user.uid.toString()) {
             return res.status(403).json({
                 success: false,
                 message: 'No puedes editar un comentario que no es tuyo'
@@ -89,7 +84,7 @@ export const updateComment = async (req, res) => {
     }
 };
 
-// Eliminar Comentario
+// Eliminar Comentario validando la autoría
 export const deleteComment = async (req, res) => {
     try {
         const { id } = req.params;
@@ -97,7 +92,8 @@ export const deleteComment = async (req, res) => {
 
         if (!comment) return res.status(404).json({ success: false, message: 'Comentario no encontrado' });
 
-        if (comment.autorId !== req.user.uid) {
+        // Validación de autoría comparando strings de forma segura
+        if (comment.autorId.toString() !== req.user.uid.toString()) {
             return res.status(403).json({
                 success: false,
                 message: 'No puedes eliminar este comentario'
