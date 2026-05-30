@@ -345,20 +345,19 @@ export const css = `
   animation: fadeIn 0.8s ease both 0.2s;
 }
 
-.ek-right-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.ek-right-icon {
+  width: 350px;
+  height: 350px;
   object-fit: contain;
-  object-position: center 40%;   /* imagen centrada, algo más arriba */
-  z-index: 0;
-  padding: 32px 32px 160px 32px; /* deja espacio abajo para el texto */
-  transition: transform .4s ease;
+  display: block;
+  margin: 0 auto 24px auto;
+  opacity: .95;
+  transform: translateY(-2px) scale(1.03);
 }
 
-.ek-right:hover .ek-right-bg {
-  transform: scale(1.02);
+.ek-right-icon:hover {
+  transform: translateY(-3px) scale(1.05);
+  opacity: 1;
 }
 
 .ek-right-text {

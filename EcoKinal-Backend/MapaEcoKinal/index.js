@@ -1,7 +1,5 @@
-import dotenv from "dotenv";
+import "./configs/env.js"; // ← debe ser el PRIMER import (carga dotenv antes que todo)
 import { createApp } from "./configs/server.js";
-
-dotenv.config();
 
 const app = createApp();
 const PORT = process.env.PORT || 3005;

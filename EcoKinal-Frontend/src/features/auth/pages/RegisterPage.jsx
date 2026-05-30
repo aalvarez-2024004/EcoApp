@@ -131,8 +131,7 @@ export default function RegisterPage() {
 
           {/* Brand */}
           <div className="ek-brand">
-            <img src={icon} alt="EcoKinal" style={{ width: 22, height: 22 }} />
-            <span>EcoKinal</span>
+            
           </div>
 
           {/* Heading */}
@@ -307,11 +306,13 @@ export default function RegisterPage() {
 
         {/* ── RIGHT ── */}
         <div className="ek-right">
-          <img
-            src={LoginPageBack}
-            alt=""
-            className="ek-right-bg"
-          />
+          <div className="ek-right-icon">
+            <img
+              src={icon}
+              alt=""
+              className="ek-right-icon"
+            />
+          </div>
           <div className="ek-right-text">
             <h2>Únete al<br />cambio verde.</h2>
             <p>Gestiona tus recursos de forma inteligente y sostenible.</p>

@@ -15,6 +15,7 @@ import DashboardPage   from '../../features/user/pages/DashboardPage'
 import ForoPage        from '../../features/user/pages/ForoPage'
 import DetectorReciclaje from '../../features/user/pages/DetectorReciclajePage'
 import GamificacionPage from '../../features/user/pages/GamificacionPage'
+import MapaPage         from '../../features/user/pages/MapaPage'
 
 export const AppRoutes = () => {
   return (
@@ -39,7 +40,7 @@ export const AppRoutes = () => {
         <Route path="foro"     element={<ForoPage />} />
         <Route path="puntos" element={<GamificacionPage />} />
         <Route path="impacto"  element={<div style={{ padding: 24 }}>Mi impacto (próximamente)</div>} />
-        <Route path="mapa"     element={<div style={{ padding: 24 }}>Mapa (próximamente)</div>} />
+        <Route path="mapa"     element={<MapaPage />} />
       </Route>
 
       {/* ── Fallback ── */}

@@ -1,130 +1,55 @@
-import axios from "axios";
-import OpeningHours from "opening_hours";
-
-async function getFullAddress(lat, lon) {
-    try {
-        const response = await axios.get(
-            "https://nominatim.openstreetmap.org/reverse",
-            {
-                params: {
-                    lat,
-                    lon,
-                    format: "json"
-                },
-                headers: {
-                    "User-Agent": "EcoKinalApp"
-                }
-            }
-        );
-
-        return response.data.display_name || "Dirección no disponible";
-
-    } catch (error) {
-        return "Dirección no disponible";
-    }
-}
-
-function isOpenNow(opening_hours) {
-    try {
-        const oh = new OpeningHours(opening_hours);
-        const isOpen = oh.getState();
-
-        if (isOpen) {
-            return "Abierto";
-        } else {
-            return "Cerrado";
-        }
-
-    } catch {
-        return "Horario no disponible";
-    }
-}
-
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c; // distancia en km
-}
+import { findNearbyRecyclingCenters, formatPlace } from "./recycling.service.js";
 
 export const getRecyclingCenters = async (req, res) => {
     try {
-        const { lat, lon } = req.body;
+        const { lat, lon, radius, limit } = req.body;
 
-        if (!lat || !lon) {
-            return res.status(400).json({
-                message: "Debe enviar lat y lon"
+        if (lat === undefined || lon === undefined) {
+            return res.status(400).json({ message: "Debe enviar lat y lon" });
+        }
+
+        if (isNaN(lat) || isNaN(lon)) {
+            return res.status(400).json({ message: "lat y lon deben ser números válidos" });
+        }
+
+        const radiusMeters = Math.min(Number(radius) || 5000, 50000);
+        const maxResults   = Math.min(Number(limit)  || 20,   20);
+
+        const places = await findNearbyRecyclingCenters(lat, lon, radiusMeters, maxResults);
+
+        if (!places.length) {
+            return res.status(200).json({
+                message: "No se encontraron centros de reciclaje en el área indicada. Intenta aumentar el radio de búsqueda.",
+                total: 0,
+                centers: []
             });
         }
 
-        const query = `
-        [out:json][timeout:25];
-        (
-        node["amenity"="recycling"](around:3000,${lat},${lon});
-        way["amenity"="recycling"](around:3000,${lat},${lon});
-        relation["amenity"="recycling"](around:3000,${lat},${lon});
-        );
-        out center tags;
-        `;
+        const centers = places
+            .map((place) => formatPlace(place, lat, lon))
+            .filter((c) => c.lat && c.lon) // descartar resultados sin coordenadas
+            .sort((a, b) => Number(a.distance_km) - Number(b.distance_km))
+            .slice(0, maxResults);
 
-        const response = await axios.post(
-            "https://overpass.kumi.systems/api/interpreter",
-            query,
-            {
-                headers: { "Content-Type": "text/plain" },
-                timeout: 30000
-            }
-        );
-
-        const results = await Promise.all(
-        response.data.elements.map(async (place) => {
-
-            const tags = place.tags || {};
-            const latitude = place.lat || place.center?.lat;
-            const longitude = place.lon || place.center?.lon;
-
-            const fullAddress = await getFullAddress(latitude, longitude);
-
-            const openingHours = tags.opening_hours || null;
-            const openStatus = openingHours
-                ? isOpenNow(openingHours)
-                : "Horario no especificado";
-
-            const distance = calculateDistance(lat, lon, latitude, longitude);
-
-            return {
-                name: tags.name || "Centro de reciclaje",
-                address: fullAddress,
-                phone: tags.phone || tags["contact:phone"] || "No disponible",
-                opening_hours: openingHours || "No especificado",
-                open_status: openStatus,
-                distance_km: distance.toFixed(2),
-                lat: latitude,
-                lon: longitude
-            };
-        })
-    );
-        results.sort((a, b) => a.distance_km - b.distance_km);
-
-        const topFive = results.slice(0, 5);
-
-        res.json(topFive);
+        return res.status(200).json({
+            total: centers.length,
+            radius_km: (radiusMeters / 1000).toFixed(1),
+            centers
+        });
 
     } catch (error) {
-        console.error("ERROR REAL:", error.message);
+        console.error("Error en getRecyclingCenters:", error?.response?.data || error.message);
 
-        res.status(500).json({
-            message: "Error consultando centros",
+        const googleError = error?.response?.data?.error;
+        if (googleError) {
+            return res.status(502).json({
+                message: "Error al consultar Google Places API",
+                detail: googleError.message || "Error desconocido"
+            });
+        }
+
+        return res.status(500).json({
+            message: "Error interno del servidor",
             error: error.message
         });
     }
