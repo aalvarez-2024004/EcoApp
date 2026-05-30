@@ -9,6 +9,8 @@ import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
 
 import gamificationRoutes from '../src/gamification/gamification.routes.js';
+import dailyChallengeRoutes from '../src/dailyChallenges/dailyChallenge.routes.js';
+import { seedChallengesIfEmpty } from '../src/dailyChallenges/dailyChallenge.service.js';
 
 const BASE_PATH = '/GamificationEcoKinal/v1';
 
@@ -19,8 +21,12 @@ export const createApp = () => {
     app.use(cors(corsOptions));
     app.use(helmet(helmetConfiguration));
 
+    // Seed de retos diarios al arrancar
+    seedChallengesIfEmpty().catch(console.error);
+
     // Rutas principales
     app.use(`${BASE_PATH}/gamification`, gamificationRoutes);
+    app.use(`${BASE_PATH}/daily-challenges`, dailyChallengeRoutes);
 
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({

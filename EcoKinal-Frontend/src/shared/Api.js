@@ -12,6 +12,13 @@ const DetectorApi = axios.create({
   }
 })
 
+const GamificationApi = axios.create({
+  baseURL: import.meta.env.VITE_GAMIFICATION_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
 AuthApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`
@@ -44,4 +51,22 @@ DetectorApi.interceptors.request.use((config) => {
   return config
 })
 
-export { AuthApi, DetectorApi }
+GamificationApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+GamificationApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
+
+export { AuthApi, DetectorApi, GamificationApi }

@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import { useUser } from '../store/useUserStore'
 import Avatar from '../components/Avatar'
-// Importamos los estilos del dashboard desde tu archivo JS de Styles
 import { css as dashboardStyles } from '../../../Styles/DashboardPage'
 
 export default function DashboardLayout() {
@@ -12,19 +11,15 @@ export default function DashboardLayout() {
 
   return (
     <>
-      {/* Inyectamos el string de CSS en el documento */}
       <style>{dashboardStyles}</style>
 
       <div className="db-layout">
-        {/* Sidebar integrado */}
         <Sidebar onEditProfile={() => setShowEditModal(true)} />
 
-        {/* Espacio del contenido donde se renderiza DashboardPage */}
         <main className="db-main-content">
           <Outlet />
         </main>
 
-        {/* Modal de edición */}
         {showEditModal && (
           <div
             onClick={() => setShowEditModal(false)}
