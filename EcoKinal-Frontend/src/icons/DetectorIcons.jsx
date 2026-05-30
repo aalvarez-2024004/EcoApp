@@ -1,43 +1,116 @@
-// Bin icon — contenedor de basura con color dinámico
-export const BinIcon = ({ color = '#16a34a' }) => (
-  <svg viewBox="0 0 48 48" fill="none" className="w-14 h-14">
-    <rect x="8" y="14" width="32" height="28" rx="4" fill={color} opacity="0.15" stroke={color} strokeWidth="2" />
-    <rect x="4" y="10" width="40" height="6" rx="3" fill={color} opacity="0.3" stroke={color} strokeWidth="2" />
-    <path d="M18 10V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" stroke={color} strokeWidth="2" strokeLinecap="round" />
-    <path d="M20 22v12M24 22v12M28 22v12" stroke={color} strokeWidth="2" strokeLinecap="round" />
-    <path d="M16 24 Q24 20 32 24" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+// Bote de basura con color dinámico — diseño orgánico
+export const BinIcon = ({ color = '#639922', size = 72 }) => (
+  <svg viewBox="0 0 72 80" fill="none" style={{ width: size, height: size }}>
+    {/* Sombra base */}
+    <ellipse cx="36" cy="76" rx="18" ry="3" fill={color} opacity="0.12" />
+
+    {/* Cuerpo del bote */}
+    <path
+      d="M14 22 L17 68 Q17 72 21 72 L51 72 Q55 72 55 68 L58 22 Z"
+      fill={color} opacity="0.15"
+      stroke={color} strokeWidth="1.5"
+    />
+
+    {/* Frente con brillo */}
+    <path
+      d="M16 22 L19 66 Q19 70 23 70 L49 70 Q53 70 53 66 L56 22 Z"
+      fill="white" opacity="0.5"
+    />
+
+    {/* Líneas de reciclaje en el bote */}
+    <path
+      d="M28 35 Q36 32 44 35"
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.6"
+    />
+    <path
+      d="M27 44 Q36 41 45 44"
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.5"
+    />
+    <path
+      d="M27 53 Q36 50 45 53"
+      stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.4"
+    />
+
+    {/* Símbolo reciclaje */}
+    <path
+      d="M33 47 L36 44 L39 47 M36 44 L36 52"
+      stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"
+    />
+
+    {/* Tapa */}
+    <rect x="10" y="16" width="52" height="8" rx="4" fill={color} opacity="0.9" />
+    <rect x="10" y="16" width="52" height="8" rx="4" fill="white" opacity="0.2" />
+
+    {/* Asa */}
+    <path
+      d="M28 16 L28 10 Q28 7 31 7 L41 7 Q44 7 44 10 L44 16"
+      stroke={color} strokeWidth="2" strokeLinecap="round" fill="none"
+    />
+
+    {/* Destello superior */}
+    <rect x="14" y="18" width="12" height="3" rx="1.5" fill="white" opacity="0.4" />
   </svg>
 )
 
-// Overlay de escaneo sobre la imagen previa
+// Overlay de escaneo eco — línea verde con cuadrícula suave
 export const ScanOverlay = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
-    <div className="absolute top-0 left-0 right-0 h-0.5 bg-emerald-400 opacity-70 animate-scan" />
-    <div className="absolute top-1/4 left-4 right-4 h-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-2/4 left-4 right-4 h-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-3/4 left-4 right-4 h-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-0 bottom-0 left-1/4 w-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-0 bottom-0 left-2/4 w-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-0 bottom-0 left-3/4 w-px bg-emerald-300 opacity-20" />
-    <div className="absolute top-3 left-3 w-7 h-7 border-t-2 border-l-2 border-emerald-400" style={{ borderRadius: '4px 0 0 0' }} />
-    <div className="absolute top-3 right-3 w-7 h-7 border-t-2 border-r-2 border-emerald-400" style={{ borderRadius: '0 4px 0 0' }} />
-    <div className="absolute bottom-3 left-3 w-7 h-7 border-b-2 border-l-2 border-emerald-400" style={{ borderRadius: '0 0 0 4px' }} />
-    <div className="absolute bottom-3 right-3 w-7 h-7 border-b-2 border-r-2 border-emerald-400" style={{ borderRadius: '0 0 4px 0' }} />
+  <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-10">
+    {/* Línea de escaneo */}
+    <div className="absolute left-0 right-0 h-0.5 animate-scan"
+         style={{ background: 'linear-gradient(90deg, transparent, #639922, #97C459, #639922, transparent)' }} />
+
+    {/* Cuadrícula sutil */}
+    {[25, 50, 75].map(p => (
+      <div key={p} className="absolute left-4 right-4 h-px" style={{ top: `${p}%`, background: '#639922', opacity: 0.12 }} />
+    ))}
+    {[25, 50, 75].map(p => (
+      <div key={p} className="absolute top-4 bottom-4 w-px" style={{ left: `${p}%`, background: '#639922', opacity: 0.12 }} />
+    ))}
+
+    {/* Esquinas del visor */}
+    {[
+      { top: 12, left: 12,  borderTop: '2px solid #639922', borderLeft: '2px solid #639922',  borderRadius: '6px 0 0 0' },
+      { top: 12, right: 12, borderTop: '2px solid #639922', borderRight: '2px solid #639922', borderRadius: '0 6px 0 0' },
+      { bottom: 12, left: 12,  borderBottom: '2px solid #639922', borderLeft: '2px solid #639922',  borderRadius: '0 0 0 6px' },
+      { bottom: 12, right: 12, borderBottom: '2px solid #639922', borderRight: '2px solid #639922', borderRadius: '0 0 6px 0' },
+    ].map((style, i) => (
+      <div key={i} className="absolute w-7 h-7" style={style} />
+    ))}
   </div>
 )
 
-// Barra de confianza usada en el estado de carga
-export const ConfidenceBar = ({ label, value }) => (
-  <div className="space-y-1">
-    <div className="flex justify-between text-xs text-slate-500">
-      <span>{label}</span>
-      <span className="font-medium text-slate-600">{value}%</span>
+// Barra de progreso animada para el estado de carga
+export const ConfidenceBar = ({ label, value, color = '#639922' }) => (
+  <div className="space-y-1.5">
+    <div className="flex justify-between" style={{ fontSize: 12 }}>
+      <span style={{ color: '#3B6D11' }}>{label}</span>
+      <span style={{ color: '#27500A', fontWeight: 600 }}>{value}%</span>
     </div>
-    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#EAF3DE' }}>
       <div
-        className="h-full bg-emerald-400 rounded-full transition-all duration-1000 ease-out"
-        style={{ width: `${value}%` }}
+        className="h-full rounded-full bar-animated"
+        style={{ width: `${value}%`, background: color, transition: 'width 1s ease' }}
       />
     </div>
+  </div>
+)
+
+// Hoja giratoria para el loading
+export const LeafSpinner = () => (
+  <div className="relative w-16 h-16 flex items-center justify-center">
+    <div className="absolute inset-0 rounded-full border-2 border-dashed animate-spin-leaf"
+         style={{ borderColor: '#97C459', animationDuration: '3s' }} />
+    <div className="absolute inset-2 rounded-full" style={{ background: '#EAF3DE' }} />
+    <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 relative z-10" style={{ color: '#3B6D11' }}>
+      <path
+        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10C12 12 12 2 12 2z"
+        fill="#639922" opacity="0.15"
+      />
+      <path
+        d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2c0 5.523 0 10 10 10-5.523 0-10 4.477-10 10z"
+        fill="#3B6D11" opacity="0.8"
+      />
+      <path d="M12 2v10M12 12l-4-4" stroke="#C0DD97" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   </div>
 )

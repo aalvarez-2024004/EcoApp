@@ -5,9 +5,16 @@ function CloseBtn({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white shadow-sm border border-slate-100
-                 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200
-                 transition-all text-xl leading-none pb-1"
+      style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 20,
+        width: 32, height: 32, borderRadius: '50%',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: '#fff', border: '0.5px solid #C0DD97',
+        color: '#639922', fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        transition: 'all 0.15s ease',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = '#FCEBEB'; e.currentTarget.style.color = '#E24B4A' }}
+      onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#639922' }}
     >
       ×
     </button>
@@ -24,47 +31,94 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
+    <div className="eco-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
       {/* Zona de drop */}
       <div
-        className={`relative rounded-2xl border-2 border-dashed overflow-hidden flex flex-col items-center justify-center
-          transition-all duration-300 min-h-[320px]
-          ${preview
-            ? 'border-transparent bg-slate-900'
-            : 'border-slate-200 bg-slate-50 hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer'
-          }`}
+        style={{
+          position: 'relative', overflow: 'hidden',
+          minHeight: 300, borderRadius: 16,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.25s ease',
+          ...(preview
+            ? { background: '#0d150f' }
+            : {
+                border: '2px dashed #97C459',
+                background: '#EAF3DE',
+                cursor: 'pointer',
+              }
+          ),
+        }}
         onClick={() => !preview && fileInputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
+        onMouseEnter={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #3B6D11'; e.currentTarget.style.background = '#DFF0CC' }}}
+        onMouseLeave={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #97C459'; e.currentTarget.style.background = '#EAF3DE' }}}
       >
         {preview ? (
           <>
-            <img src={preview} alt="Vista previa" className="absolute inset-0 w-full h-full object-contain opacity-90" />
+            <img
+              src={preview} alt="Vista previa"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', opacity: 0.92 }}
+            />
             {isLoading && <ScanOverlay />}
             <CloseBtn onClick={(e) => { e.stopPropagation(); onLimpiar() }} />
-            {/* Badge */}
-            <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2
-                            bg-white/95 backdrop-blur-sm text-emerald-700 text-xs font-bold
-                            px-3 py-1.5 rounded-full shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Imagen cargada
-            </div>
+
+            {/* Badge imagen lista */}
+            {!isLoading && (
+              <div style={{
+                position: 'absolute', bottom: 12, left: 12, zIndex: 10,
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '6px 14px', borderRadius: 99,
+                background: 'rgba(234,243,222,0.95)', border: '0.5px solid #97C459',
+              }}>
+                <div className="pulse-ring" style={{ width: 8, height: 8, borderRadius: '50%', background: '#639922', color: '#639922', position: 'relative' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#27500A' }}>Imagen lista</span>
+              </div>
+            )}
+
+            {/* Badge analizando */}
+            {isLoading && (
+              <div style={{
+                position: 'absolute', top: '50%', left: '50%', zIndex: 20,
+                transform: 'translate(-50%,-50%)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+                padding: '12px 20px', borderRadius: 16,
+                background: 'rgba(39,80,10,0.85)',
+              }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#C0DD97' }}>Analizando material…</span>
+              </div>
+            )}
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center px-6 text-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-white border border-slate-100 shadow-sm
-                            flex items-center justify-center animate-float text-emerald-500">
-              <svg viewBox="0 0 24 24" fill="none" className="w-10 h-10" stroke="currentColor" strokeWidth="1.5">
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '0 24px', textAlign: 'center' }}>
+            {/* Icono flotante */}
+            <div
+              className="animate-float"
+              style={{
+                width: 80, height: 80, borderRadius: 20,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: '#fff', border: '0.5px solid #C0DD97',
+                boxShadow: '0 4px 20px rgba(99,153,34,0.15)',
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" style={{ width: 36, height: 36 }} stroke="#3B6D11" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
             </div>
+
             <div>
-              <p className="text-slate-700 font-bold text-lg">Arrastra tu imagen aquí</p>
-              <p className="text-slate-400 text-sm mt-1">o haz clic para explorar tus archivos</p>
+              <p style={{ fontSize: 16, fontWeight: 700, color: '#27500A', margin: 0 }}>Arrastra tu imagen aquí</p>
+              <p style={{ fontSize: 13, color: '#639922', marginTop: 6 }}>o haz clic para explorar archivos</p>
             </div>
-            <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-4 py-1.5 rounded-full">
-              JPG, PNG, WEBP · máx 5 MB
+
+            <span style={{
+              padding: '6px 16px', borderRadius: 99, fontSize: 11,
+              fontWeight: 500, color: '#3B6D11',
+              background: '#fff', border: '0.5px solid #C0DD97',
+            }}>
+              JPG · PNG · WEBP · máx 5 MB
             </span>
           </div>
         )}
@@ -74,38 +128,62 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
         ref={fileInputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        className="hidden"
+        style={{ display: 'none' }}
         onChange={(e) => onSelect(e.target.files[0])}
       />
 
-      {/* Botones de acción */}
+      {/* Botones */}
       {!preview ? (
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600
-                     active:scale-[0.98] text-white font-bold text-sm
-                     transition-all flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20"
+          className="eco-btn-primary"
+          style={{ width: '100%', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
         >
+          <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+          </svg>
           Seleccionar imagen
         </button>
       ) : (
-        <div className="flex gap-3">
+        <div style={{ display: 'flex', gap: 12 }}>
           <button
             onClick={() => { onLimpiar(); setTimeout(() => fileInputRef.current?.click(), 50) }}
-            className="px-6 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200
-                       active:scale-[0.98] text-slate-600 font-bold text-sm transition-all"
+            className="eco-btn-secondary"
+            style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}
           >
+            <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
             Cambiar
           </button>
           <button
             onClick={onClasificar}
             disabled={isLoading}
-            className="flex-1 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600
-                       disabled:bg-emerald-300 disabled:cursor-not-allowed
-                       active:scale-[0.98] text-white font-bold text-sm
-                       transition-all flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20"
+            className="eco-btn-primary"
+            style={{
+              flex: 1, padding: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              ...(isLoading ? { background: '#97C459', cursor: 'not-allowed' } : {}),
+            }}
           >
-            {isLoading ? 'Analizando...' : 'Clasificar material'}
+            {isLoading ? (
+              <>
+                <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="#C0DD97" strokeWidth="3" opacity="0.3" />
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="#C0DD97" strokeWidth="3" strokeLinecap="round" />
+                </svg>
+                Analizando…
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                </svg>
+                Clasificar material
+              </>
+            )}
           </button>
         </div>
       )}
