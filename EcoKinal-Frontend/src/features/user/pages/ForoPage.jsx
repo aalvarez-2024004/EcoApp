@@ -63,7 +63,6 @@ export default function ForoPage() {
         fd.append('title', title.trim())
         fd.append('content', content.trim())
         
-        // Enviamos la etiqueta seleccionada, si está vacía mandamos 'Todos' (parámetro por defecto en tu schema)
         fd.append('tag', selectedTag || 'Todos')
 
         if (imageFile) {
