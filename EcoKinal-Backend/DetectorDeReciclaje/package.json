@@ -11,8 +11,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@tensorflow-models/mobilenet": "^2.1.1",
-    "@tensorflow/tfjs": "^4.22.0",
+    "@google-cloud/vision": "^5.3.6",
     "axios": "^1.13.6",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
@@ -21,14 +20,11 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "install": "^0.13.0",
-    "jpeg-js": "^0.4.4",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
-    "pngjs": "^7.0.0",
-    "sharp": "^0.34.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0"

@@ -43,7 +43,9 @@ export const clasificarImagen = async (req, res) => {
 
         imagePath = req.file.path;
 
-        const labels = await detectarLabels(imagePath, req.file.mimetype);
+        console.log('Archivo recibido:', req.file?.originalname, req.file?.size, 'bytes'); // ← aquí
+
+        const labels = await detectarLabels(imagePath);
 
         if (imagePath && fs.existsSync(imagePath)) {
             fs.unlinkSync(imagePath);

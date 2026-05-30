@@ -1,9 +1,8 @@
 import dotenv from "dotenv";
+dotenv.config(); 
+
 import { createApp } from "./configs/app.js";
 import { dbConnection } from "./configs/db.js";
-import { loadModel } from "./src/ClasificacionImagen/clasificacion.service.js"; // 👈 agregar
-
-dotenv.config();
 
 const app = createApp();
 const PORT = process.env.PORT || 3005;
@@ -11,9 +10,8 @@ const PORT = process.env.PORT || 3005;
 const startServer = async () => {
     await dbConnection();
 
-    app.listen(PORT, async () => {               
+    app.listen(PORT, () => {
         console.log(`DETECTOR DE IMAGEN API - corriendo en puerto ${PORT}`);
-        await loadModel();                      
     });
 };
 
