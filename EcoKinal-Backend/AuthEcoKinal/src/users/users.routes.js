@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { validateJWT } from '../../middlewares/validate-jwt.js'
 import { validateRole } from '../../middlewares/validate-role.js'
-import { updateMyPassword, updateProfile } from './users.controller.js'
+import { updateMyPassword, updateProfile, getPublicProfile } from './users.controller.js'
 
 const router = Router()
 
@@ -68,5 +68,7 @@ router.put(
   validateRole('ADMIN_GENERAL', 'USUARIO'),
   updateProfile
 )
+
+router.get('/profile/:uid', getPublicProfile)
 
 export default router

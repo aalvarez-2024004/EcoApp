@@ -49,3 +49,19 @@ export const updateProfile = async (req, res) => {
     })
   }
 }
+
+export const getPublicProfile = async (req, res) => {
+  try {
+    const { uid } = req.params
+    const user = await getUserById(uid)
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' })
+    res.json({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      image: user.image || null
+    })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
