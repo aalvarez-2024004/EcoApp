@@ -8,11 +8,15 @@ const commentSchema = Schema(
             required: [true, 'El contenido del comentario no puede estar vacío']
         },
         autorId: {
-            type: String, // Manteniendo tu estándar de String para UIDs
+            type: String,
             required: true
         },
         _authorName: {
-            type: String // Firma persistente para renderizar el nombre correcto del creador
+            type: String
+        },
+        _authorPhoto: {
+            type: String,
+            default: null
         },
         publicationId: {
             type: Schema.Types.ObjectId,
