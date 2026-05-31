@@ -14,12 +14,15 @@ const publicationSchema = new Schema({
         default: null
     },
     autorId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        type: String,
+        required: [true, 'El ID del autor es obligatorio']
     },
     _authorName: {
         type: String
+    },
+    _authorPhoto: {
+        type: String,
+        default: null
     },
     tag: {
         type: String,
@@ -27,7 +30,7 @@ const publicationSchema = new Schema({
         default: 'Todos'
     },
     likes: {
-        type: [Schema.Types.ObjectId],
+        type: [String],
         default: []
     }
 }, {
