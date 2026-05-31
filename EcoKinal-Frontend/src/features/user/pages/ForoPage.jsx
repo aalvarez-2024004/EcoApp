@@ -3,18 +3,15 @@ import { useUser } from '../store/useUserStore'
 import { useForoStore } from '../store/useForoStore'
 import PostCard from '../components/PostCard'
 
-// Etiquetas exactas según el ENUM de tu archivo publi.model.js
 const TAGS = ['Logro', 'Pregunta', 'Consejo', 'Noticia']
 
-// Adaptamos los colores de los tags para que encajen con la paleta orgánica
 const TAG_STYLES = {
-    Logro:    { bg: '#FFFBEB', color: '#B45309', border: '#FDE68A', dot: '#F59E0B' },
+    Logro: { bg: '#FFFBEB', color: '#B45309', border: '#FDE68A', dot: '#F59E0B' },
     Pregunta: { bg: '#F0F9FF', color: '#0369A1', border: '#BAE6FD', dot: '#38BDF8' },
-    Consejo:  { bg: '#F5F3FF', color: '#6D28D9', border: '#DDD6FE', dot: '#A78BFA' },
-    Noticia:  { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
+    Consejo: { bg: '#F5F3FF', color: '#6D28D9', border: '#DDD6FE', dot: '#A78BFA' },
+    Noticia: { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
 }
 
-// Subcomponente para los botones de filtro con el estilo del TabBtn
 function FilterBtn({ active, onClick, children, count }) {
     return (
         <button
@@ -41,8 +38,17 @@ function FilterBtn({ active, onClick, children, count }) {
 }
 
 export default function ForoPage() {
-    const { id: currentUserId, name, username, image, initials } = useUser()
-    const currentUser = { id: currentUserId, name, username, image, initials }
+    const { id: currentUserId, uid, name, username, image, photo, profilePicture, initials } = useUser()
+
+    const currentUser = {
+        id: currentUserId || uid,
+        uid: uid || currentUserId,
+        name,
+        username,
+        photo: photo || profilePicture || image,
+        profilePicture: profilePicture || photo || image,
+        initials
+    }
 
     const { posts, loading, filter, setFilter, fetchPosts, createPost } = useForoStore()
 
@@ -50,10 +56,10 @@ export default function ForoPage() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [selectedTag, setSelectedTag] = useState('')
-    
+
     const [imageFile, setImageFile] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
-    
+
     const [toast, setToast] = useState({ show: false, text: '', type: 'success' })
 
     useEffect(() => {
@@ -90,8 +96,11 @@ export default function ForoPage() {
         fd.append('content', content.trim())
         fd.append('tag', selectedTag || 'Todos')
 
+        fd.append('authorNameForm', currentUser.name || '')
+        fd.append('authorPhotoForm', currentUser.photo || currentUser.profilePicture || '')
+
         if (imageFile) {
-            fd.append('photo', imageFile) 
+            fd.append('photo', imageFile)
         }
 
         const res = await createPost(fd)
@@ -108,8 +117,8 @@ export default function ForoPage() {
         }
     }
 
-    const filteredPosts = filter === 'Todos' 
-        ? posts 
+    const filteredPosts = filter === 'Todos'
+        ? posts
         : posts.filter(post => post.tag?.toLowerCase() === filter.toLowerCase())
 
     return (
@@ -175,7 +184,7 @@ export default function ForoPage() {
                     <FilterBtn active={filter === 'Todos'} onClick={() => setFilter('Todos')} count={posts.length}>
                         Todos
                     </FilterBtn>
-                    
+
                     {TAGS.map(t => {
                         const count = posts.filter(p => p.tag?.toLowerCase() === t.toLowerCase()).length
                         return (
@@ -192,7 +201,7 @@ export default function ForoPage() {
                     overflow: 'hidden', transition: 'all 0.3s ease'
                 }}>
                     {!isComposeOpen ? (
-                        <button 
+                        <button
                             onClick={() => setIsComposeOpen(true)}
                             style={{
                                 width: '100%', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 16,
@@ -206,14 +215,14 @@ export default function ForoPage() {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                                 <span style={{ fontSize: 15, fontWeight: 700, color: '#173404' }}>
-                                    ¿Qué quieres aportar hoy, <span style={{ color: '#639922' }}>{name.split(' ')[0]}</span>?
+                                    ¿Qué quieres aportar hoy, <span style={{ color: '#639922' }}>{name ? name.split(' ')[0] : 'Usuario'}</span>?
                                 </span>
                                 <span style={{ fontSize: 13, color: '#639922' }}>Comparte un logro, consejo, noticia o pregunta</span>
                             </div>
                         </button>
                     ) : (
                         <form onSubmit={handlePublish} className="animate-fade-up" style={{ display: 'flex', flexDirection: 'column' }}>
-                            
+
                             {/* Header Form */}
                             <div style={{ padding: '16px 24px', background: '#F1F7E8', borderBottom: '0.5px solid #C0DD97', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: 12, fontWeight: 700, color: '#27500A', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
@@ -226,10 +235,10 @@ export default function ForoPage() {
 
                             {/* Contenido Formulario */}
                             <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                
+
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título</label>
-                                    <input 
+                                    <input
                                         type="text" placeholder="Escribe un título descriptivo..." value={title} onChange={e => setTitle(e.target.value)}
                                         style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid #C0DD97', background: '#FAFCF7', color: '#173404', fontSize: 14, outline: 'none' }}
                                     />
@@ -237,7 +246,7 @@ export default function ForoPage() {
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido</label>
-                                    <textarea 
+                                    <textarea
                                         placeholder="Describe tu consejo, idea o pregunta con detalle..." value={content} onChange={e => setContent(e.target.value)} rows={4}
                                         style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid #C0DD97', background: '#FAFCF7', color: '#173404', fontSize: 14, outline: 'none', resize: 'none' }}
                                     />
@@ -252,7 +261,7 @@ export default function ForoPage() {
                                                 const isSelected = selectedTag === t;
                                                 const style = TAG_STYLES[t];
                                                 return (
-                                                    <button 
+                                                    <button
                                                         key={t} type="button" onClick={() => setSelectedTag(selectedTag === t ? '' : t)}
                                                         style={{
                                                             padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6,
@@ -279,7 +288,7 @@ export default function ForoPage() {
                                             {imageFile ? 'Cambiar foto' : 'Subir foto'}
                                             <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                                         </label>
-                                        
+
                                         {imagePreview && (
                                             <div style={{ position: 'relative', width: 80, height: 80, borderRadius: 10, overflow: 'hidden', border: '0.5px solid #C0DD97' }}>
                                                 <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -313,7 +322,13 @@ export default function ForoPage() {
                         <div style={{ textAlign: 'center', padding: '40px', color: '#639922', fontSize: 14 }}>Cargando publicaciones...</div>
                     ) : filteredPosts.length > 0 ? (
                         filteredPosts.map(post => (
-                            <PostCard key={post._id} post={post} currentUser={currentUser} />
+                            <PostCard
+                                key={post._id}
+                                post={post}
+                                currentUserId={currentUser.id}
+                                currentUser={currentUser}
+                                onToast={showToast}
+                            />
                         ))
                     ) : (
                         <div style={{ textAlign: 'center', padding: '40px', color: '#639922', fontSize: 14, background: '#fff', borderRadius: 18, border: '0.5px solid #C0DD97' }}>
