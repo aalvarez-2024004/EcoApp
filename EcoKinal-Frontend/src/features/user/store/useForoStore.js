@@ -20,38 +20,63 @@ ForoApi.interceptors.request.use((config) => {
 })
 
 export const useForoStore = create((set, get) => ({
-    posts: [],
-    loading: false,
-    filter: 'Todos',
+    posts:          [],
+    loading:        false,
+    filter:         'Todos',
+    searchQuery:    '',
+    searchResults:  [],
+    searchLoading:  false,
 
     setFilter: (filter) => set({ filter }),
 
+    // ── Listar todos los posts ────────────────────────────────────────────────
     fetchPosts: async () => {
         set({ loading: true })
         try {
             const { data } = await ForoApi.get('/posts/listar')
             set({ posts: data.data || [] })
         } catch (error) {
-            console.error('Error al listar publicaciones desde el Store:', error)
+            console.error('Error al listar publicaciones:', error)
         } finally {
             set({ loading: false })
         }
     },
 
+    // ── Buscar posts ──────────────────────────────────────────────────────────
+    searchPosts: async (q) => {
+        if (!q?.trim()) {
+            set({ searchResults: [], searchQuery: '' })
+            return
+        }
+        set({ searchLoading: true, searchQuery: q })
+        try {
+            const { data } = await ForoApi.get('/posts/search', { params: { q } })
+            set({ searchResults: data.data || [] })
+        } catch (error) {
+            console.error('Error al buscar:', error)
+            set({ searchResults: [] })
+        } finally {
+            set({ searchLoading: false })
+        }
+    },
+
+    clearSearch: () => set({ searchResults: [], searchQuery: '' }),
+
+    // ── Crear post ────────────────────────────────────────────────────────────
     createPost: async (formData) => {
         try {
             await ForoApi.post('/posts/create', formData)
             await get().fetchPosts()
             return { success: true }
         } catch (error) {
-            console.error('Error detallado al crear post:', error.response?.data)
             return {
                 success: false,
-                message: error.response?.data?.message || 'Error al validar los campos en el servidor.',
+                message: error.response?.data?.message || 'Error al crear la publicación.',
             }
         }
     },
 
+    // ── Actualizar post ───────────────────────────────────────────────────────
     updatePost: async (id, formData) => {
         try {
             await ForoApi.put(`/posts/update/${id}`, formData)
@@ -62,6 +87,7 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
+    // ── Eliminar post ─────────────────────────────────────────────────────────
     deletePost: async (id) => {
         try {
             await ForoApi.delete(`/posts/delete/${id}`)
@@ -72,19 +98,18 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
-    // ── toggleLike: ya NO hace refetch completo ───────────────────────────────
-    // El optimistic update vive en PostCard (estado local).
-    // Aquí solo hacemos la llamada HTTP; si falla, PostCard revierte.
-    toggleLikePost: async (id) => {
+    // ── Reaccionar ────────────────────────────────────────────────────────────
+    // El backend espera: POST /posts/react/:id  body: { reaction: 'like'|'love'|'haha'|'wow'|'sad'|'none' }
+    // Para quitar la reacción actual se manda reaction: 'none'
+    reactToPost: async (id, reaction) => {
         try {
-            await ForoApi.post(`/posts/like/${id}`)
-            // Actualización silenciosa del store para mantener consistencia
-            // sin provocar re-render de toda la lista
+            await ForoApi.post(`/posts/react/${id}`, { reaction })
+            // Actualización silenciosa del store sin re-render completo
             const { data } = await ForoApi.get('/posts/listar')
             set({ posts: data.data || [] })
         } catch (error) {
-            console.error('Error al procesar el like:', error)
-            throw error  // Re-throw para que PostCard pueda revertir el optimistic
+            console.error('Error al reaccionar:', error)
+            throw error // PostCard revierte el optimistic update si falla
         }
     },
 }))

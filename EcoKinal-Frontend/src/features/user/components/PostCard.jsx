@@ -12,51 +12,108 @@ const TAG_STYLES = {
 }
 const FALLBACK_TAG = { bg: '#F1F7E8', color: '#639922', border: '#C0DD97', dot: '#97C459' }
 
+// Tipos de reacción que maneja el backend
+const REACTIONS = [
+    { key: 'like', emoji: '👍', label: 'Me gusta',  activeColor: '#E11D48', activeBg: '#FFEBEF', activeBorder: '#FDA4AF' },
+    { key: 'love', emoji: '❤️',  label: 'Me encanta', activeColor: '#E11D48', activeBg: '#FFEBEF', activeBorder: '#FDA4AF' },
+    { key: 'haha', emoji: '😂', label: 'Jaja',       activeColor: '#D97706', activeBg: '#FFFBEB', activeBorder: '#FDE68A' },
+    { key: 'wow',  emoji: '😮', label: 'Asombro',    activeColor: '#7C3AED', activeBg: '#F5F3FF', activeBorder: '#DDD6FE' },
+    { key: 'sad',  emoji: '😢', label: 'Tristeza',   activeColor: '#0369A1', activeBg: '#F0F9FF', activeBorder: '#BAE6FD' },
+]
+
+// Suma total de todas las reacciones de un post
+const totalReactions = (reactions = {}) =>
+    Object.values(reactions).reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0)
+
+// Qué reacción tiene el usuario actual en este post (o null)
+const myReaction = (reactions = {}, userId) => {
+    for (const r of REACTIONS) {
+        if (Array.isArray(reactions[r.key]) && reactions[r.key].includes(userId)) return r.key
+    }
+    return null
+}
+
 export default function PostCard({ post, currentUserId, currentUser, onToast }) {
-    const { toggleLikePost, deletePost, updatePost } = useForoStore()
+    const { reactToPost, deletePost, updatePost } = useForoStore()
 
     const [isExpanded, setIsExpanded] = useState(false)
     const [isEditing,  setIsEditing]  = useState(false)
     const [editTitle,   setEditTitle]   = useState(post.title   || '')
     const [editContent, setEditContent] = useState(post.content || '')
 
-    // ── Lightbox ──────────────────────────────────────────────────────────────
+    // ── Lightbox y Carrusel ───────────────────────────────────────────────────
     const [lightboxOpen, setLightboxOpen] = useState(false)
+    const [currentImage, setCurrentImage] = useState(0)
+
+    const postImages = post.photos?.length > 0
+        ? post.photos
+        : post.photo
+            ? [post.photo]
+            : []
 
     // ── Contador de comentarios local ─────────────────────────────────────────
-    // Se actualiza desde CommentSection a través del prop onCommentCountChange
     const [commentCount, setCommentCount] = useState(post.commentsCount ?? null)
 
-    // ── Optimistic like ───────────────────────────────────────────────────────
-    const userId = String(currentUserId || currentUser?.uid || '')
-    const [optimisticLikes, setOptimisticLikes] = useState(() =>
-        Array.isArray(post.likes) ? [...post.likes] : []
-    )
-    // Sincronizar si el store actualiza el post (p.ej. tras refetch)
-    // Nota: usamos un efecto solo cuando post.likes cambia desde fuera
-    const hasLiked = optimisticLikes.includes(userId)
+    // ── Picker de reacciones ──────────────────────────────────────────────────
+    const [showReactionPicker, setShowReactionPicker] = useState(false)
+    let pickerTimeout = null
 
-    const handleLikeClick = async (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        // Optimistic update inmediato
-        setOptimisticLikes(prev =>
-            prev.includes(userId)
-                ? prev.filter(id => id !== userId)
-                : [...prev, userId]
-        )
-        // Llamada real al servidor (sin esperar para no bloquear UI)
+    // ── Optimistic reactions ──────────────────────────────────────────────────
+    const userId = String(currentUserId || currentUser?.uid || '')
+
+    const [optimisticReactions, setOptimisticReactions] = useState(() => {
+        // Clonar el objeto de reacciones del post
+        const r = {}
+        REACTIONS.forEach(({ key }) => {
+            r[key] = Array.isArray(post.reactions?.[key]) ? [...post.reactions[key]] : []
+        })
+        return r
+    })
+
+    const currentMyReaction = myReaction(optimisticReactions, userId)
+    const reactionsTotal    = totalReactions(optimisticReactions)
+
+    const handleReact = async (reactionKey) => {
+        setShowReactionPicker(false)
+
+        // Si ya tiene esa reacción → quitarla (toggle off → 'none')
+        const isSame    = currentMyReaction === reactionKey
+        const newKey    = isSame ? 'none' : reactionKey
+
+        // Optimistic update
+        setOptimisticReactions(prev => {
+            const next = {}
+            REACTIONS.forEach(({ key }) => {
+                // Quitar al usuario de TODAS las reacciones
+                next[key] = (prev[key] || []).filter(id => id !== userId)
+            })
+            // Agregar en la nueva (si no es 'none')
+            if (newKey !== 'none') {
+                next[newKey] = [...next[newKey], userId]
+            }
+            return next
+        })
+
         try {
-            await toggleLikePost(post._id)
+            await reactToPost(post._id, newKey)
         } catch {
             // Revertir si falla
-            setOptimisticLikes(prev =>
-                prev.includes(userId)
-                    ? prev.filter(id => id !== userId)
-                    : [...prev, userId]
-            )
+            setOptimisticReactions(prev => {
+                const next = {}
+                REACTIONS.forEach(({ key }) => {
+                    next[key] = (prev[key] || []).filter(id => id !== userId)
+                })
+                if (currentMyReaction) {
+                    next[currentMyReaction] = [...next[currentMyReaction], userId]
+                }
+                return next
+            })
+            onToast?.('Error al registrar la reacción', 'error')
         }
     }
+
+    // ── Info de la reacción activa del usuario ────────────────────────────────
+    const activeReactionMeta = REACTIONS.find(r => r.key === currentMyReaction)
 
     // ── Display info ──────────────────────────────────────────────────────────
     const isOwner     = String(post.autorId) === String(currentUserId || currentUser?.uid)
@@ -103,10 +160,9 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
 
     return (
         <>
-            {/* ── Lightbox ── */}
-            {lightboxOpen && post.photo && (
+            {lightboxOpen && postImages.length > 0 && (
                 <ImageLightbox
-                    src={post.photo}
+                    src={postImages[currentImage]}
                     alt={post.title}
                     onClose={() => setLightboxOpen(false)}
                 />
@@ -158,27 +214,129 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#173404', lineHeight: 1.3 }}>{post.title}</h3>
                         <p style={{ margin: 0, fontSize: 13, color: '#415A2B', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{post.content}</p>
+                        {/* Hashtags */}
+                        {post.hashtags?.length > 0 && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+                                {post.hashtags.map(tag => (
+                                    <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: '#3B6D11', background: '#EAF3DE', borderRadius: 8, padding: '2px 8px' }}>
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
 
-                {/* ── Imagen con lightbox ── */}
-                {post.photo && !isEditing && (
+                {/* ── Carrusel de imágenes ── */}
+                {postImages.length > 0 && !isEditing && (
                     <div
-                        onClick={() => setLightboxOpen(true)}
                         style={{
-                            width: '100%', borderRadius: 18, overflow: 'hidden',
-                            border: '0.5px solid #EAF3DE', maxHeight: 320,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: '#F1F7E8', cursor: 'zoom-in', position: 'relative',
+                            width: '100%',
+                            borderRadius: 18,
+                            overflow: 'hidden',
+                            border: '0.5px solid #EAF3DE',
+                            background: '#F1F7E8',
+                            position: 'relative'
                         }}
-                        title="Clic para ampliar"
                     >
                         <img
-                            src={post.photo}
-                            alt="Publicación"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                            src={postImages[currentImage]}
+                            alt={`Imagen ${currentImage + 1}`}
+                            onClick={() => setLightboxOpen(true)}
+                            style={{
+                                width: '100%',
+                                maxHeight: 420,
+                                objectFit: 'cover',
+                                display: 'block',
+                                cursor: 'zoom-in'
+                            }}
                         />
-                        {/* Hint de zoom */}
+
+                        {postImages.length > 1 && (
+                            <>
+                                <button
+                                    onClick={() =>
+                                        setCurrentImage(prev =>
+                                            prev === 0
+                                                ? postImages.length - 1
+                                                : prev - 1
+                                        )
+                                    }
+                                    style={{
+                                        position: 'absolute',
+                                        left: 10,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '50%',
+                                        border: 'none',
+                                        background: 'rgba(0,0,0,.5)',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontSize: 20
+                                    }}
+                                >
+                                    ‹
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        setCurrentImage(prev =>
+                                            prev === postImages.length - 1
+                                                ? 0
+                                                : prev + 1
+                                        )
+                                    }
+                                    style={{
+                                        position: 'absolute',
+                                        right: 10,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '50%',
+                                        border: 'none',
+                                        background: 'rgba(0,0,0,.5)',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontSize: 20
+                                    }}
+                                >
+                                    ›
+                                </button>
+
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 10,
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        display: 'flex',
+                                        gap: 6
+                                    }}
+                                >
+                                    {postImages.map((_, index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => setCurrentImage(index)}
+                                            style={{
+                                                width: 8,
+                                                height: 8,
+                                                borderRadius: '50%',
+                                                cursor: 'pointer',
+                                                background:
+                                                    index === currentImage
+                                                        ? '#fff'
+                                                        : 'rgba(255,255,255,.5)'
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                        
+                        {/* Indicador visual inferior derecho si es solo 1 imagen o carrusel para el hover del lightbox */}
                         <div style={{
                             position: 'absolute', bottom: 10, right: 10,
                             background: 'rgba(10,24,5,0.45)', borderRadius: 8,
@@ -193,41 +351,93 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     </div>
                 )}
 
+                {/* ── Resumen de reacciones ── */}
+                {reactionsTotal > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, paddingBottom: 4 }}>
+                        <div style={{ display: 'flex', gap: 2 }}>
+                            {REACTIONS.filter(r => optimisticReactions[r.key]?.length > 0).map(r => (
+                                <span key={r.key} style={{ fontSize: 14 }}>{r.emoji}</span>
+                            ))}
+                        </div>
+                        <span style={{ fontSize: 12, color: '#80A153' }}>{reactionsTotal}</span>
+                    </div>
+                )}
+
                 {/* ── Footer ── */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '0.5px solid #F1F7E8', paddingTop: 12, marginTop: 4 }}>
                     <div style={{ display: 'flex', gap: 8 }}>
 
-                        {/* Like — optimistic */}
-                        <button
-                            onClick={handleLikeClick}
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 14,
-                                fontSize: 12, fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s ease',
-                                background: hasLiked ? '#FFEBEF' : '#F1F7E8',
-                                color:      hasLiked ? '#E11D48' : '#639922',
-                                border:     `0.5px solid ${hasLiked ? '#FDA4AF' : '#C0DD97'}`,
-                                transform: 'scale(1)',
+                        {/* ── Botón de reacción con picker ── */}
+                        <div
+                            style={{ position: 'relative' }}
+                            onMouseEnter={() => {
+                                clearTimeout(pickerTimeout)
+                                setShowReactionPicker(true)
                             }}
-                            onMouseDown={e => e.currentTarget.style.transform = 'scale(0.94)'}
-                            onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            onMouseLeave={() => {
+                                pickerTimeout = setTimeout(() => setShowReactionPicker(false), 300)
+                            }}
                         >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill={hasLiked ? 'currentColor' : 'none'}
-                                style={{
-                                    width: 16, height: 16,
-                                    transform: hasLiked ? 'scale(1.15)' : 'scale(1)',
-                                    transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
-                                }}
-                                stroke="currentColor" strokeWidth="2"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-                            <span style={{ transition: 'all 0.15s' }}>{optimisticLikes.length}</span>
-                        </button>
+                            {/* Picker flotante */}
+                            {showReactionPicker && (
+                                <div className="animate-fade-up" style={{
+                                    position: 'absolute', bottom: 'calc(100% + 8px)', left: 0,
+                                    display: 'flex', gap: 4, padding: '8px 10px',
+                                    background: '#fff', borderRadius: 16, border: '0.5px solid #C0DD97',
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 10,
+                                    whiteSpace: 'nowrap',
+                                }}>
+                                    {REACTIONS.map(r => (
+                                        <button
+                                            key={r.key}
+                                            onClick={() => handleReact(r.key)}
+                                            title={r.label}
+                                            style={{
+                                                background: currentMyReaction === r.key ? r.activeBg : 'transparent',
+                                                border: `0.5px solid ${currentMyReaction === r.key ? r.activeBorder : 'transparent'}`,
+                                                borderRadius: 10, padding: '4px 8px', cursor: 'pointer',
+                                                fontSize: 20, lineHeight: 1,
+                                                transition: 'transform 0.15s',
+                                                transform: 'scale(1)',
+                                            }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.3)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            {r.emoji}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
 
-                        {/* Comentarios — muestra contador */}
+                            {/* Botón principal */}
+                            <button
+                                onClick={() => handleReact(currentMyReaction || 'like')}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: 6,
+                                    padding: '8px 16px', borderRadius: 14,
+                                    fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                                    transition: 'all 0.15s ease',
+                                    background: activeReactionMeta ? activeReactionMeta.activeBg   : '#F1F7E8',
+                                    color:      activeReactionMeta ? activeReactionMeta.activeColor : '#639922',
+                                    border:     `0.5px solid ${activeReactionMeta ? activeReactionMeta.activeBorder : '#C0DD97'}`,
+                                }}
+                                onMouseDown={e => e.currentTarget.style.transform = 'scale(0.94)'}
+                                onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+                                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                {activeReactionMeta
+                                    ? <span style={{ fontSize: 15 }}>{activeReactionMeta.emoji}</span>
+                                    : (
+                                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                        </svg>
+                                    )
+                                }
+                                <span>{activeReactionMeta ? activeReactionMeta.label : 'Reaccionar'}</span>
+                            </button>
+                        </div>
+
+                        {/* ── Botón comentarios ── */}
                         <button
                             onClick={() => setIsExpanded(!isExpanded)}
                             style={{
@@ -241,7 +451,6 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                             <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
                             </svg>
-                            {/* Si ya tenemos contador, mostrarlo; si no, solo "Comentarios" */}
                             {commentCount !== null
                                 ? <span>{commentCount} {commentCount === 1 ? 'comentario' : 'comentarios'}</span>
                                 : <span>Comentarios</span>
