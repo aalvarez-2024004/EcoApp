@@ -7,10 +7,8 @@ const ForoApi = axios.create({ baseURL: FORO_BASE })
 
 ForoApi.interceptors.request.use((config) => {
     const token = localStorage.getItem('token')
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    
+    if (token) config.headers.Authorization = `Bearer ${token}`
+
     if (config.method === 'get') {
         delete config.headers['Content-Type']
     } else if (config.data instanceof FormData) {
@@ -43,13 +41,13 @@ export const useForoStore = create((set, get) => ({
     createPost: async (formData) => {
         try {
             await ForoApi.post('/posts/create', formData)
-            await get().fetchPosts() 
+            await get().fetchPosts()
             return { success: true }
         } catch (error) {
             console.error('Error detallado al crear post:', error.response?.data)
-            return { 
-                success: false, 
-                message: error.response?.data?.message || 'Error al validar los campos en el servidor.' 
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Error al validar los campos en el servidor.',
             }
         }
     },
@@ -74,12 +72,19 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
+    // ── toggleLike: ya NO hace refetch completo ───────────────────────────────
+    // El optimistic update vive en PostCard (estado local).
+    // Aquí solo hacemos la llamada HTTP; si falla, PostCard revierte.
     toggleLikePost: async (id) => {
         try {
             await ForoApi.post(`/posts/like/${id}`)
-            await get().fetchPosts()
+            // Actualización silenciosa del store para mantener consistencia
+            // sin provocar re-render de toda la lista
+            const { data } = await ForoApi.get('/posts/listar')
+            set({ posts: data.data || [] })
         } catch (error) {
             console.error('Error al procesar el like:', error)
+            throw error  // Re-throw para que PostCard pueda revertir el optimistic
         }
-    }
+    },
 }))
