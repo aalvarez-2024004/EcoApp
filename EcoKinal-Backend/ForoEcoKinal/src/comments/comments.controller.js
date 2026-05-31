@@ -14,48 +14,120 @@ const fetchAuthorProfile = async (uid) => {
 
 export const getCommentsByPublication = async (req, res) => {
     try {
-        const { publicationId } = req.params;
-        const comments = await Comment.find({ publicationId }).sort({ createdAt: 1 });
 
-        const uniqueAuthorIds = [...new Set(
-            comments
-                .filter(c => !c._authorName || c._authorName === 'Usuario de EcoKinal' || !c._authorPhoto)
-                .map(c => c.autorId)
-        )];
+        const { publicationId } = req.params;
+
+        const comments = await Comment.find({ publicationId })
+            .sort({ createdAt: 1 });
+
+        const uniqueAuthorIds = [
+            ...new Set(
+                comments
+                    .filter(
+                        c =>
+                            !c._authorName ||
+                            c._authorName === 'Usuario de EcoKinal' ||
+                            !c._authorPhoto
+                    )
+                    .map(c => c.autorId)
+            )
+        ];
 
         const profileMap = {};
-        await Promise.all(uniqueAuthorIds.map(async (uid) => {
-            const profile = await fetchAuthorProfile(uid);
-            if (profile.name) profileMap[uid] = profile;
-        }));
 
-        const enriched = comments.map(comment => {
+        await Promise.all(
+            uniqueAuthorIds.map(async uid => {
+                const profile = await fetchAuthorProfile(uid);
+
+                if (profile.name) {
+                    profileMap[uid] = profile;
+                }
+            })
+        );
+
+        const enrichedComments = comments.map(comment => {
             const plain = comment.toObject();
+
             const override = profileMap[comment.autorId];
+
             if (override) {
-                if (!plain._authorName || plain._authorName === 'Usuario de EcoKinal') {
+
+                if (
+                    !plain._authorName ||
+                    plain._authorName === 'Usuario de EcoKinal'
+                ) {
                     plain._authorName = override.name;
                 }
+
                 if (!plain._authorPhoto) {
                     plain._authorPhoto = override.image;
                 }
             }
+
+            plain.replies = [];
+
             return plain;
         });
 
-        return res.status(200).json(enriched);
+        const commentMap = {};
+
+        enrichedComments.forEach(comment => {
+            commentMap[comment._id.toString()] = comment;
+        });
+
+        const rootComments = [];
+
+        enrichedComments.forEach(comment => {
+
+            if (comment.parentCommentId) {
+
+                const parent =
+                    commentMap[comment.parentCommentId.toString()];
+
+                if (parent) {
+                    parent.replies.push(comment);
+                }
+
+            } else {
+                rootComments.push(comment);
+            }
+
+        });
+
+        return res.status(200).json({
+            success: true,
+            comments: rootComments
+        });
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
     }
 };
 
 export const addComment = async (req, res) => {
     try {
-        const { content, publicationId } = req.body;
+        const { content, publicationId, parentCommentId } = req.body;
 
         if (!content || !publicationId) {
             return res.status(400).json({ success: false, message: 'Contenido y ID de publicación son obligatorios' });
+        }
+
+        if (parentCommentId) {
+
+            const parentComment =
+                await Comment.findById(parentCommentId);
+
+            if (!parentComment) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'El comentario padre no existe'
+                });
+            }
         }
 
         const profile = await fetchAuthorProfile(req.user.uid);
@@ -65,7 +137,8 @@ export const addComment = async (req, res) => {
             publicationId,
             autorId:      req.user.uid,
             _authorName:  profile.name  || req.user.name  || req.user.username || 'Usuario',
-            _authorPhoto: profile.image || req.user.photo || req.user.image    || null
+            _authorPhoto: profile.image || req.user.photo || req.user.image    || null,
+            parentCommentId: parentCommentId || null,
         });
 
         await comment.save();

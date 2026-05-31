@@ -4,7 +4,8 @@ import {
     getPublications,
     updatePublication,
     deletePublication,
-    toggleLikePublication
+    reactPublication,
+    searchPublications
 } from "./publi.controller.js";
 
 import { verifyToken } from "../../middlewares/validate-JWT.js";
@@ -51,7 +52,7 @@ const router = Router();
 router.post(
     "/create",
     verifyToken,
-    uploadPublicationImage.single("photo"),
+    uploadPublicationImage.array("photos", 5),
     cleanUploaderFileOnFinish,
     createPublication
 );
@@ -107,7 +108,7 @@ router.get("/listar", verifyToken, getPublications);
 router.put(
     "/update/:id",
     verifyToken,
-    uploadPublicationImage.single("photo"),
+    uploadPublicationImage.array("photos", 5),
     updatePublication
 );
 
@@ -134,6 +135,9 @@ router.put(
  */
 router.delete("/delete/:id", verifyToken, deletePublication);
 
-router.post("/like/:id", verifyToken, toggleLikePublication);
+router.post("/react/:id", verifyToken, reactPublication);
+
+router.get("/search", verifyToken, searchPublications);
+
 
 export default router;

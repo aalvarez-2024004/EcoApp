@@ -22,7 +22,12 @@ const commentSchema = Schema(
             type: Schema.Types.ObjectId,
             ref: 'Publication',
             required: [true, 'El comentario debe estar ligado a una publicación']
-        }
+        },
+        parentCommentId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+            default: null
+        },
     },
     {
         timestamps: true
