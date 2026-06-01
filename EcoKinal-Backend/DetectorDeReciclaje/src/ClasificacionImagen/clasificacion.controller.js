@@ -60,7 +60,6 @@ export const clasificarImagen = async (req, res) => {
             contenedor: resultado.contenedor
         });
 
-        // Gamificación
         try {
             await axios.post(
                 'http://localhost:3008/GamificationEcoKinal/v1/gamification/add-points',
@@ -70,6 +69,14 @@ export const clasificarImagen = async (req, res) => {
         } catch (error) {
             console.error('Error al sumar puntos en gamificación:', error.message);
         }
+
+        try {
+            await axios.post(
+                'http://localhost:3008/GamificationEcoKinal/v1/daily-challenges/auto/detector_3_check',
+                {},
+                { headers: { Authorization: req.headers.authorization } }
+            );
+        } catch (_) { /* silencioso */ }
 
         // Impacto ambiental
         try {

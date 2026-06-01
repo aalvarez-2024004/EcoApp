@@ -74,3 +74,41 @@ export const getChallengeHistory = async (req, res) => {
         return res.status(500).json({ ok: false, message: 'Error al obtener historial', error: error.message });
     }
 };
+
+export const completeAutoByKey = async (req, res) => {
+    try {
+        const userId   = req.user?.uid || req.user?.id;
+        const name     = req.user?.name     || '';
+        const username = req.user?.username || '';
+        if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
+
+        const { key } = req.params;
+
+        if (key === 'detector_3_check') {
+            const { tryCompleteDetector3 } = await import('./dailyChallenge.service.js');
+            const result = await tryCompleteDetector3(userId, { name, username });
+            if (!result) return res.status(200).json({ ok: true, alreadyDone: true });
+            return res.status(200).json({
+                ok: true,
+                message: `¡Reto 3 clasificaciones completado! +${result.pointsEarned} pts 🌿`,
+                data: result
+            });
+        }
+
+        const { completeAutoChallenge } = await import('./dailyChallenge.service.js');
+        const result = await completeAutoChallenge(userId, key, { name, username });
+
+        if (!result) {
+            return res.status(200).json({ ok: true, message: 'Reto ya completado anteriormente o no existe', alreadyDone: true });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            message: `¡Reto completado! Ganaste ${result.pointsEarned} eco-puntos 🌿`,
+            data: result
+        });
+    } catch (error) {
+        console.error('Error en completeAutoByKey:', error);
+        return res.status(500).json({ ok: false, message: 'Error al completar reto', error: error.message });
+    }
+};

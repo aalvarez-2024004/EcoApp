@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useGamificacionStore from '../store/useGamificacionStore'
 import useAuthStore from '../../auth/store/useAuthStore'
 
@@ -12,6 +13,25 @@ const CAT = {
   comunidad: { color: '#185fa5', bg: 'rgba(24,95,165,0.08)'  },
   educacion: { color: '#534ab7', bg: 'rgba(83,74,183,0.08)'  },
   impacto:   { color: '#3b6d11', bg: 'rgba(59,109,17,0.08)'  },
+}
+
+// Cada reto redirige al usuario a la sección donde debe hacer la acción
+const KEY_REDIRECT = {
+  detector:      '/dashboard/usuario/detector',
+  detector_3:    '/dashboard/usuario/detector',
+  foro_publicar: '/dashboard/usuario/foro',
+  foro_comentar: '/dashboard/usuario/foro',
+  impacto:       '/dashboard/usuario/impacto',
+  mapa:          '/dashboard/usuario/mapa',
+}
+
+const KEY_LABEL = {
+  detector:      'Ir al Detector',
+  detector_3:    'Ir al Detector',
+  foro_publicar: 'Ir al Foro a publicar',
+  foro_comentar: 'Ir al Foro a comentar',
+  impacto:       'Ver Mi Impacto',
+  mapa:          'Ir al Mapa',
 }
 
 function StatCard({ icon, value, label, color = '#0f6e56' }) {
@@ -33,50 +53,9 @@ function BadgeItem({ name }) {
   )
 }
 
-function ConfirmModal({ challenge, onConfirm, onCancel, loading }) {
-  const cat = CAT[challenge.category] || CAT.reciclaje
-  return (
-    <div className="gam-modal-overlay" onClick={onCancel}>
-      <div className="gam-modal" onClick={e => e.stopPropagation()} style={{ '--brand': cat.color, '--brand-bg': cat.bg }}>
-        <div className="gam-modal-head">
-          <div className="gam-modal-icon"><i className={`ti ${challenge.icon || 'ti-leaf'}`} /></div>
-          <button className="gam-modal-close" onClick={onCancel}><i className="ti ti-x" /></button>
-        </div>
-
-        <h3>{challenge.title}</h3>
-        <span className="gam-modal-pts">+{challenge.pointsReward} eco-puntos</span>
-
-        <div className="gam-modal-howto">
-          <p className="gam-modal-howto-label"><i className="ti ti-info-circle" /> ¿Cómo completar este reto?</p>
-          <p>{challenge.howTo || challenge.description}</p>
-        </div>
-
-        {challenge.verificationKey === 'detector' ? (
-          <div className="gam-modal-auto">
-            <i className="ti ti-robot" />
-            <span>Este reto se completa <strong>automáticamente</strong> cuando usas el Detector de reciclaje. No necesitas hacer nada aquí.</span>
-          </div>
-        ) : (
-          <>
-            <p className="gam-modal-confirm-text">
-              ¿Ya realizaste esta acción? Si es así, presiona el botón para reclamar tus puntos.
-            </p>
-            <div className="gam-modal-actions">
-              <button className="gam-modal-btn-cancel" onClick={onCancel}>Cancelar</button>
-              <button className="gam-modal-btn-confirm" onClick={onConfirm} disabled={loading}>
-                {loading ? <><i className="ti ti-loader-2 spin" /> Reclamando…</> : <><i className="ti ti-check" /> Sí, lo hice — reclamar</>}
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
 
 function ChallengeCard({ challenge, onOpen }) {
   const cat  = CAT[challenge.category] || CAT.reciclaje
-  const auto = challenge.verificationKey === 'detector'
   return (
     <div
       className={`gam-ch-card ${challenge.completed ? 'done' : ''}`}
@@ -84,13 +63,16 @@ function ChallengeCard({ challenge, onOpen }) {
     >
       <div className="gam-ch-top">
         <div className="gam-ch-icon"><i className={`ti ${challenge.icon || 'ti-leaf'}`} /></div>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          {auto && <span className="gam-ch-auto-tag"><i className="ti ti-robot" /> Auto</span>}
-          <span className="gam-ch-pts">+{challenge.pointsReward} pts</span>
-        </div>
+        <span className="gam-ch-pts">+{challenge.pointsReward} pts</span>
       </div>
       <h4>{challenge.title}</h4>
       <p>{challenge.description}</p>
+      {!challenge.completed && challenge.howTo && (
+        <div className="gam-ch-howto">
+          <i className="ti ti-info-circle" />
+          <span>{challenge.howTo}</span>
+        </div>
+      )}
       <button
         className="gam-ch-btn"
         disabled={challenge.completed}
@@ -98,9 +80,7 @@ function ChallengeCard({ challenge, onOpen }) {
       >
         {challenge.completed
           ? <><i className="ti ti-circle-check" /> Completado</>
-          : auto
-          ? <><i className="ti ti-info-circle" /> ¿Cómo funciona?</>
-          : <><i className="ti ti-bolt" /> Ver y reclamar</>
+          : <><i className="ti ti-arrow-right" /> {KEY_LABEL[challenge.verificationKey] || 'Ir a completar'}</>
         }
       </button>
     </div>
@@ -129,16 +109,13 @@ export default function GamificacionPage() {
   const {
     profile, ranking, challenges,
     loadingProfile, loadingRanking, loadingChallenges,
-    completingChallenge,
     fetchProfile, fetchRanking, fetchChallenges,
-    completeChallenge,
   } = useGamificacionStore()
 
   const user = useAuthStore(s => s.user)
 
   const [toast,    setToast]   = useState(null)
   const [tab,      setTab]     = useState('retos')
-  const [selected, setSelected] = useState(null) // reto abierto en modal
 
   useEffect(() => {
     fetchProfile()
@@ -146,15 +123,24 @@ export default function GamificacionPage() {
     fetchChallenges()
   }, [])
 
-  const openModal  = (ch) => setSelected(ch)
-  const closeModal = ()   => setSelected(null)
+  // Refrescar retos y perfil cuando el usuario vuelve a la pestaña
 
-  const handleConfirm = async () => {
-    if (!selected) return
-    const result = await completeChallenge(selected._id)
-    closeModal()
-    setToast({ ok: result.ok, msg: result.message })
-    setTimeout(() => setToast(null), 4000)
+  useEffect(() => {
+    const onFocus = () => {
+      fetchChallenges()
+      fetchProfile()
+      fetchRanking()
+    }
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [])
+
+  const navigate = useNavigate()
+
+  const openModal  = (ch) => {
+    // Todos los retos redirigen al usuario a la sección correspondiente
+    const path = KEY_REDIRECT[ch.verificationKey] || '/dashboard/usuario/detector'
+    navigate(path)
   }
 
   const completedCount = challenges.filter(c => c.completed).length
@@ -169,15 +155,6 @@ export default function GamificacionPage() {
           <i className={`ti ${toast.ok ? 'ti-circle-check' : 'ti-alert-circle'}`} />
           {toast.msg}
         </div>
-      )}
-
-      {selected && (
-        <ConfirmModal
-          challenge={selected}
-          onConfirm={handleConfirm}
-          onCancel={closeModal}
-          loading={completingChallenge === selected._id}
-        />
       )}
 
       <div className="gam-header">
@@ -342,6 +319,8 @@ export default function GamificacionPage() {
         .gam-ch-auto-tag{font-size:11px;font-weight:600;color:#185fa5;background:rgba(24,95,165,.08);padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:4px}
         .gam-ch-card h4{font-size:14.5px;font-weight:700;color:#0b130e;margin:0}
         .gam-ch-card p{font-size:13px;color:#617364;line-height:1.55;margin:0;flex:1}
+        .gam-ch-howto{display:flex;gap:8px;align-items:flex-start;background:rgba(0,0,0,.03);border-radius:10px;padding:10px 12px;font-size:12px;color:#617364;line-height:1.5;border:1px solid rgba(0,0,0,.06)}
+        .gam-ch-howto i{flex-shrink:0;margin-top:1px;color:var(--brand)}
         .gam-ch-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;border-radius:11px;background:var(--brand);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;margin-top:4px;transition:opacity .2s,transform .2s}
         .gam-ch-btn:hover:not(:disabled){opacity:.85;transform:translateY(-1px)}
         .gam-ch-btn:disabled{background:rgba(36,107,62,.1);color:#3d9850;cursor:not-allowed;transform:none}

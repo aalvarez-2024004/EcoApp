@@ -18,8 +18,8 @@ const dailyChallengeSchema = new Schema(
         },
         verificationKey: {
             type: String,
-            enum: ['detector', 'manual'],
-            default: 'manual'
+            enum: ['detector', 'foro_publicar', 'detector_3', 'foro_comentar', 'impacto', 'mapa'],
+            default: 'detector'
         },
 
         isActive: { type: Boolean, default: true }

@@ -5,7 +5,8 @@ import { validateJWT } from '../../middlewares/validate-JWT.js';
 import {
     getDailyChallenges,
     completeDailyChallenge,
-    getChallengeHistory
+    getChallengeHistory,
+    completeAutoByKey
 } from './dailyChallenge.controller.js';
 
 const router = Router();
@@ -67,6 +68,9 @@ router.get('/history', validateJWT, getChallengeHistory);
  *         description: Ya completaste este reto hoy
  */
 router.post('/:id/complete', validateJWT, completeDailyChallenge);
+
+router.post('/auto/:key', validateJWT, completeAutoByKey);
+
 
 export default router;
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import useMapaStore from '../store/useMapaStore'
+import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const mapaStyles = `
   @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
@@ -189,6 +190,8 @@ export default function MapaPage() {
   const markersRef = useRef([])
 
   useEffect(() => {
+    // Completar reto del mapa automáticamente al visitar la página
+    completarRetoPorAccion('mapa')
     const initMap = async () => {
       const L = (await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js')).default || (await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js'))
       if (mapRef.current) return
@@ -265,7 +268,6 @@ export default function MapaPage() {
     <div className="mapa-page">
       <style>{mapaStyles}</style>
 
-      {/* Header */}
       <div className="mapa-badge">
         <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#27500A" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -280,7 +282,6 @@ export default function MapaPage() {
         Encuentra los centros de reciclaje y recicladoras más cercanos a tu ubicación actual.
       </p>
 
-      {/* Error */}
       {error && (
         <div className="mapa-error">
           <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16, flexShrink: 0 }} stroke="currentColor" strokeWidth="2">
@@ -290,7 +291,6 @@ export default function MapaPage() {
         </div>
       )}
 
-      {/* Controles */}
       <div className="mapa-controls">
         <button className="mapa-btn-primary" onClick={buscarCentros} disabled={isLoading}>
           {isLoading ? (

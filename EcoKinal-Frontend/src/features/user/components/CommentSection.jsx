@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import axios from 'axios'
 import Avatar from './Avatar'
+import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
 const ForoApi = axios.create({ baseURL: FORO_BASE })
@@ -54,6 +55,8 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
             setReplyingTo(null) // Limpiamos el estado al enviar
             loadComments()
             onToast?.('Comentario publicado', 'success')
+            // Completar reto de comentar en el foro automáticamente
+            completarRetoPorAccion('foro_comentar')
         } catch (err) {
             onToast?.(err.response?.data?.message || 'Error al comentar', 'error')
         }

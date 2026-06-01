@@ -35,3 +35,11 @@ export const getRanking = async () => {
 }
 
 export { GamificacionApi }
+export const completarRetoPorAccion = async (key) => {
+  try {
+    const { data } = await GamificacionApi.post(`/daily-challenges/auto/${key}`)
+    return data
+  } catch (_) {
+    return null 
+  }
+}

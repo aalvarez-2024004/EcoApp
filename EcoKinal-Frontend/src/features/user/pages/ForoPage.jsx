@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useUser } from '../store/useUserStore'
 import { useForoStore } from '../store/useForoStore'
 import PostCard from '../components/PostCard'
+import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const TAGS = ['Logro', 'Pregunta', 'Consejo', 'Noticia']
 
@@ -198,6 +199,8 @@ export default function ForoPage() {
             setImageFiles([]); setImagePreviews([])
             setIsComposeOpen(false)
             showToast('¡Publicación compartida con éxito!')
+            // Completar reto del foro automáticamente
+            completarRetoPorAccion('foro_publicar')
         } else {
             showToast(res.message, 'error')
         }
