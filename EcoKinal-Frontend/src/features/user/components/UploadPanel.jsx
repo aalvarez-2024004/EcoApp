@@ -37,7 +37,10 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
       <div
         style={{
           position: 'relative', overflow: 'hidden',
-          minHeight: 300, borderRadius: 16,
+          width: '65%',
+          aspectRatio: '1 / 1',
+          alignSelf: 'center',
+          borderRadius: 16,
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           transition: 'all 0.25s ease',
           ...(preview
@@ -58,13 +61,31 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
         {preview ? (
           <>
             <img
+              src={preview}
+              aria-hidden="true"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                filter: 'blur(18px) brightness(0.5) saturate(0.7)',
+                transform: 'scale(1.1)',
+              }}
+            />
+            <img
               src={preview} alt="Vista previa"
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', opacity: 0.92 }}
+              style={{
+                position: 'relative', zIndex: 2,
+                maxWidth: '80%',
+                maxHeight: '80%',
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                borderRadius: 8,
+              }}
             />
             {isLoading && <ScanOverlay />}
             <CloseBtn onClick={(e) => { e.stopPropagation(); onLimpiar() }} />
 
-            {/* Badge imagen lista */}
             {!isLoading && (
               <div style={{
                 position: 'absolute', bottom: 12, left: 12, zIndex: 10,
@@ -77,7 +98,6 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
               </div>
             )}
 
-            {/* Badge analizando */}
             {isLoading && (
               <div style={{
                 position: 'absolute', top: '50%', left: '50%', zIndex: 20,
@@ -92,7 +112,6 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
           </>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '0 24px', textAlign: 'center' }}>
-            {/* Icono flotante */}
             <div
               className="animate-float"
               style={{
@@ -107,12 +126,10 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
                   d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
             </div>
-
             <div>
               <p style={{ fontSize: 16, fontWeight: 700, color: '#27500A', margin: 0 }}>Arrastra tu imagen aquí</p>
               <p style={{ fontSize: 13, color: '#639922', marginTop: 6 }}>o haz clic para explorar archivos</p>
             </div>
-
             <span style={{
               padding: '6px 16px', borderRadius: 99, fontSize: 11,
               fontWeight: 500, color: '#3B6D11',
@@ -132,7 +149,6 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
         onChange={(e) => onSelect(e.target.files[0])}
       />
 
-      {/* Botones */}
       {!preview ? (
         <button
           onClick={() => fileInputRef.current?.click()}

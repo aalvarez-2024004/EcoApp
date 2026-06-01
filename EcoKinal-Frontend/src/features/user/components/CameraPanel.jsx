@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { ScanOverlay } from '../../../icons/DetectorIcons'
 
 function CloseBtn({ onClick }) {
@@ -21,18 +22,13 @@ function CloseBtn({ onClick }) {
 }
 
 function Viewfinder() {
-  const cornerStyle = (pos) => ({
-    position: 'absolute', width: 28, height: 28,
-    ...pos,
-  })
+  const cornerStyle = (pos) => ({ position: 'absolute', width: 28, height: 28, ...pos })
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
-      {/* Esquinas del visor */}
       <div style={{ ...cornerStyle({ top: 16, left: 16 }), borderTop: '2px solid #97C459', borderLeft: '2px solid #97C459', borderRadius: '6px 0 0 0' }} />
       <div style={{ ...cornerStyle({ top: 16, right: 16 }), borderTop: '2px solid #97C459', borderRight: '2px solid #97C459', borderRadius: '0 6px 0 0' }} />
       <div style={{ ...cornerStyle({ bottom: 16, left: 16 }), borderBottom: '2px solid #97C459', borderLeft: '2px solid #97C459', borderRadius: '0 0 0 6px' }} />
       <div style={{ ...cornerStyle({ bottom: 16, right: 16 }), borderBottom: '2px solid #97C459', borderRight: '2px solid #97C459', borderRadius: '0 0 6px 0' }} />
-      {/* Crosshair central */}
       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ width: 16, height: 1, background: 'rgba(151,196,89,0.4)' }} />
         <div style={{ position: 'absolute', width: 1, height: 16, background: 'rgba(151,196,89,0.4)' }} />
@@ -53,9 +49,20 @@ export default function CameraPanel({
   onClasificar,
   onRetomar,
 }) {
+  const [capturedSrc, setCapturedSrc] = useState(null)
+
   const camIdle      = !camaraActiva && !fotoCapturada
   const camLive      = camaraActiva  && !fotoCapturada
   const camCapturada = fotoCapturada
+
+  useEffect(() => {
+    if (fotoCapturada && canvasRef.current) {
+      setCapturedSrc(canvasRef.current.toDataURL('image/jpeg', 0.92))
+    }
+    if (!fotoCapturada) {
+      setCapturedSrc(null)
+    }
+  }, [fotoCapturada]) // eslint-disable-line
 
   return (
     <div className="eco-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -63,32 +70,62 @@ export default function CameraPanel({
       {/* Visor de cámara */}
       <div
         style={{
-          position: 'relative', borderRadius: 16, overflow: 'hidden',
-          height: 300,
+          position: 'relative', overflow: 'hidden',
+          width: '65%',
+          aspectRatio: '1 / 1',
+          alignSelf: 'center',
+          borderRadius: 16,
           background: camIdle ? '#EAF3DE' : '#0d150f',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           border: camIdle ? '2px dashed #97C459' : 'none',
         }}
       >
+        {/* Video en vivo — cover para que llene bien */}
         <video
           ref={videoRef}
           autoPlay playsInline muted
           style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover',
             opacity: camLive ? 1 : 0,
             pointerEvents: camLive ? 'auto' : 'none',
             transition: 'opacity 0.3s ease',
           }}
         />
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
-            opacity: camCapturada ? 1 : 0,
-            pointerEvents: camCapturada ? 'auto' : 'none',
-            transition: 'opacity 0.3s ease',
-          }}
-        />
+
+        {/* Canvas oculto — solo para capturar */}
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+        {/* Foto capturada: fondo desenfocado + imagen completa */}
+        {camCapturada && capturedSrc && (
+          <>
+            <img
+              src={capturedSrc}
+              aria-hidden="true"
+              style={{
+                position: 'absolute', inset: 0,
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                filter: 'blur(18px) brightness(0.5) saturate(0.7)',
+                transform: 'scale(1.1)',
+              }}
+            />
+            <img
+              src={capturedSrc}
+              alt="Foto capturada"
+              style={{
+                position: 'relative', zIndex: 2,
+                maxWidth: '80%',
+                maxHeight: '80%',
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                borderRadius: 8,
+              }}
+            />
+          </>
+        )}
 
         {camCapturada && isLoading && <ScanOverlay />}
 
@@ -145,13 +182,9 @@ export default function CameraPanel({
       </div>
 
       {/* ── Botones según estado ── */}
-
       {camIdle && (
-        <button
-          onClick={onActivar}
-          className="eco-btn-primary"
-          style={{ width: '100%', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-        >
+        <button onClick={onActivar} className="eco-btn-primary"
+          style={{ width: '100%', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
           <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="1.8">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -163,18 +196,12 @@ export default function CameraPanel({
 
       {camLive && (
         <div style={{ display: 'flex', gap: 12 }}>
-          <button
-            onClick={onDetener}
-            className="eco-btn-secondary"
-            style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}
-          >
+          <button onClick={onDetener} className="eco-btn-secondary"
+            style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
             Cancelar
           </button>
-          <button
-            onClick={onCapturar}
-            className="eco-btn-primary"
-            style={{ flex: 1, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-          >
+          <button onClick={onCapturar} className="eco-btn-primary"
+            style={{ flex: 1, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="1.8">
               <circle cx="12" cy="12" r="9" stroke="currentColor" />
               <circle cx="12" cy="12" r="4" fill="currentColor" />
@@ -186,27 +213,20 @@ export default function CameraPanel({
 
       {camCapturada && (
         <div style={{ display: 'flex', gap: 12 }}>
-          <button
-            onClick={onRetomar}
-            className="eco-btn-secondary"
-            style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}
-          >
+          <button onClick={onRetomar} className="eco-btn-secondary"
+            style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
             <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="1.8">
               <path strokeLinecap="round" strokeLinejoin="round"
                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
             Nueva foto
           </button>
-          <button
-            onClick={onClasificar}
-            disabled={isLoading}
-            className="eco-btn-primary"
+          <button onClick={onClasificar} disabled={isLoading} className="eco-btn-primary"
             style={{
               flex: 1, padding: '12px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               ...(isLoading ? { background: '#97C459', cursor: 'not-allowed' } : {}),
-            }}
-          >
+            }}>
             {isLoading ? (
               <>
                 <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">

@@ -30,7 +30,7 @@ export default function DetectorReciclajePage() {
 
   useEffect(() => {
     return () => detenerCamara(videoRef)
-  }, []) // eslint-disable-line
+  }, [])
 
   const handleSwitchTab = (tab) => {
     if (camaraActiva) detenerCamara(videoRef)
@@ -43,16 +43,13 @@ export default function DetectorReciclajePage() {
 
       <div style={{ width: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
 
-
         {/* ── Header ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '6px 14px', borderRadius: 99, width: 'fit-content',
-              background: '#C0DD97', border: '0.5px solid #97C459',
-            }}
-          >
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 14px', borderRadius: 99, width: 'fit-content',
+            background: '#C0DD97', border: '0.5px solid #97C459',
+          }}>
             <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#27500A" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round"
                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -144,22 +141,29 @@ export default function DetectorReciclajePage() {
               <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#97C459', textTransform: 'uppercase', margin: 0 }}>
                 Contenedores de referencia
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
+              <div style={{ display: 'flex', gap: 10 }}>
                 {LEYENDA.map(({ color, label, desc, icon }) => (
                   <div
                     key={label}
                     style={{
+                      flex: 1,
                       background: '#fff', border: '0.5px solid #C0DD97',
-                      borderRadius: 18, padding: '18px 10px',
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center',
+                      borderRadius: 16, padding: '14px 8px',
+                      display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10,
                     }}
                   >
-                    <div className={`${color}`} style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.9 }}>
-                      <span style={{ fontSize: 20 }}>{icon}</span>
+                    <div
+                      className={`${color}`}
+                      style={{
+                        width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.9,
+                      }}
+                    >
+                      <span style={{ fontSize: 18 }}>{icon}</span>
                     </div>
                     <div>
                       <p style={{ fontSize: 12, fontWeight: 700, color: '#27500A', margin: 0 }}>{label}</p>
-                      <p style={{ fontSize: 10, color: '#639922', marginTop: 3 }}>{desc}</p>
+                      <p style={{ fontSize: 10, color: '#639922', margin: 0, marginTop: 2 }}>{desc}</p>
                     </div>
                   </div>
                 ))}
