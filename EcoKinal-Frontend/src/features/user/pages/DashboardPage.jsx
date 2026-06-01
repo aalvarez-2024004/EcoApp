@@ -33,7 +33,7 @@ const MODULES = [
     to: '/dashboard/usuario/impacto',
     icon: 'ti-chart-bar',
     label: 'Mi impacto',
-    desc: 'Estadísticas analíticas detalladas del CO2 y residuos que has salvado.',
+    desc: 'Estadísticas analíticas detalladas del CO₂ y residuos que has salvado.',
     color: '#3b6d11',
     bg: 'rgba(59, 109, 17, 0.08)',
     tag: null
@@ -57,22 +57,27 @@ export default function DashboardPage() {
     <div className="db-page-container">
 
       <section className="db-hero-banner">
+        {/* Ruido sutil igual que el landing */}
+        <div className="db-hero-noise" />
+
         <div className="db-hero-text">
           <span className="db-hero-badge">
             <i className="ti ti-shield-check" aria-hidden="true" />
             <span>Panel Ecológico Verificado</span>
           </span>
-          <h2>¡Bienvenido de vuelta, {name}! 👋</h2>
+          <h2>¡Bienvenido de vuelta, {name}!</h2>
           <p>
             @{username} · Tu cuenta está activa. Cada residuo procesado mitiga el calentamiento global. Revisa los accesos directos abajo para comenzar.
           </p>
         </div>
+
         <div className="db-hero-illustration">
           <i className="ti ti-seeding" aria-hidden="true" />
         </div>
       </section>
 
-      <p className="db-section-title">MÓDULOS DE SISTEMA DISPONIBLES</p>
+      <p className="db-section-title">Módulos de sistema disponibles</p>
+
       <div className="db-modules-grid">
         {MODULES.map(({ to, icon, label, desc, color, bg, tag }) => (
           <button
@@ -102,4 +107,4 @@ export default function DashboardPage() {
 
     </div>
   )
-} 
+}
