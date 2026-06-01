@@ -8,8 +8,6 @@ const useAuthStore = create((set) => ({
   isLoading: false,
   error: null,
 
-  // ─── LOGIN ─────────────────────────────────────────────────────────────
-  // POST http://localhost:3005/api/v1/auth/login
   login: async (email, password) => {
     set({ isLoading: true, error: null })
     try {
@@ -17,7 +15,7 @@ const useAuthStore = create((set) => ({
       setToken(data.token)
       setUser(data.user)
       set({ user: data.user, token: data.token, isLoading: false })
-      return { success: true, user: data.user }  // 👈 agrega user aquí
+      return { success: true, user: data.user }
     } catch (error) {
       const message = error.response?.data?.message || 'Error al iniciar sesión'
       set({ error: message, isLoading: false })
@@ -25,8 +23,6 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ─── REGISTER ──────────────────────────────────────────────────────────
-  // POST http://localhost:3005/api/v1/auth/register
   register: async (formData) => {
     set({ isLoading: true, error: null })
     try {
@@ -40,8 +36,6 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ─── VERIFY EMAIL ───────────────────────────────────────────────────────
-  // GET http://localhost:3005/api/v1/auth/verify/:token
   verifyEmail: async (token) => {
     set({ isLoading: true, error: null })
     try {
@@ -55,8 +49,6 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ─── FORGOT PASSWORD ───────────────────────────────────────────────────
-  // POST http://localhost:3005/api/v1/auth/forgot-password
   forgotPassword: async (email) => {
     set({ isLoading: true, error: null })
     try {
@@ -70,8 +62,6 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ─── RESET PASSWORD ────────────────────────────────────────────────────
-  // POST http://localhost:3005/api/v1/auth/reset-password
   resetPassword: async (token, newPassword) => {
     set({ isLoading: true, error: null })
     try {
@@ -85,7 +75,12 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ─── LOGOUT ────────────────────────────────────────────────────────────
+  updateUser: (updatedUser) => {
+    const merged = { ...getUser(), ...updatedUser }
+    setUser(merged)
+    set({ user: merged })
+  },
+
   logout: () => {
     clearStorage()
     set({ user: null, token: null, error: null })

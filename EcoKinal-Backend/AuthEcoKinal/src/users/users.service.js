@@ -23,7 +23,6 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
 }
 
 export const updateUserProfile = async (userId, data) => {
-
   const user = await User.findByPk(userId)
 
   if (!user) {
@@ -32,15 +31,25 @@ export const updateUserProfile = async (userId, data) => {
 
   await user.update(data)
 
+  //Se obtienen los datos mas recientes
+  await user.reload()
+
   return {
-    id: user.id,
-    name: user.name,
-    username: user.username
+    id:       user.id,
+    name:     user.name,
+    username: user.username,
+    image:    user.image || null,  
   }
 }
 
 export const getUserById = async (userId) => {
   const user = await User.findByPk(userId)
   if (!user) return null
-  return { id: user.id, name: user.name, username: user.username, image: user.image || null }
+  return {
+    id:       user.id,
+    name:     user.name,
+    username: user.username,
+    image:    user.image || null,
+  }
 }
+

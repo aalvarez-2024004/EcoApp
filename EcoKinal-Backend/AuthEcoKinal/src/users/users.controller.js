@@ -20,6 +20,7 @@ export const updateMyPassword = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { name, username } = req.body
+    const image = req.file?.path || null
 
     if (!name || name.trim() === '') {
       return res.status(400).json({
@@ -35,7 +36,8 @@ export const updateProfile = async (req, res) => {
 
     const updatedUser = await updateUserProfile(req.user.id, {
       name: name.trim(),
-      username: username.trim()
+      username: username.trim(),
+      image: image
     })
 
     res.json({

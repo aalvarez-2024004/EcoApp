@@ -2,7 +2,9 @@ import { Router } from 'express'
 import { validateJWT } from '../../middlewares/validate-jwt.js'
 import { validateRole } from '../../middlewares/validate-role.js'
 import { updateMyPassword, updateProfile, getPublicProfile } from './users.controller.js'
-
+import { cleanUploaderFileOnFinish, deleteFileOnError } from '../../middlewares/delete-file-on-error.js'
+import { createCloudinaryUploader } from '../../middlewares/file-uploader.js'
+import { uploadUserImage } from '../../middlewares/file-uploader.js';
 const router = Router()
 
 /**
@@ -66,6 +68,7 @@ router.put(
   '/update-profile',
   validateJWT,
   validateRole('ADMIN_GENERAL', 'USUARIO'),
+  uploadUserImage.single('image'), 
   updateProfile
 )
 
