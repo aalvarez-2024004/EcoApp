@@ -2,16 +2,14 @@
 
 import {
     getChallengesForUser,
-    completeChallenge,
+    completeManualChallenge,
     getUserChallengeHistory
 } from './dailyChallenge.service.js';
 
 export const getDailyChallenges = async (req, res) => {
     try {
-        const userId = req.user?.id || req.user?.uid;
-        if (!userId) {
-            return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
-        }
+        const userId = req.user?.uid || req.user?.id;
+        if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
 
         const challenges = await getChallengesForUser(userId);
         return res.status(200).json({ ok: true, challenges });
@@ -23,24 +21,40 @@ export const getDailyChallenges = async (req, res) => {
 
 export const completeDailyChallenge = async (req, res) => {
     try {
-        const userId = req.user?.id || req.user?.uid;
-        if (!userId) {
-            return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
-        }
+        const userId   = req.user?.uid || req.user?.id;
+        const name     = req.user?.name     || '';
+        const username = req.user?.username || '';
+
+        if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
 
         const { id: challengeId } = req.params;
+        const { confirmed } = req.body || {};
 
-        const result = await completeChallenge(userId, challengeId);
+        if (!confirmed) {
+            return res.status(400).json({
+                ok: false,
+                message: 'Debes confirmar que ya realizaste el reto antes de reclamarlo'
+            });
+        }
+
+        const result = await completeManualChallenge(
+            userId,
+            challengeId,
+            { name, username }
+        );
+
         return res.status(200).json({
             ok: true,
-            message: `¡Reto completado! Ganaste ${result.pointsEarned} eco-puntos`,
+            message: `¡Reto completado! Ganaste ${result.pointsEarned} eco-puntos 🌿`,
             data: result
         });
     } catch (error) {
-        if (
-            error.message === 'Ya completaste este reto hoy' ||
-            error.message === 'Reto no encontrado o inactivo'
-        ) {
+        const known = [
+            'Ya completaste este reto hoy',
+            'Reto no encontrado o inactivo',
+            'Este reto se completa automáticamente al usar el Detector de reciclaje'
+        ];
+        if (known.includes(error.message)) {
             return res.status(409).json({ ok: false, message: error.message });
         }
         console.error('Error en completeDailyChallenge:', error);
@@ -50,10 +64,8 @@ export const completeDailyChallenge = async (req, res) => {
 
 export const getChallengeHistory = async (req, res) => {
     try {
-        const userId = req.user?.id || req.user?.uid;
-        if (!userId) {
-            return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
-        }
+        const userId = req.user?.uid || req.user?.id;
+        if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
 
         const history = await getUserChallengeHistory(userId);
         return res.status(200).json({ ok: true, history });

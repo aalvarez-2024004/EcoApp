@@ -20,7 +20,11 @@ const userChallengeSchema = new Schema(
         dateKey: {
             type: String,
             required: true
-        }
+        },
+        claimed: {
+    type: Boolean,
+    default: false
+}
     },
     {
         timestamps: true,

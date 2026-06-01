@@ -1,15 +1,15 @@
 import { create } from 'zustand'
 import { GamificationApi } from '../../../shared/Api'
 
-const useGamificationStore = create((set, get) => ({
-    profile: null,
-    ranking: [],
-    challenges: [],
-    loadingProfile: false,
-    loadingRanking: false,
-    loadingChallenges: false,
+const useGamificacionStore = create((set, get) => ({
+    profile:             null,
+    ranking:             [],
+    challenges:          [],
+    loadingProfile:      false,
+    loadingRanking:      false,
+    loadingChallenges:   false,
     completingChallenge: null,
-    error: null,
+    error:               null,
 
     fetchProfile: async () => {
         set({ loadingProfile: true, error: null })
@@ -18,10 +18,7 @@ const useGamificationStore = create((set, get) => ({
             set({ profile: res.data.data, loadingProfile: false })
         } catch (err) {
             if (err.response?.status === 404) {
-                set({
-                    profile: { points: 0, recyclingCount: 0, badges: [] },
-                    loadingProfile: false
-                })
+                set({ profile: { points: 0, recyclingCount: 0, badges: [], rankPosition: null, totalUsers: 0 }, loadingProfile: false })
             } else {
                 set({ error: 'Error al cargar tu perfil de gamificación', loadingProfile: false })
             }
@@ -51,22 +48,28 @@ const useGamificationStore = create((set, get) => ({
     completeChallenge: async (challengeId) => {
         set({ completingChallenge: challengeId, error: null })
         try {
-            const res = await GamificationApi.post(`/daily-challenges/${challengeId}/complete`)
+            const res = await GamificationApi.post(
+                `/daily-challenges/${challengeId}/complete`,
+                { confirmed: true }   
+            )
 
             set((state) => ({
-                challenges: state.challenges.map((ch) =>
+                challenges: state.challenges.map(ch =>
                     ch._id === challengeId ? { ...ch, completed: true } : ch
                 ),
                 profile: res.data.data?.gamification
                     ? {
                         ...state.profile,
-                        points: res.data.data.gamification.points,
+                        points:         res.data.data.gamification.points,
                         recyclingCount: res.data.data.gamification.recyclingCount,
-                        badges: res.data.data.gamification.badges
+                        badges:         res.data.data.gamification.badges
                     }
                     : state.profile,
                 completingChallenge: null
             }))
+
+            get().fetchRanking()
+            get().fetchProfile()
 
             return { ok: true, message: res.data.message }
         } catch (err) {
@@ -79,4 +82,4 @@ const useGamificationStore = create((set, get) => ({
     clearError: () => set({ error: null })
 }))
 
-export default useGamificationStore
+export default useGamificacionStore

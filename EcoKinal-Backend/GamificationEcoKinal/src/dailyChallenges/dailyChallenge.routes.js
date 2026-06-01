@@ -69,3 +69,17 @@ router.get('/history', validateJWT, getChallengeHistory);
 router.post('/:id/complete', validateJWT, completeDailyChallenge);
 
 export default router;
+
+
+import { seedChallengesIfEmpty } from './dailyChallenge.service.js';
+import DailyChallenge from './dailyChallenge.model.js';
+
+router.delete('/reset-seed', async (req, res) => {
+    try {
+        await DailyChallenge.deleteMany({});
+        await seedChallengesIfEmpty();
+        return res.status(200).json({ ok: true, message: 'Seed reiniciado correctamente' });
+    } catch (error) {
+        return res.status(500).json({ ok: false, message: error.message });
+    }
+});

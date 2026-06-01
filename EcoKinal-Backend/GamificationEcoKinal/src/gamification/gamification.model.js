@@ -10,6 +10,16 @@ const gamificationSchema = new Schema(
             unique: true
         },
 
+        name: {
+            type: String,
+            default: 'Usuario'
+        },
+
+        username: {
+            type: String,
+            default: 'usuario'
+        },
+
         points: {
             type: Number,
             default: 0,
@@ -33,7 +43,6 @@ const gamificationSchema = new Schema(
     }
 );
 
-//  ranking rápido orden por puntos
 gamificationSchema.index({ points: -1 });
 
 export default model('Gamification', gamificationSchema);
