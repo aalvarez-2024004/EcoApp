@@ -99,7 +99,6 @@ export default function ProfileModal({ onClose }) {
 
   return (
     <div
-      onClick={onClose}
       style={{
         position: 'fixed', inset: 0, background: 'rgba(17,33,23,0.4)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
