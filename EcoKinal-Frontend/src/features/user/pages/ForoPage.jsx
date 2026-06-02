@@ -17,7 +17,7 @@ const TAG_STYLES = {
 function SkeletonCard() {
     return (
         <div style={{
-            background: '#fff', borderRadius: 24, border: '0.5px solid #C0DD97',
+            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(35,55,109,0.15)',
             padding: '20px', display: 'flex', flexDirection: 'column', gap: 14,
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -34,7 +34,7 @@ function SkeletonCard() {
                 <div className="skeleton" style={{ height: 12, width: '85%', borderRadius: 6 }} />
                 <div className="skeleton" style={{ height: 12, width: '55%', borderRadius: 6 }} />
             </div>
-            <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid #F1F7E8', paddingTop: 12 }}>
+            <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid rgba(35,55,109,0.15)', paddingTop: 12 }}>
                 <div className="skeleton" style={{ height: 34, width: 100, borderRadius: 14 }} />
                 <div className="skeleton" style={{ height: 34, width: 130, borderRadius: 14 }} />
             </div>
@@ -47,25 +47,25 @@ function EmptyState({ filter, isSearch, query }) {
     return (
         <div className="animate-fade-up" style={{
             textAlign: 'center', padding: '60px 20px',
-            background: '#fff', borderRadius: 24, border: '0.5px solid #C0DD97',
+            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(35,55,109,0.15)',
         }}>
             <svg viewBox="0 0 120 90" width="120" height="90" style={{ marginBottom: 20, opacity: 0.7 }}>
-                <rect x="15" y="20" width="90" height="58" rx="10" fill="#EAF3DE" stroke="#C0DD97" strokeWidth="1"/>
-                <rect x="25" y="32" width="50" height="7" rx="3" fill="#C0DD97"/>
-                <rect x="25" y="44" width="70" height="5" rx="2" fill="#D6EABC"/>
-                <rect x="25" y="53" width="60" height="5" rx="2" fill="#D6EABC"/>
-                <rect x="25" y="62" width="40" height="5" rx="2" fill="#D6EABC"/>
-                <circle cx="90" cy="28" r="14" fill="#F1F7E8" stroke="#C0DD97" strokeWidth="1"/>
-                <path d="M85 28 L88 31 L95 24" stroke="#97C459" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <rect x="15" y="20" width="90" height="58" rx="10" fill="#eef1f9" stroke="rgba(35,55,109,0.15)" strokeWidth="1"/>
+                <rect x="25" y="32" width="50" height="7" rx="3" fill="rgba(35,55,109,0.15)"/>
+                <rect x="25" y="44" width="70" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
+                <rect x="25" y="53" width="60" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
+                <rect x="25" y="62" width="40" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
+                <circle cx="90" cy="28" r="14" fill="#eef1f9" stroke="rgba(35,55,109,0.15)" strokeWidth="1"/>
+                <path d="M85 28 L88 31 L95 24" stroke="#eb7207" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
-            <p style={{ fontSize: 16, fontWeight: 700, color: '#173404', margin: '0 0 8px' }}>
+            <p style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>
                 {isSearch
                     ? `Sin resultados para "${query}"`
                     : filter !== 'Todos'
                         ? `Sin publicaciones en "${filter}"`
                         : 'Aún no hay publicaciones'}
             </p>
-            <p style={{ fontSize: 13, color: '#80A153', margin: 0 }}>
+            <p style={{ fontSize: 13, color: '#4b5a8a', margin: 0 }}>
                 {isSearch
                     ? 'Intenta con otras palabras o un hashtag.'
                     : filter !== 'Todos'
@@ -86,15 +86,15 @@ function FilterBtn({ active, onClick, children, count }) {
                 padding: '10px 22px', fontSize: 13, fontWeight: 700,
                 borderRadius: 14, cursor: 'pointer',
                 transition: 'all 0.2s', border: 'none',
-                background: active ? '#C0DD97' : 'transparent',
-                color: active ? '#27500A' : '#639922',
+                background: active ? '#23376d' : 'transparent',
+                color: active ? '#fdb500' : '#4b5a8a',
             }}
         >
             {children}
             <span style={{
                 padding: '2px 8px', borderRadius: 10, fontSize: 10,
-                background: active ? '#97C459' : '#F1F7E8',
-                color: active ? '#173404' : '#639922',
+                background: active ? 'rgba(35,55,109,0.3)' : '#eef1f9',
+                color: active ? '#111827' : '#4b5a8a',
             }}>
                 {count}
             </span>
@@ -216,7 +216,7 @@ export default function ForoPage() {
     const isLoading = isSearchMode ? searchLoading : loading
 
     return (
-        <div style={{ background: '#EAF3DE', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
+        <div style={{ background: '#eef1f9', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
             <style>{pageStyles}</style>
 
             {/* ── Toast ── */}
@@ -225,9 +225,9 @@ export default function ForoPage() {
                     position: 'fixed', bottom: 24, right: 24, zIndex: 50,
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 18px', borderRadius: 14, fontSize: 13, fontWeight: 500,
-                    background: toast.type === 'error' ? '#FCEBEB' : '#F1F7E8',
-                    border: `0.5px solid ${toast.type === 'error' ? '#F09595' : '#C0DD97'}`,
-                    color: toast.type === 'error' ? '#791F1F' : '#27500A',
+                    background: toast.type === 'error' ? '#FCEBEB' : '#eef1f9',
+                    border: `0.5px solid ${toast.type === 'error' ? '#F09595' : 'rgba(35,55,109,0.15)'}`,
+                    color: toast.type === 'error' ? '#791F1F' : '#23376d',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                 }} className="animate-fade-up">
                     <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16, flexShrink: 0 }} stroke="currentColor" strokeWidth="2">
@@ -247,19 +247,19 @@ export default function ForoPage() {
                     <div style={{
                         display: 'inline-flex', alignItems: 'center', gap: 8,
                         padding: '6px 14px', borderRadius: 99, width: 'fit-content',
-                        background: '#C0DD97', border: '0.5px solid #97C459',
+                        background: 'rgba(35,55,109,0.15)', border: '0.5px solid #23376d',
                     }}>
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#27500A" strokeWidth="2">
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.221-1.11-2.203-2.5-2.203-3.69 0-7.38 0-11.07 0C2.36 4.434 1.25 5.416 1.25 6.637v8.508c0 1.22 1.11 2.203 2.5 2.203h.75v3.136l3.328-3.136h3.172" />
                         </svg>
-                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#27500A', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#23376d', textTransform: 'uppercase' }}>
                             EcoKinal · Comunidad
                         </span>
                     </div>
-                    <h1 className="eco-font" style={{ fontSize: 48, fontWeight: 800, color: '#173404', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
-                        Foro <span style={{ color: '#3B6D11' }}>Comunitario</span>
+                    <h1 className="eco-font" style={{ fontSize: 48, fontWeight: 800, color: '#111827', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
+                        Foro <span style={{ color: '#eb7207' }}>Comunitario</span>
                     </h1>
-                    <p style={{ fontSize: 15, color: '#639922', maxWidth: 500, lineHeight: 1.75, margin: 0 }}>
+                    <p style={{ fontSize: 15, color: '#4b5a8a', maxWidth: 500, lineHeight: 1.75, margin: 0 }}>
                         Comparte ideas, publica tus logros ambientales y resuelve tus dudas con otros usuarios.
                     </p>
                 </div>
@@ -267,17 +267,17 @@ export default function ForoPage() {
                 {/* ── Barra de búsqueda ── */}
                 <div style={{
                     display: 'flex', alignItems: 'center', gap: 12,
-                    background: '#fff', border: `0.5px solid ${isSearchMode ? '#97C459' : '#C0DD97'}`,
+                    background: '#fff', border: `0.5px solid ${isSearchMode ? '#eb7207' : 'rgba(35,55,109,0.15)'}`,
                     borderRadius: 16, padding: '10px 16px',
                     transition: 'border-color 0.2s',
-                    boxShadow: isSearchMode ? '0 0 0 3px rgba(151,196,89,0.15)' : 'none',
+                    boxShadow: isSearchMode ? '0 0 0 3px rgba(235,114,7,0.15)' : 'none',
                 }}>
                     {searchLoading ? (
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#97C459', animation: 'spin 0.8s linear infinite' }} stroke="currentColor" strokeWidth="2">
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#eb7207', animation: 'spin 0.8s linear infinite' }} stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
                     ) : (
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#97C459' }} stroke="currentColor" strokeWidth="2">
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#23376d' }} stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>
                     )}
@@ -288,13 +288,13 @@ export default function ForoPage() {
                         onChange={handleSearchChange}
                         style={{
                             flex: 1, border: 'none', outline: 'none', background: 'transparent',
-                            fontSize: 14, color: '#173404', fontFamily: 'inherit',
+                            fontSize: 14, color: '#111827', fontFamily: 'inherit',
                         }}
                     />
                     {inputSearch && (
                         <button
                             onClick={handleClearSearch}
-                            style={{ background: '#F1F7E8', border: 'none', borderRadius: 8, padding: '4px 10px', fontSize: 12, color: '#639922', cursor: 'pointer', fontWeight: 600, flexShrink: 0 }}
+                            style={{ background: '#eef1f9', border: 'none', borderRadius: 8, padding: '4px 10px', fontSize: 12, color: '#23376d', cursor: 'pointer', fontWeight: 600, flexShrink: 0 }}
                         >
                             Limpiar
                         </button>
@@ -306,7 +306,7 @@ export default function ForoPage() {
                     <div style={{
                         display: 'flex', padding: 8, gap: 6,
                         borderRadius: 20, width: 'fit-content',
-                        background: '#fff', border: '0.5px solid #C0DD97',
+                        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
                         overflowX: 'auto',
                     }}>
                         <FilterBtn active={filter === 'Todos'} onClick={() => setFilter('Todos')} count={posts.length}>
@@ -324,13 +324,13 @@ export default function ForoPage() {
                 {/* Etiqueta modo búsqueda */}
                 {isSearchMode && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 13, color: '#80A153' }}>
+                        <span style={{ fontSize: 13, color: '#4b5a8a' }}>
                             {searchLoading
                                 ? 'Buscando...'
                                 : `${searchResults.length} resultado${searchResults.length !== 1 ? 's' : ''} para`}
                         </span>
                         {!searchLoading && (
-                            <span style={{ fontSize: 13, fontWeight: 700, color: '#3B6D11', background: '#EAF3DE', borderRadius: 8, padding: '2px 10px' }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: '#eb7207', background: '#eef1f9', borderRadius: 8, padding: '2px 10px' }}>
                                 "{searchQuery}"
                             </span>
                         )}
@@ -340,7 +340,7 @@ export default function ForoPage() {
                 {/* ── Compose Box (solo cuando no se está buscando) ── */}
                 {!isSearchMode && (
                     <div style={{
-                        background: '#fff', border: '0.5px solid #C0DD97', borderRadius: 18,
+                        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)', borderRadius: 18,
                         overflow: 'hidden', transition: 'all 0.3s ease',
                     }}>
                         {!isComposeOpen ? (
@@ -351,48 +351,48 @@ export default function ForoPage() {
                                     background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
                                 }}
                             >
-                                <div style={{ width: 44, height: 44, borderRadius: 12, background: '#F1F7E8', border: '0.5px solid #C0DD97', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#639922" strokeWidth="2">
+                                <div style={{ width: 44, height: 44, borderRadius: 12, background: '#eef1f9', border: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#23376d" strokeWidth="2">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                    <span style={{ fontSize: 15, fontWeight: 700, color: '#173404' }}>
-                                        ¿Qué quieres aportar hoy, <span style={{ color: '#639922' }}>{name ? name.split(' ')[0] : 'Usuario'}</span>?
+                                    <span style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
+                                        ¿Qué quieres aportar hoy, <span style={{ color: '#eb7207' }}>{name ? name.split(' ')[0] : 'Usuario'}</span>?
                                     </span>
-                                    <span style={{ fontSize: 13, color: '#639922' }}>Comparte un logro, consejo, noticia o pregunta</span>
+                                    <span style={{ fontSize: 13, color: '#4b5a8a' }}>Comparte un logro, consejo, noticia o pregunta</span>
                                 </div>
                             </button>
                         ) : (
                             <form onSubmit={handlePublish} className="animate-fade-up" style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ padding: '16px 24px', background: '#F1F7E8', borderBottom: '0.5px solid #C0DD97', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: 12, fontWeight: 700, color: '#27500A', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                                <div style={{ padding: '16px 24px', background: '#eef1f9', borderBottom: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: 12, fontWeight: 700, color: '#23376d', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                                         Nueva Publicación
                                     </span>
-                                    <button type="button" onClick={() => setIsComposeOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#639922' }}>
+                                    <button type="button" onClick={() => setIsComposeOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#4b5a8a' }}>
                                         <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 </div>
 
                                 <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título</label>
+                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título</label>
                                         <input
                                             type="text" placeholder="Escribe un título descriptivo..." value={title} onChange={e => setTitle(e.target.value)}
-                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid #C0DD97', background: '#FAFCF7', color: '#173404', fontSize: 14, outline: 'none' }}
+                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(35,55,109,0.15)', background: '#eef1f9', color: '#111827', fontSize: 14, outline: 'none' }}
                                         />
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido</label>
+                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido</label>
                                         <textarea
                                             placeholder="Describe tu consejo, idea o pregunta con detalle... Usa #hashtags para que te encuentren." value={content} onChange={e => setContent(e.target.value)} rows={4}
-                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid #C0DD97', background: '#FAFCF7', color: '#173404', fontSize: 14, outline: 'none', resize: 'none' }}
+                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(35,55,109,0.15)', background: '#eef1f9', color: '#111827', fontSize: 14, outline: 'none', resize: 'none' }}
                                         />
                                     </div>
 
                                     <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
                                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, minWidth: 250 }}>
-                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoría</label>
+                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoría</label>
                                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                                 {TAGS.map(t => {
                                                     const isSelected = selectedTag === t
@@ -402,9 +402,9 @@ export default function ForoPage() {
                                                             style={{
                                                                 padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600,
                                                                 display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
-                                                                border: `0.5px solid ${isSelected ? s.border : '#C0DD97'}`,
-                                                                background: isSelected ? s.bg : '#FAFCF7',
-                                                                color: isSelected ? s.color : '#639922',
+                                                                border: `0.5px solid ${isSelected ? s.border : 'rgba(35,55,109,0.15)'}`,
+                                                                background: isSelected ? s.bg : '#eef1f9',
+                                                                color: isSelected ? s.color : '#4b5a8a',
                                                             }}
                                                         >
                                                             <span style={{ width: 6, height: 6, borderRadius: '50%', background: s.dot }} />
@@ -416,14 +416,14 @@ export default function ForoPage() {
                                         </div>
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#97C459', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Fotos (Opcional · {imageFiles.length}/5)
                                             </label>
 
                                             {/* Grid de previews + botón agregar */}
                                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                                                 {imagePreviews.map((src, i) => (
-                                                    <div key={i} style={{ position: 'relative', width: 72, height: 72, borderRadius: 10, overflow: 'hidden', border: '0.5px solid #C0DD97', flexShrink: 0 }}>
+                                                    <div key={i} style={{ position: 'relative', width: 72, height: 72, borderRadius: 10, overflow: 'hidden', border: '0.5px solid rgba(35,55,109,0.15)', flexShrink: 0 }}>
                                                         <img src={src} alt={`Foto ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                                                         <button
                                                             type="button"
@@ -439,10 +439,10 @@ export default function ForoPage() {
                                                 {imageFiles.length < 5 && (
                                                     <label style={{
                                                         width: 72, height: 72, borderRadius: 10,
-                                                        border: '0.5px dashed #97C459', background: '#FAFCF7',
+                                                        border: '0.5px dashed #23376d', background: '#eef1f9',
                                                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                                                         gap: 4, cursor: 'pointer', flexShrink: 0,
-                                                        color: '#639922',
+                                                        color: '#4b5a8a',
                                                     }}>
                                                         <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="currentColor" strokeWidth="2">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -456,11 +456,11 @@ export default function ForoPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ padding: '16px 24px', background: '#FAFCF7', borderTop: '0.5px solid #C0DD97', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-                                    <button type="button" onClick={() => setIsComposeOpen(false)} style={{ padding: '10px 20px', borderRadius: 99, background: 'transparent', border: 'none', color: '#639922', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                                <div style={{ padding: '16px 24px', background: '#eef1f9', borderTop: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                                    <button type="button" onClick={() => setIsComposeOpen(false)} style={{ padding: '10px 20px', borderRadius: 99, background: 'transparent', border: 'none', color: '#4b5a8a', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                                         Cancelar
                                     </button>
-                                    <button type="submit" style={{ padding: '10px 24px', borderRadius: 99, background: '#3B6D11', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <button type="submit" style={{ padding: '10px 24px', borderRadius: 99, background: '#eb7207', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
                                         Publicar
                                         <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
                                     </button>
@@ -510,13 +510,13 @@ const pageStyles = `
   .animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
   .skeleton {
-    background: linear-gradient(90deg, #EAF3DE 25%, #D6EABC 50%, #EAF3DE 75%);
+    background: linear-gradient(90deg, #eef1f9 25%, rgba(35,55,109,0.15) 50%, #eef1f9 75%);
     background-size: 600px 100%;
     animation: shimmer 1.6s infinite linear;
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #C0DD97; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #97C459; }
+  ::-webkit-scrollbar-thumb { background: rgba(35,55,109,0.15); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(35,55,109,0.3); }
 `

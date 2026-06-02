@@ -9,10 +9,10 @@ const BADGE_CONFIG = {
   'Experto':               { icon: 'ti-trophy',       color: '#e2b007', bg: 'rgba(226,176,7,0.12)'   },
 }
 const CAT = {
-  reciclaje: { color: '#0f6e56', bg: 'rgba(15,110,86,0.08)'  },
+  reciclaje: { color: '#eb7207', bg: 'rgba(235,114,7,0.08)'  },
   comunidad: { color: '#185fa5', bg: 'rgba(24,95,165,0.08)'  },
   educacion: { color: '#534ab7', bg: 'rgba(83,74,183,0.08)'  },
-  impacto:   { color: '#3b6d11', bg: 'rgba(59,109,17,0.08)'  },
+  impacto:   { color: '#23376d', bg: 'rgba(35,55,109,0.08)'  },
 }
 
 // Cada reto redirige al usuario a la sección donde debe hacer la acción
@@ -34,7 +34,7 @@ const KEY_LABEL = {
   mapa:          'Ir al Mapa',
 }
 
-function StatCard({ icon, value, label, color = '#0f6e56' }) {
+function StatCard({ icon, value, label, color = '#eb7207' }) {
   return (
     <div className="gam-stat-card" style={{ '--c': color }}>
       <div className="gam-stat-icon"><i className={`ti ${icon}`} /></div>
@@ -45,7 +45,7 @@ function StatCard({ icon, value, label, color = '#0f6e56' }) {
 }
 
 function BadgeItem({ name }) {
-  const cfg = BADGE_CONFIG[name] || { icon: 'ti-star', color: '#59B130', bg: 'rgba(89,177,48,0.12)' }
+  const cfg = BADGE_CONFIG[name] || { icon: 'ti-star', color: '#eb7207', bg: 'rgba(235,114,7,0.12)' }
   return (
     <span className="gam-badge-chip" style={{ '--bc': cfg.color, '--bb': cfg.bg }}>
       <i className={`ti ${cfg.icon}`} /> {name}
@@ -167,7 +167,7 @@ export default function GamificacionPage() {
       ) : (
         <div className="gam-stats-row">
           <StatCard icon="ti-coin"        value={profile?.points ?? 0}         label="Eco-puntos"  color="#9a5f0a" />
-          <StatCard icon="ti-recycle"     value={profile?.recyclingCount ?? 0} label="Reciclajes"  color="#0f6e56" />
+          <StatCard icon="ti-recycle"     value={profile?.recyclingCount ?? 0} label="Reciclajes"  color="#eb7207" />
           <StatCard icon="ti-shield-star" value={profile?.badges?.length ?? 0} label="Insignias"   color="#534ab7" />
           <StatCard
             icon="ti-podium"
@@ -247,37 +247,39 @@ export default function GamificacionPage() {
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
         :root{
-          --green-900:#1f5c2e;
-          --green-800:#2d7a3d;
-          --green-700:#3d9850;
-          --green-600:#59B130;
-          --green-500:#6ec945;
-          --green-300:#a8e07a;
+          --green-900:#1a2b57;
+          --green-800:#1d3161;
+          --green-700:#23376d;
+          --green-600:#eb7207;
+          --green-500:#fdb500;
+          --green-300:#fdb500;
 
-          --bone:#fafbf8;
+          --bone:#f5f7fc;
           --white:#ffffff;
 
-          --ink:#0a1a0f;
-          --ink-2:#1c2e22;
+          --ink:#111827;
+          --ink-2:#1a2b57;
 
-          --muted:#5a7060;
+          --muted:#4b5a8a;
 
           --radius:24px;
 
-          --shadow-sm:0 6px 18px rgba(89,177,48,.06);
-          --shadow-md:0 12px 30px rgba(89,177,48,.10);
-          --shadow-lg:0 20px 50px rgba(89,177,48,.14);
+          --shadow-sm:0 6px 18px rgba(35,55,109,.06);
+          --shadow-md:0 12px 30px rgba(35,55,109,.10);
+          --shadow-lg:0 20px 50px rgba(35,55,109,.14);
 
           font-family:'Outfit',sans-serif;
         }
 
         .gam-page{
+          width:100%;
           max-width:1400px;
-          margin:auto;
+          margin:0 auto;
           padding:20px;
           background:var(--bone);
           min-height:100vh;
           font-family:'Outfit',sans-serif;
+          box-sizing:border-box;
         }
 
         /* HEADER */
@@ -312,7 +314,7 @@ export default function GamificacionPage() {
           background:
             radial-gradient(
               circle,
-              rgba(168,224,122,.18),
+              rgba(253,181,0,.15),
               transparent 70%
             );
 
@@ -429,7 +431,7 @@ export default function GamificacionPage() {
 
         .gam-prog-track{
           height:12px;
-          background:#edf3ea;
+          background:#e8ecf5;
           border-radius:999px;
           overflow:hidden;
         }
@@ -567,8 +569,8 @@ export default function GamificacionPage() {
         }
 
         .gam-ch-btn:disabled{
-          background:#dff2d3;
-          color:#3d9850;
+          background:#d6dcef;
+          color:var(--green-700);
         }
 
         /* RANKING */
@@ -603,8 +605,8 @@ export default function GamificacionPage() {
         }
 
         .gam-rank-row.me{
-          background:#eef8ea;
-          border:2px solid var(--green-600);
+          background:#edf0fa;
+          border:2px solid var(--green-700);
         }
 
         .gam-rank-name{
@@ -641,9 +643,9 @@ export default function GamificacionPage() {
           background:
             linear-gradient(
               90deg,
-              #f1f5ef 25%,
-              #e8eee5 50%,
-              #f1f5ef 75%
+              #e8ecf5 25%,
+              #d6dcef 50%,
+              #e8ecf5 75%
             );
 
           background-size:400% 100%;
@@ -662,37 +664,69 @@ export default function GamificacionPage() {
 
         /* RESPONSIVE */
 
-        @media(max-width:900px){
+        @media(min-width:1600px){
+          .gam-page{
+            padding:30px 40px;
+          }
+        }
 
+        @media(max-width:1200px){
           .gam-stats-row{
             grid-template-columns:repeat(2,1fr);
           }
+          .gam-grid{
+            grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+          }
+        }
 
+        @media(max-width:900px){
+          .gam-page{
+            padding:15px;
+          }
+          .gam-header{
+            padding:35px;
+          }
+          .gam-stats-row{
+            grid-template-columns:repeat(2,1fr);
+            gap:15px;
+          }
         }
 
         @media(max-width:640px){
-
+          .gam-page{
+            padding:10px;
+          }
           .gam-header{
-            padding:30px;
+            padding:25px;
           }
-
           .gam-header h2{
-            font-size:32px;
+            font-size:28px;
           }
-
+          .gam-header p{
+            font-size:15px;
+          }
           .gam-stats-row{
             grid-template-columns:1fr;
+            gap:12px;
           }
-
+          .gam-grid{
+            grid-template-columns:1fr;
+          }
           .gam-rank-row{
             grid-template-columns:50px 1fr 90px;
+            padding:12px 16px;
           }
-
           .gam-rank-rc,
           .gam-rank-you{
             display:none;
           }
-
+          .gam-tabs{
+            flex-direction:column;
+          }
+          .gam-tab{
+            width:100%;
+            justify-content:center;
+          }
         }
         `}</style>
     </div>

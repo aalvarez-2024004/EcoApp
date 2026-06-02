@@ -398,9 +398,11 @@ const CSS = `
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@700&display=swap');
 
     .imp-root {
-        background: #EAF3DE;
+        background: #eef1f9;
         min-height: 100vh;
-        padding: 2.5rem 3rem;
+        padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+        max-width: 1280px;
+        margin: 0 auto;
         box-sizing: border-box;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
@@ -411,20 +413,20 @@ const CSS = `
     .imp-header-badge {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 5px 13px; border-radius: 99px;
-        background: #C0DD97; border: 0.5px solid #97C459;
+        background: rgba(35,55,109,0.15); border: 0.5px solid #23376d;
         font-size: 10px; font-weight: 700; letter-spacing: .1em;
-        color: #27500A; text-transform: uppercase; margin-bottom: 1rem;
+        color: #23376d; text-transform: uppercase; margin-bottom: 1rem;
     }
 
     .imp-title {
         font-size: clamp(36px, 5vw, 52px); font-weight: 800;
-        color: #173404; line-height: 1.1; letter-spacing: -.02em;
+        color: #111827; line-height: 1.1; letter-spacing: -.02em;
         margin: 0 0 .75rem;
     }
-    .imp-title-accent { color: #3B6D11; }
+    .imp-title-accent { color: #eb7207; }
 
     .imp-subtitle {
-        font-size: 15px; color: #639922; max-width: 520px;
+        font-size: 15px; color: #4b5a8a; max-width: 520px;
         line-height: 1.7; margin: 0 0 1.5rem;
     }
 
@@ -432,17 +434,17 @@ const CSS = `
     .imp-toggle {
         display: inline-flex; padding: 6px; gap: 4px;
         background: #fff; border-radius: 18px;
-        border: 0.5px solid #C0DD97;
+        border: 0.5px solid rgba(35,55,109,0.15);
     }
     .imp-toggle-btn {
         padding: 9px 22px; border-radius: 14px; border: none;
         background: transparent; cursor: pointer; font-size: 13px;
-        font-weight: 600; color: #639922; transition: all .2s;
+        font-weight: 600; color: #4b5a8a; transition: all .2s;
         font-family: inherit;
     }
     .imp-toggle-btn.active {
-        background: #3B6D11; color: #fff;
-        box-shadow: 0 2px 10px rgba(59,109,17,.3);
+        background: #23376d; color: #fff;
+        box-shadow: 0 2px 10px rgba(35,55,109,.3);
     }
 
     /* ── Error ── */
@@ -468,14 +470,14 @@ const CSS = `
     }
     .imp-skel-icon {
         width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
-        background: linear-gradient(90deg,#e8f3d5 25%,#d5eab8 50%,#e8f3d5 75%);
+        background: linear-gradient(90deg,#e8ecf5 25%,#d6dcef 50%,#e8ecf5 75%);
         background-size: 400px 100%;
         animation: shimmer 1.4s infinite linear;
     }
     .imp-skel-lines { flex: 1; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
     .imp-skel-line {
         border-radius: 6px; height: 10px;
-        background: linear-gradient(90deg,#e8f3d5 25%,#d5eab8 50%,#e8f3d5 75%);
+        background: linear-gradient(90deg,#e8ecf5 25%,#d6dcef 50%,#e8ecf5 75%);
         background-size: 400px 100%;
         animation: shimmer 1.4s infinite linear;
     }
@@ -486,7 +488,7 @@ const CSS = `
     .imp-section { margin-bottom: 2rem; }
     .imp-section-label {
         font-size: 10px; font-weight: 700; letter-spacing: .12em;
-        color: #97C459; text-transform: uppercase; margin-bottom: 1rem;
+        color: #fdb500; text-transform: uppercase; margin-bottom: 1rem;
     }
 
     /* ── Stat cards ── */
@@ -506,14 +508,14 @@ const CSS = `
     .imp-stat-card {
         background: #fff; border-radius: 20px;
         padding: 20px; display: flex; gap: 14px; align-items: flex-start;
-        border: 0.5px solid #C0DD97;
-        box-shadow: 0 2px 12px rgba(59,109,17,.06);
+        border: 0.5px solid rgba(35,55,109,0.15);
+        box-shadow: 0 2px 12px rgba(35,55,109,.06);
         animation: fadeUp .5s ease both;
         transition: transform .2s, box-shadow .2s;
     }
     .imp-stat-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 28px rgba(59,109,17,.13);
+        box-shadow: 0 8px 28px rgba(35,55,109,.13);
     }
 
     .imp-stat-icon {
@@ -525,7 +527,7 @@ const CSS = `
     }
 
     .imp-stat-content { flex: 1; min-width: 0; }
-    .imp-stat-label   { font-size: 11px; color: #639922; margin: 0 0 6px; font-weight: 600; }
+    .imp-stat-label   { font-size: 11px; color: #4b5a8a; margin: 0 0 6px; font-weight: 600; }
     .imp-stat-value-row { display: flex; align-items: baseline; gap: 5px; }
     .imp-stat-value {
         font-family: 'Space Mono', monospace;
@@ -534,18 +536,18 @@ const CSS = `
         line-height: 1;
     }
     .imp-stat-value.big { font-size: 26px; }
-    .imp-stat-unit { font-size: 11px; color: #97C459; font-weight: 600; }
+    .imp-stat-unit { font-size: 11px; color: #fdb500; font-weight: 600; }
 
     /* ── Hero count ── */
     .imp-hero-count {
         display: flex; align-items: center; gap: 24px;
-        background: linear-gradient(135deg, #1f4a07 0%, #3B6D11 100%);
+        background: linear-gradient(135deg, #1a2b57 0%, #23376d 100%);
         border-radius: 24px; padding: 28px 32px; margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(59,109,17,.25);
+        box-shadow: 0 8px 32px rgba(35,55,109,.25);
     }
     .imp-hero-num {
         font-family: 'Space Mono', monospace;
-        font-size: 64px; font-weight: 700; color: #C0DD97;
+        font-size: 64px; font-weight: 700; color: #fdb500;
         line-height: 1; flex-shrink: 0;
     }
     .imp-hero-text { display: flex; flex-direction: column; gap: 6px; }
@@ -555,7 +557,7 @@ const CSS = `
     /* ── Tipos ── */
     .imp-tipos-card {
         background: #fff; border-radius: 20px; padding: 22px;
-        border: 0.5px solid #C0DD97;
+        border: 0.5px solid rgba(35,55,109,0.15);
         display: flex; flex-direction: column; gap: 20px;
     }
 
@@ -569,12 +571,12 @@ const CSS = `
         display: flex; align-items: center; justify-content: center;
         font-size: 15px; flex-shrink: 0;
     }
-    .imp-tipo-label { flex: 1; font-size: 13px; font-weight: 600; color: #27500A; }
-    .imp-tipo-count { font-size: 11px; color: #639922; }
+    .imp-tipo-label { flex: 1; font-size: 13px; font-weight: 600; color: #23376d; }
+    .imp-tipo-count { font-size: 11px; color: #4b5a8a; }
     .imp-tipo-pct   { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; }
 
     .imp-tipo-track {
-        height: 7px; background: #F0F8E8; border-radius: 99px; overflow: hidden;
+        height: 7px; background: #e8ecf5; border-radius: 99px; overflow: hidden;
     }
     .imp-tipo-fill {
         height: 100%; border-radius: 99px;
@@ -589,24 +591,24 @@ const CSS = `
 
     .imp-tipo-stats {
         display: flex; gap: 16px;
-        font-size: 11px; color: #639922;
+        font-size: 11px; color: #4b5a8a;
     }
 
     /* ── Historial ── */
     .imp-historial-card {
         background: #fff; border-radius: 20px;
-        border: 0.5px solid #C0DD97;
+        border: 0.5px solid rgba(35,55,109,0.15);
         overflow: hidden;
     }
     .imp-hist-row {
         display: flex; align-items: center; gap: 14px;
         padding: 14px 22px;
-        border-bottom: 0.5px solid #EAF3DE;
+        border-bottom: 0.5px solid #e8ecf5;
         animation: fadeUp .4s ease both;
         transition: background .15s;
     }
     .imp-hist-row:last-child { border-bottom: none; }
-    .imp-hist-row:hover { background: #F7FCF0; }
+    .imp-hist-row:hover { background: #f0f3fb; }
 
     .imp-hist-icon {
         width: 34px; height: 34px; border-radius: 10px;
@@ -615,8 +617,8 @@ const CSS = `
     }
     .imp-hist-info  { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
     .imp-hist-tipo  { font-size: 13px; font-weight: 600; }
-    .imp-hist-fecha { font-size: 11px; color: #9db599; }
-    .imp-hist-nums  { display: flex; gap: 14px; font-size: 11px; color: #639922; flex-shrink: 0; }
+    .imp-hist-fecha { font-size: 11px; color: #7a8ab0; }
+    .imp-hist-nums  { display: flex; gap: 14px; font-size: 11px; color: #4b5a8a; flex-shrink: 0; }
 
     /* ── Empty state ── */
     .imp-empty {
@@ -641,28 +643,28 @@ const CSS = `
         animation: spinOrbit 4s linear infinite;
     }
 
-    .imp-empty h3 { font-size: 22px; color: #173404; font-weight: 700; margin: 0; }
-    .imp-empty p  { font-size: 14px; color: #639922; max-width: 380px; line-height: 1.7; margin: 0; }
+    .imp-empty h3 { font-size: 22px; color: #111827; font-weight: 700; margin: 0; }
+    .imp-empty p  { font-size: 14px; color: #4b5a8a; max-width: 380px; line-height: 1.7; margin: 0; }
 
     .imp-cta-btn {
         display: inline-flex; align-items: center; gap: 8px;
         padding: 13px 26px; border-radius: 14px; border: none;
-        background: #3B6D11; color: #fff; font-size: 14px; font-weight: 600;
+        background: #23376d; color: #fff; font-size: 14px; font-weight: 600;
         cursor: pointer; transition: all .2s; font-family: inherit;
-        box-shadow: 0 4px 16px rgba(59,109,17,.3);
+        box-shadow: 0 4px 16px rgba(35,55,109,.3);
     }
     .imp-cta-btn:hover {
-        background: #2c5309;
+        background: #1a2b57;
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(59,109,17,.4);
+        box-shadow: 0 8px 24px rgba(35,55,109,.4);
     }
 
     /* ── Global ── */
     .imp-global-hero {
         display: flex; align-items: center; gap: 24px;
-        background: linear-gradient(135deg, #0a3320 0%, #1f5c39 100%);
+        background: linear-gradient(135deg, #111d40 0%, #23376d 100%);
         border-radius: 24px; padding: 28px 32px; margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(10,51,32,.3);
+        box-shadow: 0 8px 32px rgba(35,55,109,.3);
     }
     .imp-globe-anim {
         font-size: 52px; flex-shrink: 0;
@@ -677,19 +679,19 @@ const CSS = `
 
     .imp-global-meta {
         display: flex; align-items: center; gap: 0;
-        background: #fff; border-radius: 18px; border: 0.5px solid #C0DD97;
+        background: #fff; border-radius: 18px; border: 0.5px solid rgba(35,55,109,0.15);
         padding: 18px 28px; margin-bottom: 2rem;
         justify-content: center;
     }
     .imp-global-meta-item {
         flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-        font-size: 12px; color: #639922; font-weight: 500;
+        font-size: 12px; color: #4b5a8a; font-weight: 500;
     }
     .imp-global-meta-num {
         font-family: 'Space Mono', monospace;
-        font-size: 32px; font-weight: 700; color: #3B6D11; line-height: 1;
+        font-size: 32px; font-weight: 700; color: #eb7207; line-height: 1;
     }
     .imp-global-meta-div {
-        width: 1px; height: 50px; background: #C0DD97; flex-shrink: 0; margin: 0 20px;
+        width: 1px; height: 50px; background: rgba(35,55,109,0.2); flex-shrink: 0; margin: 0 20px;
     }
 `
