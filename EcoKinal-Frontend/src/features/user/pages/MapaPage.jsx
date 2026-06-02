@@ -5,23 +5,23 @@ import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 const mapaStyles = `
   @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 
-  .mapa-page { background: #EAF3DE; min-height: 100vh; padding: 2.5rem 3rem; box-sizing: border-box; }
+  .mapa-page { background: #eef1f9; min-height: 100vh; padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem); box-sizing: border-box; max-width: 1280px; margin: 0 auto; }
 
   .mapa-badge {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 14px; border-radius: 99px; width: fit-content;
-    background: #C0DD97; border: 0.5px solid #97C459;
+    background: rgba(35,55,109,0.15); border: 0.5px solid #23376d;
     font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-    color: #27500A; text-transform: uppercase; margin-bottom: 1rem;
+    color: #23376d; text-transform: uppercase; margin-bottom: 1rem;
   }
 
   .mapa-title {
     font-family: 'Syne', sans-serif;
-    font-size: 48px; font-weight: 800; color: #173404;
+    font-size: 48px; font-weight: 800; color: #111827;
     line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 0.75rem 0;
   }
 
-  .mapa-subtitle { font-size: 15px; color: #639922; max-width: 520px; line-height: 1.75; margin: 0 0 2rem 0; }
+  .mapa-subtitle { font-size: 15px; color: #4b5a8a; max-width: 520px; line-height: 1.75; margin: 0 0 2rem 0; }
 
   .mapa-controls {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 2rem;
@@ -30,31 +30,31 @@ const mapaStyles = `
   .mapa-btn-primary {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 12px 24px; border-radius: 14px; border: none;
-    background: #27500A; color: #C0DD97;
+    background: #23376d; color: #fdb500;
     font-size: 14px; font-weight: 600; cursor: pointer;
     transition: all 0.18s ease; font-family: inherit;
   }
-  .mapa-btn-primary:hover:not(:disabled) { background: #3B6D11; transform: translateY(-1px); }
-  .mapa-btn-primary:disabled { background: #97C459; cursor: not-allowed; opacity: 0.7; }
+  .mapa-btn-primary:hover:not(:disabled) { background: #1a2b57; transform: translateY(-1px); }
+  .mapa-btn-primary:disabled { background: #d6dcef; color: #4b5a8a; cursor: not-allowed; opacity: 1; }
 
   .mapa-select {
     padding: 12px 16px; border-radius: 14px;
-    border: 0.5px solid #97C459; background: #fff;
-    font-size: 13px; color: #27500A; font-family: inherit;
+    border: 0.5px solid rgba(35,55,109,0.15); background: #fff;
+    font-size: 13px; color: #23376d; font-family: inherit;
     font-weight: 500; cursor: pointer; outline: none;
   }
 
   .mapa-badge-total {
     padding: 8px 16px; border-radius: 99px;
-    background: #fff; border: 0.5px solid #C0DD97;
-    font-size: 13px; font-weight: 600; color: #3B6D11;
+    background: #fff; border: 0.5px solid rgba(35,55,109,0.15);
+    font-size: 13px; font-weight: 600; color: #23376d;
   }
 
   /* ── Mapa ancho completo ── */
   .mapa-map-wrapper {
-    background: #fff; border: 0.5px solid #C0DD97;
+    background: #fff; border: 0.5px solid rgba(35,55,109,0.15);
     border-radius: 24px; overflow: hidden;
-    box-shadow: 0 4px 24px rgba(39,80,10,0.06);
+    box-shadow: 0 4px 24px rgba(35,55,109,0.06);
     margin-bottom: 2rem;
   }
 
@@ -67,7 +67,7 @@ const mapaStyles = `
   }
   .mapa-lista-title {
     font-size: 10px; font-weight: 800; letter-spacing: 0.15em;
-    color: #3B6D11; text-transform: uppercase;
+    color: #23376d; text-transform: uppercase;
   }
 
   /* ── Grid 3 columnas ── */
@@ -78,34 +78,34 @@ const mapaStyles = `
   }
 
   .mapa-card {
-    background: #fff; border: 0.5px solid #C0DD97;
+    background: #fff; border: 0.5px solid rgba(35,55,109,0.15);
     border-radius: 20px; padding: 20px;
     cursor: pointer; transition: all 0.22s ease;
     position: relative; overflow: hidden;
     display: flex; flex-direction: column; gap: 8px;
   }
   .mapa-card:hover {
-    border-color: #27500A;
+    border-color: #23376d;
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(39,80,10,0.10);
+    box-shadow: 0 8px 24px rgba(35,55,109,0.10);
   }
 
   .mapa-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .mapa-card-num-name { display: flex; gap: 10px; align-items: flex-start; }
   .mapa-card-num {
     width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    background: #3B6D11; color: #C0DD97;
+    background: #23376d; color: #fdb500;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 800; margin-top: 1px;
   }
-  .mapa-card-name { font-size: 13.5px; font-weight: 700; color: #173404; line-height: 1.35; }
+  .mapa-card-name { font-size: 13.5px; font-weight: 700; color: #111827; line-height: 1.35; }
   .mapa-card-dist {
-    font-size: 11px; font-weight: 700; color: #3B6D11;
-    background: #EAF3DE; padding: 3px 10px; border-radius: 99px;
+    font-size: 11px; font-weight: 700; color: #eb7207;
+    background: #fff0e6; padding: 3px 10px; border-radius: 99px;
     white-space: nowrap; flex-shrink: 0;
   }
 
-  .mapa-card-address { font-size: 11.5px; color: #639922; line-height: 1.5; flex: 1; }
+  .mapa-card-address { font-size: 11.5px; color: #4b5a8a; line-height: 1.5; flex: 1; }
 
   .mapa-card-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
 
@@ -113,30 +113,30 @@ const mapaStyles = `
     display: inline-flex; align-items: center; gap: 4px;
     font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px;
   }
-  .mapa-chip-open    { background: #EAF3DE; color: #27500A; }
+  .mapa-chip-open    { background: #eef1f9; color: #23376d; }
   .mapa-chip-closed  { background: #FCEBEB; color: #791F1F; }
   .mapa-chip-unknown { background: #F1EFE8; color: #555; }
   .mapa-chip-rating  { background: #FAEEDA; color: #633806; }
 
   .mapa-link {
     margin-left: auto; font-size: 11px; font-weight: 600;
-    color: #3B6D11; text-decoration: none;
+    color: #23376d; text-decoration: none;
     display: inline-flex; align-items: center; gap: 3px;
-    padding: 4px 10px; border-radius: 8px; background: #EAF3DE;
+    padding: 4px 10px; border-radius: 8px; background: #eef1f9;
     transition: background 0.15s ease;
   }
-  .mapa-link:hover { background: #C0DD97; }
+  .mapa-link:hover { background: rgba(35,55,109,0.15); }
 
   /* Estado vacío */
   .mapa-empty {
     grid-column: 1 / -1;
     text-align: center; padding: 60px 24px;
-    background: #fff; border: 0.5px solid #C0DD97;
+    background: #fff; border: 0.5px solid rgba(35,55,109,0.15);
     border-radius: 24px;
   }
   .mapa-empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .mapa-empty h3 { font-size: 18px; font-weight: 700; color: #173404; margin-bottom: 8px; }
-  .mapa-empty p  { font-size: 14px; color: #639922; line-height: 1.6; }
+  .mapa-empty h3 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+  .mapa-empty p  { font-size: 14px; color: #4b5a8a; line-height: 1.6; }
 
   /* Error */
   .mapa-error {
@@ -148,7 +148,7 @@ const mapaStyles = `
 
   /* Skeleton — 3 cols */
   .mapa-skeleton {
-    background: linear-gradient(90deg, #EAF3DE 25%, #C0DD97 50%, #EAF3DE 75%);
+    background: linear-gradient(90deg, #e8ecf5 25%, #d6dcef 50%, #e8ecf5 75%);
     background-size: 400px 100%;
     animation: skelShimmer 1.4s ease-in-out infinite;
     border-radius: 20px; height: 130px;
@@ -218,7 +218,7 @@ export default function MapaPage() {
       if (userLat && userLon) {
         const userIcon = L.divIcon({
           className: '',
-          html: `<div style="width:18px;height:18px;border-radius:50%;background:#27500A;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>`,
+          html: `<div style="width:18px;height:18px;border-radius:50%;background:#23376d;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>`,
           iconSize: [18, 18], iconAnchor: [9, 9]
         })
         markersRef.current.push(
@@ -231,24 +231,24 @@ export default function MapaPage() {
         if (!c.lat || !c.lon) return
         const icon = L.divIcon({
           className: '',
-          html: `<div style="width:32px;height:32px;border-radius:50%;background:#3B6D11;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;color:#C0DD97;font-size:13px;font-weight:800;">${i + 1}</div>`,
+          html: `<div style="width:32px;height:32px;border-radius:50%;background:#23376d;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;color:#fdb500;font-size:13px;font-weight:800;">${i + 1}</div>`,
           iconSize: [32, 32], iconAnchor: [16, 16]
         })
         const openBadge = c.open_status === 'Abierto'
-          ? `<span style="color:#27500A;font-weight:700">● Abierto</span>`
+          ? `<span style="color:#23376d;font-weight:700">● Abierto</span>`
           : c.open_status === 'Cerrado'
           ? `<span style="color:#791F1F;font-weight:700">● Cerrado</span>`
           : `<span style="color:#888">Horario N/D</span>`
         const popupHtml = `
           <div style="font-family:Outfit,sans-serif;min-width:200px">
-            <p style="font-weight:700;font-size:14px;color:#173404;margin:0 0 4px">${c.name}</p>
-            <p style="font-size:12px;color:#639922;margin:0 0 6px">${c.address}</p>
+            <p style="font-weight:700;font-size:14px;color:#111827;margin:0 0 4px">${c.name}</p>
+            <p style="font-size:12px;color:#4b5a8a;margin:0 0 6px">${c.address}</p>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               ${openBadge}
-              <span style="font-size:12px;color:#3B6D11;font-weight:600">${c.distance_km} km</span>
+              <span style="font-size:12px;color:#eb7207;font-weight:600">${c.distance_km} km</span>
               ${c.rating ? `<span style="font-size:12px;color:#BA7517">★ ${c.rating}</span>` : ''}
             </div>
-            ${c.google_maps_url ? `<a href="${c.google_maps_url}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;color:#27500A;font-weight:600">Ver en Google Maps ↗</a>` : ''}
+            ${c.google_maps_url ? `<a href="${c.google_maps_url}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;color:#23376d;font-weight:600">Ver en Google Maps ↗</a>` : ''}
           </div>`
         markersRef.current.push(
           L.marker([c.lat, c.lon], { icon }).addTo(mapRef.current).bindPopup(popupHtml, { maxWidth: 260 })
@@ -269,14 +269,14 @@ export default function MapaPage() {
       <style>{mapaStyles}</style>
 
       <div className="mapa-badge">
-        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#27500A" strokeWidth="2">
+        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
         </svg>
         EcoKinal · Google Places API
       </div>
       <h1 className="mapa-title">
-        Mapa de <span style={{ color: '#3B6D11' }}>reciclaje</span>
+        Mapa de <span style={{ color: '#eb7207' }}>reciclaje</span>
       </h1>
       <p className="mapa-subtitle">
         Encuentra los centros de reciclaje y recicladoras más cercanos a tu ubicación actual.

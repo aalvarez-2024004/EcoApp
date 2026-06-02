@@ -1,5 +1,5 @@
 // Bote de basura con color dinámico — diseño orgánico
-export const BinIcon = ({ color = '#639922', size = 72 }) => (
+export const BinIcon = ({ color = '#23376d', size = 72 }) => (
   <svg viewBox="0 0 72 80" fill="none" style={{ width: size, height: size }}>
     {/* Sombra base */}
     <ellipse cx="36" cy="76" rx="18" ry="3" fill={color} opacity="0.12" />
@@ -57,22 +57,22 @@ export const ScanOverlay = () => (
   <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-10">
     {/* Línea de escaneo */}
     <div className="absolute left-0 right-0 h-0.5 animate-scan"
-         style={{ background: 'linear-gradient(90deg, transparent, #639922, #97C459, #639922, transparent)' }} />
+         style={{ background: 'linear-gradient(90deg, transparent, #23376d, #eb7207, #23376d, transparent)' }} />
 
     {/* Cuadrícula sutil */}
     {[25, 50, 75].map(p => (
-      <div key={p} className="absolute left-4 right-4 h-px" style={{ top: `${p}%`, background: '#639922', opacity: 0.12 }} />
+      <div key={p} className="absolute left-4 right-4 h-px" style={{ top: `${p}%`, background: '#23376d', opacity: 0.12 }} />
     ))}
     {[25, 50, 75].map(p => (
-      <div key={p} className="absolute top-4 bottom-4 w-px" style={{ left: `${p}%`, background: '#639922', opacity: 0.12 }} />
+      <div key={p} className="absolute top-4 bottom-4 w-px" style={{ left: `${p}%`, background: '#23376d', opacity: 0.12 }} />
     ))}
 
     {/* Esquinas del visor */}
     {[
-      { top: 12, left: 12,  borderTop: '2px solid #639922', borderLeft: '2px solid #639922',  borderRadius: '6px 0 0 0' },
-      { top: 12, right: 12, borderTop: '2px solid #639922', borderRight: '2px solid #639922', borderRadius: '0 6px 0 0' },
-      { bottom: 12, left: 12,  borderBottom: '2px solid #639922', borderLeft: '2px solid #639922',  borderRadius: '0 0 0 6px' },
-      { bottom: 12, right: 12, borderBottom: '2px solid #639922', borderRight: '2px solid #639922', borderRadius: '0 0 6px 0' },
+      { top: 12, left: 12,  borderTop: '2px solid #23376d', borderLeft: '2px solid #23376d',  borderRadius: '6px 0 0 0' },
+      { top: 12, right: 12, borderTop: '2px solid #23376d', borderRight: '2px solid #23376d', borderRadius: '0 6px 0 0' },
+      { bottom: 12, left: 12,  borderBottom: '2px solid #23376d', borderLeft: '2px solid #23376d',  borderRadius: '0 0 0 6px' },
+      { bottom: 12, right: 12, borderBottom: '2px solid #23376d', borderRight: '2px solid #23376d', borderRadius: '0 0 6px 0' },
     ].map((style, i) => (
       <div key={i} className="absolute w-7 h-7" style={style} />
     ))}
@@ -80,13 +80,13 @@ export const ScanOverlay = () => (
 )
 
 // Barra de progreso animada para el estado de carga
-export const ConfidenceBar = ({ label, value, color = '#639922' }) => (
+export const ConfidenceBar = ({ label, value, color = '#23376d' }) => (
   <div className="space-y-1.5">
     <div className="flex justify-between" style={{ fontSize: 12 }}>
-      <span style={{ color: '#3B6D11' }}>{label}</span>
-      <span style={{ color: '#27500A', fontWeight: 600 }}>{value}%</span>
+      <span style={{ color: '#23376d' }}>{label}</span>
+      <span style={{ color: '#eb7207', fontWeight: 600 }}>{value}%</span>
     </div>
-    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#EAF3DE' }}>
+    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#eef1f9' }}>
       <div
         className="h-full rounded-full bar-animated"
         style={{ width: `${value}%`, background: color, transition: 'width 1s ease' }}
@@ -99,18 +99,18 @@ export const ConfidenceBar = ({ label, value, color = '#639922' }) => (
 export const LeafSpinner = () => (
   <div className="relative w-16 h-16 flex items-center justify-center">
     <div className="absolute inset-0 rounded-full border-2 border-dashed animate-spin-leaf"
-         style={{ borderColor: '#97C459', animationDuration: '3s' }} />
-    <div className="absolute inset-2 rounded-full" style={{ background: '#EAF3DE' }} />
-    <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 relative z-10" style={{ color: '#3B6D11' }}>
+         style={{ borderColor: '#23376d', animationDuration: '3s' }} />
+    <div className="absolute inset-2 rounded-full" style={{ background: '#eef1f9' }} />
+    <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 relative z-10" style={{ color: '#23376d' }}>
       <path
         d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10C12 12 12 2 12 2z"
-        fill="#639922" opacity="0.15"
+        fill="#23376d" opacity="0.15"
       />
       <path
         d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2c0 5.523 0 10 10 10-5.523 0-10 4.477-10 10z"
-        fill="#3B6D11" opacity="0.8"
+        fill="#eb7207" opacity="0.8"
       />
-      <path d="M12 2v10M12 12l-4-4" stroke="#C0DD97" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M12 2v10M12 12l-4-4" stroke="#fdb500" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   </div>
 )
