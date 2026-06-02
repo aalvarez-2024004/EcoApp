@@ -11,7 +11,7 @@ function EmptyState() {
       label: 'Sube o captura',
       desc: 'Una foto clara del residuo que quieres clasificar.',
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#3B6D11" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#23376d" strokeWidth="1.8">
           <path strokeLinecap="round" strokeLinejoin="round"
             d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
         </svg>
@@ -22,7 +22,7 @@ function EmptyState() {
       label: 'Google Vision lo analiza',
       desc: 'La IA identifica el tipo de material automáticamente.',
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#3B6D11" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#23376d" strokeWidth="1.8">
           <path strokeLinecap="round" strokeLinejoin="round"
             d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
         </svg>
@@ -33,7 +33,7 @@ function EmptyState() {
       label: 'Descubre el contenedor',
       desc: 'Sabrás exactamente en qué basurero depositarlo.',
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#3B6D11" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#23376d" strokeWidth="1.8">
           <path strokeLinecap="round" strokeLinejoin="round"
             d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
@@ -47,16 +47,16 @@ function EmptyState() {
       {/* Header de la tarjeta */}
       <div style={{
         padding: '1rem 1.25rem',
-        borderBottom: '0.5px solid #C0DD97',
+        borderBottom: '0.5px solid rgba(35,55,109,0.15)',
         display: 'flex', alignItems: 'center', gap: 8,
       }}>
-        <div style={{ width: 24, height: 24, borderRadius: 8, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#3B6D11" strokeWidth="2">
+        <div style={{ width: 24, height: 24, borderRadius: 8, background: '#eef1f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round"
               d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
           </svg>
         </div>
-        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#97C459', textTransform: 'uppercase', margin: 0 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#23376d', textTransform: 'uppercase', margin: 0 }}>
           Cómo funciona
         </p>
       </div>
@@ -69,22 +69,22 @@ function EmptyState() {
             style={{
               display: 'flex', alignItems: 'flex-start', gap: 16,
               padding: '1.25rem',
-              borderBottom: i < steps.length - 1 ? '0.5px solid #C0DD97' : 'none',
+              borderBottom: i < steps.length - 1 ? '0.5px solid rgba(35,55,109,0.15)' : 'none',
             }}
           >
             <div style={{
               width: 42, height: 42, borderRadius: 12, flexShrink: 0,
-              background: '#EAF3DE', border: '0.5px solid #C0DD97',
+              background: '#eef1f9', border: '0.5px solid rgba(35,55,109,0.15)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {icon}
             </div>
             <div style={{ paddingTop: 2 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#97C459' }}>{n}</span>
-                <p style={{ fontSize: 13, fontWeight: 600, color: '#27500A', margin: 0 }}>{label}</p>
+                <span style={{ fontSize: 10, fontWeight: 700, color: '#23376d' }}>{n}</span>
+                <p style={{ fontSize: 13, fontWeight: 600, color: '#23376d', margin: 0 }}>{label}</p>
               </div>
-              <p style={{ fontSize: 12, color: '#639922', lineHeight: 1.65, margin: 0 }}>{desc}</p>
+              <p style={{ fontSize: 12, color: '#4b5a8a', lineHeight: 1.65, margin: 0 }}>{desc}</p>
             </div>
           </div>
         ))}
@@ -93,16 +93,16 @@ function EmptyState() {
       {/* Footer */}
       <div style={{
         padding: '1rem 1.25rem',
-        borderTop: '0.5px solid #C0DD97',
+        borderTop: '0.5px solid rgba(35,55,109,0.15)',
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
-        <div style={{ width: 28, height: 28, borderRadius: 8, background: '#EAF3DE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <svg viewBox="0 0 24 24" fill="none" style={{ width: 14, height: 14 }} stroke="#3B6D11" strokeWidth="2">
+        <div style={{ width: 28, height: 28, borderRadius: 8, background: '#eef1f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg viewBox="0 0 24 24" fill="none" style={{ width: 14, height: 14 }} stroke="#23376d" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           </svg>
         </div>
-        <p style={{ fontSize: 11, color: '#97C459', margin: 0 }}>Tecnología Google Vision · IA</p>
+        <p style={{ fontSize: 11, color: '#23376d', margin: 0 }}>Tecnología Google Vision · IA</p>
       </div>
     </div>
   )
@@ -117,17 +117,17 @@ function LoadingState() {
       <LeafSpinner />
 
       <div style={{ textAlign: 'center' }}>
-        <p style={{ fontSize: 15, fontWeight: 600, color: '#27500A', margin: 0 }}>Identificando material…</p>
-        <p style={{ fontSize: 12, color: '#639922', marginTop: 4 }}>Google Vision está analizando tu imagen</p>
+        <p style={{ fontSize: 15, fontWeight: 600, color: '#23376d', margin: 0 }}>Identificando material…</p>
+        <p style={{ fontSize: 12, color: '#4b5a8a', marginTop: 4 }}>Google Vision está analizando tu imagen</p>
       </div>
 
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <ConfidenceBar label="Análisis de textura"       value={72} color="#639922" />
-        <ConfidenceBar label="Reconocimiento de forma"   value={58} color="#3B6D11" />
-        <ConfidenceBar label="Clasificación de material" value={89} color="#97C459" />
+        <ConfidenceBar label="Análisis de textura"       value={72} color="#23376d" />
+        <ConfidenceBar label="Reconocimiento de forma"   value={58} color="#eb7207" />
+        <ConfidenceBar label="Clasificación de material" value={89} color="#fdb500" />
       </div>
 
-      <div style={{ width: '100%', height: 4, borderRadius: 99, overflow: 'hidden', background: '#EAF3DE' }}>
+      <div style={{ width: '100%', height: 4, borderRadius: 99, overflow: 'hidden', background: '#eef1f9' }}>
         <div className="shimmer-bar" style={{ height: '100%', borderRadius: 99 }} />
       </div>
     </div>
@@ -175,8 +175,8 @@ export default function ResultPanel({ resultado, isLoading, onLimpiar }) {
 
         {/* Labels detectados */}
         {resultado.labels?.length > 0 && (
-          <div style={{ padding: '1rem 1.25rem', borderBottom: '0.5px solid #C0DD97' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: '#97C459', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
+          <div style={{ padding: '1rem 1.25rem', borderBottom: '0.5px solid rgba(35,55,109,0.15)' }}>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: '#23376d', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
               Labels detectados
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -185,9 +185,9 @@ export default function ResultPanel({ resultado, isLoading, onLimpiar }) {
                   key={i}
                   style={{
                     padding: '4px 10px', borderRadius: 99, fontSize: 11,
-                    background: i < 2 ? '#EAF3DE' : '#F1EFE8',
-                    color: i < 2 ? '#27500A' : '#888780',
-                    border: `0.5px solid ${i < 2 ? '#C0DD97' : '#D3D1C7'}`,
+                    background: i < 2 ? '#eef1f9' : '#F1EFE8',
+                    color: i < 2 ? '#23376d' : '#888780',
+                    border: `0.5px solid ${i < 2 ? 'rgba(35,55,109,0.15)' : '#D3D1C7'}`,
                   }}
                 >
                   {label}
@@ -199,18 +199,18 @@ export default function ResultPanel({ resultado, isLoading, onLimpiar }) {
 
         {/* Contenedor destino */}
         <div style={{ padding: '1rem 1.25rem' }}>
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: '#97C459', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: '#23376d', textTransform: 'uppercase', margin: '0 0 10px 0' }}>
             ¿Dónde depositarlo?
           </p>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '10px 14px', borderRadius: 12,
-            background: '#EAF3DE', border: '0.5px solid #C0DD97',
+            background: '#eef1f9', border: '0.5px solid rgba(35,55,109,0.15)',
           }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', flexShrink: 0, background: colorSet.hex }} />
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#27500A', margin: 0 }}>Contenedor {nombreBin}</p>
-              <p style={{ fontSize: 11, color: '#639922', marginTop: 2 }}>{resultado.contenedor}</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#23376d', margin: 0 }}>Contenedor {nombreBin}</p>
+              <p style={{ fontSize: 11, color: '#4b5a8a', marginTop: 2 }}>{resultado.contenedor}</p>
             </div>
           </div>
         </div>

@@ -1,25 +1,40 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useUser } from '../store/useUserStore'
 import useAuthStore from '../../auth/store/useAuthStore'
 import Avatar from './Avatar'
+import PillNav from './PillNav'
 
-// Estructura de navegación segmentada y limpia
-const NAVIGATION_SECTIONS = [
+// Navegación principal del dashboard
+const navigationItems = [
   {
-    title: 'PRINCIPAL',
-    links: [
-      { to: '/dashboard/usuario', icon: 'ti-home', label: 'Inicio', end: true }
-    ]
+    label: 'Detector de reciclaje',
+    href: '/dashboard/usuario/detector',
+    icon: 'ti ti-camera',
+    hoverLabel: 'Clasificar'
   },
   {
-    title: 'MÓDULOS',
-    links: [
-      { to: '/dashboard/usuario/detector', icon: 'ti-camera',    label: 'Detector de reciclaje' },
-      { to: '/dashboard/usuario/foro',     icon: 'ti-messages',  label: 'Foro eco' },
-      { to: '/dashboard/usuario/puntos',   icon: 'ti-trophy',    label: 'Gamificación' },
-      { to: '/dashboard/usuario/impacto',  icon: 'ti-chart-bar', label: 'Mi impacto' },
-      { to: '/dashboard/usuario/mapa',     icon: 'ti-map-pin',   label: 'Mapa reciclaje' }
-    ]
+    label: 'Foro eco',
+    href: '/dashboard/usuario/foro',
+    icon: 'ti ti-messages',
+    hoverLabel: 'Comunidad'
+  },
+  {
+    label: 'Gamificación',
+    href: '/dashboard/usuario/puntos',
+    icon: 'ti ti-trophy',
+    hoverLabel: 'Retos'
+  },
+  {
+    label: 'Mi impacto',
+    href: '/dashboard/usuario/impacto',
+    icon: 'ti ti-chart-bar',
+    hoverLabel: 'Estadísticas'
+  },
+  {
+    label: 'Mapa reciclaje',
+    href: '/dashboard/usuario/mapa',
+    icon: 'ti ti-map-pin',
+    hoverLabel: 'Ubicar'
   }
 ]
 
@@ -56,27 +71,17 @@ export default function Sidebar({ onEditProfile }) {
         </button>
       </div>
 
-      {/* Navegación Principal */}
-      <nav className="db-nav-container">
-        {NAVIGATION_SECTIONS.map((section) => (
-          <div key={section.title} className="db-nav-section">
-            <span className="db-nav-section-title">{section.title}</span>
-            <div className="db-nav-list">
-              {section.links.map(({ to, icon, label, end }) => (
-                <NavLink 
-                  key={to} 
-                  to={to} 
-                  end={end} 
-                  className={({ isActive }) => `db-nav-link ${isActive ? 'active' : ''}`}
-                >
-                  <i className={`ti ${icon}`} aria-hidden="true" />
-                  <span>{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
+      {/* Navegación Principal con PillNav */}
+      <PillNav
+        items={navigationItems}
+        baseColor="#f8fbf4"
+        pillColor="#9ecd6f"
+        hoveredPillTextColor="#ffffff"
+        pillTextColor="#18311f"
+        logoAlt="EcoKinal"
+        initialLoadAnimation={false}
+        onLogoutAction={handleLogout}
+      />
 
       {/* Cerrar Sesión */}
       <div className="db-logout-wrapper">

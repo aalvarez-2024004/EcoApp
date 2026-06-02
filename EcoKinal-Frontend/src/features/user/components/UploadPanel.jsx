@@ -9,12 +9,12 @@ function CloseBtn({ onClick }) {
         position: 'absolute', top: 12, right: 12, zIndex: 20,
         width: 32, height: 32, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#fff', border: '0.5px solid #C0DD97',
-        color: '#639922', fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
+        color: '#23376d', fontSize: 18, lineHeight: 1, cursor: 'pointer',
         transition: 'all 0.15s ease',
       }}
       onMouseEnter={e => { e.currentTarget.style.background = '#FCEBEB'; e.currentTarget.style.color = '#E24B4A' }}
-      onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#639922' }}
+      onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#23376d' }}
     >
       ×
     </button>
@@ -46,8 +46,8 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
           ...(preview
             ? { background: '#0d150f' }
             : {
-                border: '2px dashed #97C459',
-                background: '#EAF3DE',
+                border: '2px dashed #23376d',
+                background: '#eef1f9',
                 cursor: 'pointer',
               }
           ),
@@ -55,8 +55,8 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
         onClick={() => !preview && fileInputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        onMouseEnter={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #3B6D11'; e.currentTarget.style.background = '#DFF0CC' }}}
-        onMouseLeave={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #97C459'; e.currentTarget.style.background = '#EAF3DE' }}}
+        onMouseEnter={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #23376d'; e.currentTarget.style.background = '#eef1f9' }}}
+        onMouseLeave={e => { if (!preview) { e.currentTarget.style.border = '2px dashed #23376d'; e.currentTarget.style.background = '#eef1f9' }}}
       >
         {preview ? (
           <>
@@ -91,10 +91,10 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
                 position: 'absolute', bottom: 12, left: 12, zIndex: 10,
                 display: 'flex', alignItems: 'center', gap: 8,
                 padding: '6px 14px', borderRadius: 99,
-                background: 'rgba(234,243,222,0.95)', border: '0.5px solid #97C459',
+                background: 'rgba(238,241,249,0.95)', border: '0.5px solid #23376d',
               }}>
-                <div className="pulse-ring" style={{ width: 8, height: 8, borderRadius: '50%', background: '#639922', color: '#639922', position: 'relative' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#27500A' }}>Imagen lista</span>
+                <div className="pulse-ring" style={{ width: 8, height: 8, borderRadius: '50%', background: '#23376d', color: '#23376d', position: 'relative' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#23376d' }}>Imagen lista</span>
               </div>
             )}
 
@@ -104,9 +104,9 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
                 transform: 'translate(-50%,-50%)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                 padding: '12px 20px', borderRadius: 16,
-                background: 'rgba(39,80,10,0.85)',
+                background: 'rgba(35,55,109,0.85)',
               }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#C0DD97' }}>Analizando material…</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#eef1f9' }}>Analizando material…</span>
               </div>
             )}
           </>
@@ -117,23 +117,23 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
               style={{
                 width: 80, height: 80, borderRadius: 20,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: '#fff', border: '0.5px solid #C0DD97',
-                boxShadow: '0 4px 20px rgba(99,153,34,0.15)',
+                background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
+                boxShadow: '0 4px 20px rgba(35,55,109,0.15)',
               }}
             >
-              <svg viewBox="0 0 24 24" fill="none" style={{ width: 36, height: 36 }} stroke="#3B6D11" strokeWidth="1.5">
+              <svg viewBox="0 0 24 24" fill="none" style={{ width: 36, height: 36 }} stroke="#23376d" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
             </div>
             <div>
-              <p style={{ fontSize: 16, fontWeight: 700, color: '#27500A', margin: 0 }}>Arrastra tu imagen aquí</p>
-              <p style={{ fontSize: 13, color: '#639922', marginTop: 6 }}>o haz clic para explorar archivos</p>
+              <p style={{ fontSize: 16, fontWeight: 700, color: '#23376d', margin: 0 }}>Arrastra tu imagen aquí</p>
+              <p style={{ fontSize: 13, color: '#4b5a8a', marginTop: 6 }}>o haz clic para explorar archivos</p>
             </div>
             <span style={{
               padding: '6px 16px', borderRadius: 99, fontSize: 11,
-              fontWeight: 500, color: '#3B6D11',
-              background: '#fff', border: '0.5px solid #C0DD97',
+              fontWeight: 500, color: '#23376d',
+              background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
             }}>
               JPG · PNG · WEBP · máx 5 MB
             </span>
@@ -180,14 +180,14 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
             style={{
               flex: 1, padding: '12px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              ...(isLoading ? { background: '#97C459', cursor: 'not-allowed' } : {}),
+              ...(isLoading ? { background: 'rgba(35,55,109,0.3)', cursor: 'not-allowed' } : {}),
             }}
           >
             {isLoading ? (
               <>
                 <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="#C0DD97" strokeWidth="3" opacity="0.3" />
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="#C0DD97" strokeWidth="3" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" opacity="0.3" />
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" strokeLinecap="round" />
                 </svg>
                 Analizando…
               </>
