@@ -9,12 +9,12 @@ function CloseBtn({ onClick }) {
         position: 'absolute', top: 12, right: 12, zIndex: 20,
         width: 32, height: 32, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#fff', border: '0.5px solid #C0DD97',
-        color: '#639922', fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
+        color: '#23376d', fontSize: 18, lineHeight: 1, cursor: 'pointer',
         transition: 'all 0.15s ease',
       }}
       onMouseEnter={e => { e.currentTarget.style.background = '#FCEBEB'; e.currentTarget.style.color = '#E24B4A'; e.currentTarget.style.borderColor = '#F09595' }}
-      onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#639922'; e.currentTarget.style.borderColor = '#C0DD97' }}
+      onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#23376d'; e.currentTarget.style.borderColor = 'rgba(35,55,109,0.15)' }}
     >
       ×
     </button>
@@ -25,13 +25,13 @@ function Viewfinder() {
   const cornerStyle = (pos) => ({ position: 'absolute', width: 28, height: 28, ...pos })
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
-      <div style={{ ...cornerStyle({ top: 16, left: 16 }), borderTop: '2px solid #97C459', borderLeft: '2px solid #97C459', borderRadius: '6px 0 0 0' }} />
-      <div style={{ ...cornerStyle({ top: 16, right: 16 }), borderTop: '2px solid #97C459', borderRight: '2px solid #97C459', borderRadius: '0 6px 0 0' }} />
-      <div style={{ ...cornerStyle({ bottom: 16, left: 16 }), borderBottom: '2px solid #97C459', borderLeft: '2px solid #97C459', borderRadius: '0 0 0 6px' }} />
-      <div style={{ ...cornerStyle({ bottom: 16, right: 16 }), borderBottom: '2px solid #97C459', borderRight: '2px solid #97C459', borderRadius: '0 0 6px 0' }} />
+      <div style={{ ...cornerStyle({ top: 16, left: 16 }), borderTop: '2px solid #23376d', borderLeft: '2px solid #23376d', borderRadius: '6px 0 0 0' }} />
+      <div style={{ ...cornerStyle({ top: 16, right: 16 }), borderTop: '2px solid #23376d', borderRight: '2px solid #23376d', borderRadius: '0 6px 0 0' }} />
+      <div style={{ ...cornerStyle({ bottom: 16, left: 16 }), borderBottom: '2px solid #23376d', borderLeft: '2px solid #23376d', borderRadius: '0 0 0 6px' }} />
+      <div style={{ ...cornerStyle({ bottom: 16, right: 16 }), borderBottom: '2px solid #23376d', borderRight: '2px solid #23376d', borderRadius: '0 0 6px 0' }} />
       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 16, height: 1, background: 'rgba(151,196,89,0.4)' }} />
-        <div style={{ position: 'absolute', width: 1, height: 16, background: 'rgba(151,196,89,0.4)' }} />
+        <div style={{ width: 16, height: 1, background: 'rgba(35,55,109,0.4)' }} />
+        <div style={{ position: 'absolute', width: 1, height: 16, background: 'rgba(35,55,109,0.4)' }} />
       </div>
     </div>
   )
@@ -75,9 +75,9 @@ export default function CameraPanel({
           aspectRatio: '1 / 1',
           alignSelf: 'center',
           borderRadius: 16,
-          background: camIdle ? '#EAF3DE' : '#0d150f',
+          background: camIdle ? '#eef1f9' : '#0d150f',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          border: camIdle ? '2px dashed #97C459' : 'none',
+          border: camIdle ? '2px dashed #23376d' : 'none',
         }}
       >
         {/* Video en vivo — cover para que llene bien */}
@@ -135,18 +135,18 @@ export default function CameraPanel({
             <div className="animate-float" style={{
               width: 80, height: 80, borderRadius: 20,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: '#fff', border: '0.5px solid #C0DD97',
-              boxShadow: '0 4px 20px rgba(99,153,34,0.15)',
+              background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
+              boxShadow: '0 4px 20px rgba(35,55,109,0.15)',
             }}>
-              <svg viewBox="0 0 24 24" fill="none" style={{ width: 36, height: 36 }} stroke="#3B6D11" strokeWidth="1.5">
+              <svg viewBox="0 0 24 24" fill="none" style={{ width: 36, height: 36 }} stroke="#23376d" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
               </svg>
             </div>
             <div>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#27500A', margin: 0 }}>Activa tu cámara</p>
-              <p style={{ fontSize: 12, color: '#639922', marginTop: 4 }}>Apunta al residuo que quieres clasificar</p>
+              <p style={{ fontSize: 15, fontWeight: 700, color: '#23376d', margin: 0 }}>Activa tu cámara</p>
+              <p style={{ fontSize: 12, color: '#4b5a8a', marginTop: 4 }}>Apunta al residuo que quieres clasificar</p>
             </div>
           </div>
         )}
@@ -159,10 +159,10 @@ export default function CameraPanel({
             position: 'absolute', bottom: 12, left: 12, zIndex: 10,
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '6px 14px', borderRadius: 99,
-            background: 'rgba(234,243,222,0.95)', border: '0.5px solid #97C459',
+            background: 'rgba(238,241,249,0.95)', border: '0.5px solid #23376d',
           }}>
-            <div className="pulse-ring" style={{ width: 8, height: 8, borderRadius: '50%', background: '#639922', color: '#639922', position: 'relative' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#27500A' }}>Foto capturada</span>
+            <div className="pulse-ring" style={{ width: 8, height: 8, borderRadius: '50%', background: '#23376d', color: '#23376d', position: 'relative' }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#23376d' }}>Foto capturada</span>
           </div>
         )}
 
@@ -172,9 +172,9 @@ export default function CameraPanel({
             position: 'absolute', top: '50%', left: '50%', zIndex: 20,
             transform: 'translate(-50%,-50%)',
             padding: '10px 20px', borderRadius: 14,
-            background: 'rgba(39,80,10,0.85)',
+            background: 'rgba(35,55,109,0.85)',
           }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#C0DD97' }}>Analizando material…</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#eef1f9' }}>Analizando material…</span>
           </div>
         )}
 
@@ -225,13 +225,13 @@ export default function CameraPanel({
             style={{
               flex: 1, padding: '12px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              ...(isLoading ? { background: '#97C459', cursor: 'not-allowed' } : {}),
+              ...(isLoading ? { background: 'rgba(35,55,109,0.3)', cursor: 'not-allowed' } : {}),
             }}>
             {isLoading ? (
               <>
                 <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="#C0DD97" strokeWidth="3" opacity="0.3" />
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="#C0DD97" strokeWidth="3" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" opacity="0.3" />
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" strokeLinecap="round" />
                 </svg>
                 Analizando…
               </>

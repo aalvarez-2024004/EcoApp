@@ -43,7 +43,7 @@ export const detectorStyles = `
   .animate-spin-leaf { animation: spinLeaf 1.6s linear infinite; }
 
   .shimmer-bar {
-    background: linear-gradient(90deg, #C0DD97 0%, #97C459 40%, #C0DD97 80%);
+    background: linear-gradient(90deg, rgba(35,55,109,0.15) 0%, rgba(235,114,7,0.3) 40%, rgba(35,55,109,0.15) 80%);
     background-size: 400px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
   }
@@ -63,13 +63,13 @@ export const detectorStyles = `
 
   .eco-card {
     background: #fff;
-    border: 0.5px solid #C0DD97;
+    border: 0.5px solid rgba(35,55,109,0.15);
     border-radius: 20px;
   }
 
   .eco-btn-primary {
-    background: #27500A;
-    color: #C0DD97;
+    background: #23376d;
+    color: #fdb500;
     border: none;
     border-radius: 14px;
     font-weight: 600;
@@ -77,37 +77,37 @@ export const detectorStyles = `
     cursor: pointer;
     transition: all 0.18s ease;
   }
-  .eco-btn-primary:hover  { background: #3B6D11; }
+  .eco-btn-primary:hover  { background: #eb7207; }
   .eco-btn-primary:active { transform: scale(0.98); }
-  .eco-btn-primary:disabled { background: #97C459; cursor: not-allowed; }
+  .eco-btn-primary:disabled { background: rgba(35,55,109,0.3); cursor: not-allowed; }
 
   .eco-btn-secondary {
-    background: #EAF3DE;
-    color: #3B6D11;
-    border: 0.5px solid #97C459;
+    background: #eef1f9;
+    color: #23376d;
+    border: 0.5px solid rgba(35,55,109,0.15);
     border-radius: 14px;
     font-weight: 500;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.18s ease;
   }
-  .eco-btn-secondary:hover  { background: #C0DD97; }
+  .eco-btn-secondary:hover  { background: rgba(35,55,109,0.15); }
   .eco-btn-secondary:active { transform: scale(0.98); }
 
   .tab-active {
-    background: #27500A;
-    color: #C0DD97;
+    background: #23376d;
+    color: #fdb500;
     border-radius: 12px;
   }
   .tab-inactive {
-    color: #639922;
+    color: #4b5a8a;
     border-radius: 12px;
     background: transparent;
     border: none;
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .tab-inactive:hover { background: #C0DD97; color: #27500A; }
+  .tab-inactive:hover { background: rgba(35,55,109,0.15); color: #23376d; }
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
