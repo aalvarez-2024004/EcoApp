@@ -262,8 +262,8 @@ export default function ProfileModal({ onClose }) {
             {saveSuccess && (
               <div style={{
                 padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#EAF3DE', border: '1px solid #97C459',
-                fontSize: 13, color: '#27500A', fontWeight: 500,
+                background: '#eef1f9', border: '1px solid rgba(35,55,109,0.15)',
+                fontSize: 13, color: '#23376d', fontWeight: 500,
               }}>
                 ✓ Perfil actualizado correctamente
               </div>
@@ -286,7 +286,7 @@ export default function ProfileModal({ onClose }) {
                 style={{
                   flex: 2, padding: '11px', borderRadius: 14, fontSize: 14,
                   fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
-                  border: 'none', background: saving ? '#97C459' : 'var(--green-800)', color: '#fff',
+                  border: 'none', background: saving ? 'rgba(35,55,109,0.3)' : '#23376d', color: '#fff',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 }}
               >
@@ -352,8 +352,8 @@ export default function ProfileModal({ onClose }) {
             {pwSuccess && (
               <div style={{
                 padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#EAF3DE', border: '1px solid #97C459',
-                fontSize: 13, color: '#27500A', fontWeight: 500,
+                background: '#eef1f9', border: '1px solid rgba(35,55,109,0.15)',
+                fontSize: 13, color: '#23376d', fontWeight: 500,
               }}>
                 ✓ Contraseña actualizada correctamente
               </div>
@@ -376,7 +376,7 @@ export default function ProfileModal({ onClose }) {
                 style={{
                   flex: 2, padding: '11px', borderRadius: 14, fontSize: 14,
                   fontWeight: 600, cursor: pwSaving ? 'not-allowed' : 'pointer',
-                  border: 'none', background: pwSaving ? '#97C459' : 'var(--green-800)', color: '#fff',
+                  border: 'none', background: pwSaving ? 'rgba(35,55,109,0.3)' : '#23376d', color: '#fff',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 }}
               >
@@ -384,7 +384,7 @@ export default function ProfileModal({ onClose }) {
                   <>
                     <svg style={{ width: 15, height: 15, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="3" opacity="0.3" />
-                      <path d="M12 2a10 10 0 0 1 10 10" stroke="#C0DD97" strokeWidth="3" strokeLinecap="round" />
+                      <path d="M12 2a10 10 0 0 1 10 10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                     Guardando…
                   </>

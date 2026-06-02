@@ -10,7 +10,7 @@ const TAG_STYLES = {
     Consejo:  { bg: '#F5F3FF', color: '#6D28D9', border: '#DDD6FE', dot: '#A78BFA' },
     Noticia:  { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
 }
-const FALLBACK_TAG = { bg: '#F1F7E8', color: '#639922', border: '#C0DD97', dot: '#97C459' }
+const FALLBACK_TAG = { bg: '#eef1f9', color: '#23376d', border: 'rgba(35,55,109,0.15)', dot: '#eb7207' }
 
 // Tipos de reacción que maneja el backend
 const REACTIONS = [
@@ -169,9 +169,9 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
             )}
 
             <div className="animate-fade-up" style={{
-                background: '#fff', borderRadius: 24, border: '0.5px solid #C0DD97',
+                background: '#fff', borderRadius: 24, border: '0.5px solid rgba(35,55,109,0.15)',
                 padding: '20px', display: 'flex', flexDirection: 'column', gap: 14,
-                boxShadow: '0 4px 20px rgba(99,153,34,0.02)',
+                boxShadow: '0 4px 20px rgba(35,55,109,0.02)',
             }}>
 
                 {/* ── Header ── */}
@@ -179,8 +179,8 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <Avatar name={displayName} image={displayPhoto} initials={displayInitials} size={42} />
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: '#173404' }}>{displayName}</span>
-                            <span style={{ fontSize: 11, color: '#80A153' }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{displayName}</span>
+                            <span style={{ fontSize: 11, color: '#4b5a8a' }}>
                                 {post.createdAt
                                     ? new Date(post.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
                                     : ''}
@@ -199,26 +199,26 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <input
                             value={editTitle} onChange={e => setEditTitle(e.target.value)}
-                            style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1px solid #C0DD97', outline: 'none', fontSize: 14, fontWeight: 700, color: '#173404' }}
+                            style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(35,55,109,0.15)', outline: 'none', fontSize: 14, fontWeight: 700, color: '#111827' }}
                         />
                         <textarea
                             value={editContent} onChange={e => setEditContent(e.target.value)}
-                            style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1px solid #C0DD97', outline: 'none', fontSize: 13, color: '#415A2B', minHeight: 80, resize: 'vertical' }}
+                            style={{ width: '100%', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(35,55,109,0.15)', outline: 'none', fontSize: 13, color: '#4b5a8a', minHeight: 80, resize: 'vertical' }}
                         />
                         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                            <button onClick={() => setIsEditing(false)} style={{ padding: '6px 14px', borderRadius: 10, border: '1px solid #C0DD97', background: 'transparent', color: '#639922', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Cancelar</button>
-                            <button onClick={handleUpdate} style={{ padding: '6px 14px', borderRadius: 10, border: 'none', background: '#3B6D11', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Guardar</button>
+                            <button onClick={() => setIsEditing(false)} style={{ padding: '6px 14px', borderRadius: 10, border: '1px solid rgba(35,55,109,0.15)', background: 'transparent', color: '#23376d', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Cancelar</button>
+                            <button onClick={handleUpdate} style={{ padding: '6px 14px', borderRadius: 10, border: 'none', background: '#23376d', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Guardar</button>
                         </div>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#173404', lineHeight: 1.3 }}>{post.title}</h3>
-                        <p style={{ margin: 0, fontSize: 13, color: '#415A2B', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{post.content}</p>
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#111827', lineHeight: 1.3 }}>{post.title}</h3>
+                        <p style={{ margin: 0, fontSize: 13, color: '#4b5a8a', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{post.content}</p>
                         {/* Hashtags */}
                         {post.hashtags?.length > 0 && (
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
                                 {post.hashtags.map(tag => (
-                                    <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: '#3B6D11', background: '#EAF3DE', borderRadius: 8, padding: '2px 8px' }}>
+                                    <span key={tag} style={{ fontSize: 11, fontWeight: 600, color: '#23376d', background: '#eef1f9', borderRadius: 8, padding: '2px 8px' }}>
                                         {tag}
                                     </span>
                                 ))}
@@ -234,8 +234,8 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                             width: '100%',
                             borderRadius: 18,
                             overflow: 'hidden',
-                            border: '0.5px solid #EAF3DE',
-                            background: '#F1F7E8',
+                            border: '0.5px solid rgba(35,55,109,0.15)',
+                            background: '#eef1f9',
                             position: 'relative'
                         }}
                     >
@@ -383,7 +383,7 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                                 <div className="animate-fade-up" style={{
                                     position: 'absolute', bottom: 'calc(100% + 8px)', left: 0,
                                     display: 'flex', gap: 4, padding: '8px 10px',
-                                    background: '#fff', borderRadius: 16, border: '0.5px solid #C0DD97',
+                                    background: '#fff', borderRadius: 16, border: '0.5px solid rgba(35,55,109,0.15)',
                                     boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 10,
                                     whiteSpace: 'nowrap',
                                 }}>
@@ -417,9 +417,9 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                                     padding: '8px 16px', borderRadius: 14,
                                     fontSize: 12, fontWeight: 700, cursor: 'pointer',
                                     transition: 'all 0.15s ease',
-                                    background: activeReactionMeta ? activeReactionMeta.activeBg   : '#F1F7E8',
-                                    color:      activeReactionMeta ? activeReactionMeta.activeColor : '#639922',
-                                    border:     `0.5px solid ${activeReactionMeta ? activeReactionMeta.activeBorder : '#C0DD97'}`,
+                                    background: activeReactionMeta ? activeReactionMeta.activeBg   : '#eef1f9',
+                                    color:      activeReactionMeta ? activeReactionMeta.activeColor : '#23376d',
+                                    border:     `0.5px solid ${activeReactionMeta ? activeReactionMeta.activeBorder : 'rgba(35,55,109,0.15)'}`,
                                 }}
                                 onMouseDown={e => e.currentTarget.style.transform = 'scale(0.94)'}
                                 onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
