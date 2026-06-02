@@ -7,8 +7,8 @@ const MODULES = [
     icon: 'ti-camera',
     label: 'Detector de reciclaje',
     desc: 'Escanea objetos con IA en tiempo real para clasificarlos correctamente.',
-    color: '#0f6e56',
-    bg: 'rgba(15, 110, 86, 0.08)',
+    color: '#eb7207',
+    bg: 'rgba(235, 114, 7, 0.08)',
     tag: 'Popular'
   },
   {
@@ -34,8 +34,8 @@ const MODULES = [
     icon: 'ti-chart-bar',
     label: 'Mi impacto',
     desc: 'Estadísticas analíticas detalladas del CO₂ y residuos que has salvado.',
-    color: '#3b6d11',
-    bg: 'rgba(59, 109, 17, 0.08)',
+    color: '#23376d',
+    bg: 'rgba(35, 55, 109, 0.08)',
     tag: null
   },
   {

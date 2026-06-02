@@ -38,39 +38,54 @@ export default function DetectorReciclajePage() {
   }
 
   return (
-    <div style={{ background: '#EAF3DE', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
+    <div style={{ background: '#eef1f9', minHeight: '100vh', height: '100%', padding: 'clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem)', boxSizing: 'border-box' }}>
       <style>{detectorStyles}</style>
+      <style>{`
+        @media (max-width: 900px) {
+          .detector-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .detector-right {
+            position: static !important;
+          }
+        }
+        @media (max-width: 640px) {
+          h1.eco-font {
+            font-size: 32px !important;
+          }
+        }
+      `}</style>
 
-      <div style={{ width: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+      <div style={{ width: '100%', maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'clamp(1.5rem, 2.5vw, 2.5rem)' }}>
 
         {/* ── Header ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '6px 14px', borderRadius: 99, width: 'fit-content',
-            background: '#C0DD97', border: '0.5px solid #97C459',
+            background: 'rgba(35,55,109,0.15)', border: '0.5px solid #23376d',
           }}>
-            <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#27500A" strokeWidth="2">
+            <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round"
                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#27500A', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#23376d', textTransform: 'uppercase' }}>
               EcoKinal · Google Vision
             </span>
           </div>
 
-          <h1 className="eco-font" style={{ fontSize: 48, fontWeight: 800, color: '#173404', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
+          <h1 className="eco-font" style={{ fontSize: 48, fontWeight: 800, color: '#111827', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
             Detector de{' '}
-            <span style={{ color: '#3B6D11' }}>reciclaje</span>
+            <span style={{ color: '#eb7207' }}>reciclaje</span>
           </h1>
-          <p style={{ fontSize: 15, color: '#639922', maxWidth: 500, lineHeight: 1.75, margin: 0 }}>
+          <p style={{ fontSize: 15, color: '#4b5a8a', maxWidth: 500, lineHeight: 1.75, margin: 0 }}>
             Sube una foto o usa tu cámara para que la Inteligencia Artificial
             identifique el material y el contenedor correcto.
           </p>
         </div>
 
         {/* ── Main grid ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2.5rem', alignItems: 'start', width: '100%' }}>
+        <div className="detector-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2.5rem', alignItems: 'start', width: '100%' }}>
 
           {/* ── Columna izquierda ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', minWidth: 0 }}>
@@ -79,7 +94,7 @@ export default function DetectorReciclajePage() {
             <div style={{
               display: 'flex', padding: 8, gap: 6,
               borderRadius: 20, width: 'fit-content',
-              background: '#fff', border: '0.5px solid #C0DD97',
+              background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
             }}>
               <TabBtn active={activeTab === 'subir'} onClick={() => handleSwitchTab('subir')}>
                 <svg viewBox="0 0 24 24" fill="none" style={{ width: 17, height: 17 }} stroke="currentColor" strokeWidth="2">
@@ -138,7 +153,7 @@ export default function DetectorReciclajePage() {
 
             {/* Contenedores de referencia */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#97C459', textTransform: 'uppercase', margin: 0 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#fdb500', textTransform: 'uppercase', margin: 0 }}>
                 Contenedores de referencia
               </p>
               <div style={{ display: 'flex', gap: 10 }}>
@@ -147,7 +162,7 @@ export default function DetectorReciclajePage() {
                     key={label}
                     style={{
                       flex: 1,
-                      background: '#fff', border: '0.5px solid #C0DD97',
+                      background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
                       borderRadius: 16, padding: '14px 8px',
                       display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10,
                     }}
@@ -162,8 +177,8 @@ export default function DetectorReciclajePage() {
                       <span style={{ fontSize: 18 }}>{icon}</span>
                     </div>
                     <div>
-                      <p style={{ fontSize: 12, fontWeight: 700, color: '#27500A', margin: 0 }}>{label}</p>
-                      <p style={{ fontSize: 10, color: '#639922', margin: 0, marginTop: 2 }}>{desc}</p>
+                      <p style={{ fontSize: 12, fontWeight: 700, color: '#23376d', margin: 0 }}>{label}</p>
+                      <p style={{ fontSize: 10, color: '#4b5a8a', margin: 0, marginTop: 2 }}>{desc}</p>
                     </div>
                   </div>
                 ))}
@@ -172,7 +187,7 @@ export default function DetectorReciclajePage() {
           </div>
 
           {/* ── Columna derecha — Resultados ── */}
-          <div style={{ position: 'sticky', top: '2rem', minWidth: 0 }}>
+          <div className="detector-right" style={{ position: 'sticky', top: '2rem', minWidth: 0 }}>
             <ResultPanel resultado={resultado} isLoading={isLoading} onLimpiar={limpiar} />
           </div>
 
