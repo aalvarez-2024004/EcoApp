@@ -183,29 +183,52 @@ export const css = `
   .ek-btn {
     margin-top: 8px;
     height: 58px;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--green-700), var(--green-600));
-    color: white;
-    border: none;
+    padding: 14px 32px;
+    background: white;
+    color: var(--green-700);
+    border: 2px solid var(--green-600);
     border-radius: 18px;
     font-family: var(--font-main);
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: transform .22s ease, box-shadow .25s ease;
-    box-shadow: 0 14px 30px rgba(89,177,48,.20);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     min-height: 50px;
     width: 100%;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition: color 0.5s ease;
+    z-index: 10;
   }
-  .ek-btn:hover:not(:disabled) {
+
+  .ek-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    right: -100%;
+    border-radius: 50%;
     background: var(--green-600);
-    transform: translateY(-2px);
-    box-shadow: 0 18px 40px rgba(89,177,48,.28);
+    z-index: -1;
+    aspect-ratio: 1;
+    transition: all 0.7s ease;
+    transform: scale(0);
   }
+
+  .ek-btn:hover:not(:disabled)::before {
+    right: 0;
+    transform: scale(1.5);
+  }
+
+  .ek-btn:hover:not(:disabled) {
+    color: white;
+    box-shadow: none;
+    transform: none;
+  }
+
   .ek-btn:active:not(:disabled) { transform: translateY(0); }
   .ek-btn:disabled { opacity: 0.65; cursor: not-allowed; }
 
