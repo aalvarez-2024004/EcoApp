@@ -37,9 +37,9 @@ export default function PillNav({
             0 1px 0 rgba(255,255,255,0.04) inset,
             0 8px 32px rgba(0,0,0,0.25),
             0 2px 8px rgba(0,0,0,0.15);
+          position: relative;
         }
 
-        /* subtle noise texture */
         .econav::before {
           content: '';
           position: absolute;
@@ -50,7 +50,6 @@ export default function PillNav({
           pointer-events: none;
         }
 
-        /* ── Logo ── */
         .econav-brand {
           display: flex;
           align-items: center;
@@ -97,7 +96,6 @@ export default function PillNav({
           margin-top: -2px;
         }
 
-        /* ── Links ── */
         .econav-links {
           display: flex;
           align-items: center;
@@ -130,10 +128,7 @@ export default function PillNav({
           position: relative;
         }
 
-        .econav-link i {
-          font-size: 16px;
-          flex-shrink: 0;
-        }
+        .econav-link i { font-size: 16px; flex-shrink: 0; }
 
         .econav-link:hover {
           color: rgba(255,255,255,0.9);
@@ -152,7 +147,6 @@ export default function PillNav({
           color: #162e15;
         }
 
-        /* ── Actions ── */
         .econav-actions {
           display: flex;
           align-items: center;
@@ -181,33 +175,66 @@ export default function PillNav({
           transform: translateY(-1px);
         }
 
-        .econav-logout {
-          display: inline-flex;
+        /* ── Logout uiverse button ── */
+        .econav-logout-btn {
+          display: flex;
           align-items: center;
-          gap: 7px;
-          padding: 9px 16px;
-          border-radius: 10px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 13.5px;
-          font-weight: 600;
-          color: rgba(255,255,255,0.45);
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.09);
+          justify-content: flex-start;
+          width: 44px;
+          height: 44px;
+          background: #dc2626;
+          border-radius: 50%;
           cursor: pointer;
-          transition: all 0.18s;
+          position: relative;
+          overflow: hidden;
+          border: none;
+          transition: width 0.25s ease, border-radius 0.25s ease;
+          box-shadow: 0 4px 14px rgba(220,38,38,0.4);
+          flex-shrink: 0;
+        }
+
+        .econav-logout-btn:hover {
+          width: 108px;
+          border-radius: 12px;
+        }
+
+        .econav-logout-btn:active {
+          transform: translate(1px, 1px);
+        }
+
+        .econav-logout-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 44px;
+          width: 44px;
+          height: 44px;
+          flex-shrink: 0;
+        }
+
+        .econav-logout-label {
+          position: absolute;
+          left: 44px;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          transform: translateX(30px);
+          opacity: 0;
+          color: white;
+          font-size: 14px;
+          font-weight: 700;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          transition: transform 0.25s ease, opacity 0.25s ease;
           white-space: nowrap;
+          pointer-events: none;
         }
 
-        .econav-logout:hover {
-          color: #ff8585;
-          border-color: rgba(255,100,100,0.3);
-          background: rgba(255,100,100,0.07);
-          transform: translateY(-1px);
+        .econav-logout-btn:hover .econav-logout-label {
+          transform: translateX(0);
+          opacity: 1;
         }
 
-        .econav-logout i { font-size: 16px; }
-
-        /* ── Hamburger ── */
         .econav-hamburger {
           display: none;
           width: 42px;
@@ -226,7 +253,6 @@ export default function PillNav({
 
         .econav-hamburger:hover { background: rgba(255,255,255,0.14); }
 
-        /* ── Mobile menu ── */
         .econav-mobile {
           display: none;
           position: fixed;
@@ -295,7 +321,6 @@ export default function PillNav({
           color: #ff8585 !important;
         }
 
-        /* ── Responsive ── */
         @media (max-width: 960px) {
           .econav-links { display: none; }
           .econav-actions { display: none; }
@@ -338,6 +363,7 @@ export default function PillNav({
             })}
           </div>
 
+          {/* Desktop actions */}
           <div className="econav-actions">
             {onProfileClick && (
               <button className="econav-icon-btn" onClick={onProfileClick} aria-label="Mi perfil">
@@ -345,9 +371,13 @@ export default function PillNav({
               </button>
             )}
             {onLogoutAction && (
-              <button className="econav-logout" onClick={onLogoutAction}>
-                <i className="ti ti-logout" aria-hidden="true" />
-                Salir
+              <button className="econav-logout-btn" onClick={onLogoutAction} aria-label="Cerrar sesión">
+                <div className="econav-logout-icon">
+                  <svg width="16" height="16" viewBox="0 0 512 512" fill="white">
+                    <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+                  </svg>
+                </div>
+                <span className="econav-logout-label">Salir</span>
               </button>
             )}
           </div>
@@ -362,6 +392,7 @@ export default function PillNav({
           </button>
         </nav>
 
+        {/* Mobile menu */}
         <div className={`econav-mobile ${isOpen ? 'open' : ''}`} role="menu">
           {items.map((item) => {
             const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
