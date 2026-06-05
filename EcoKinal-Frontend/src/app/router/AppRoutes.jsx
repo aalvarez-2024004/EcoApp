@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
 
 // Auth pages
-import LandingPage        from '../../features/auth/pages/LandingPage'
+import {LandingPage}        from '../../features/auth/pages/LandingPage'
 import LoginPage          from '../../features/auth/pages/LoginPage'
 import RegisterPage       from '../../features/auth/pages/RegisterPage'
 import VerifyPage         from '../../features/auth/pages/VerifyPage'
