@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useUser } from '../store/useUserStore'
 import { useForoStore } from '../store/useForoStore'
 import PostCard from '../components/PostCard'
 import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
+// Se mantienen los TAGS y TAG_STYLES originales para preservar la lógica
 const TAGS = ['Logro', 'Pregunta', 'Consejo', 'Noticia']
 
 const TAG_STYLES = {
@@ -13,11 +14,11 @@ const TAG_STYLES = {
     Noticia:  { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
 }
 
-// ─── Skeleton Card ────────────────────────────────────────────────────────────
+// ─── Skeleton Card (Estilo Actualizado con bordes sutiles y verde) ─────────────────────────
 function SkeletonCard() {
     return (
         <div style={{
-            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(35,55,109,0.15)',
+            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(43, 95, 42, 0.15)', // Verde sutil
             padding: '20px', display: 'flex', flexDirection: 'column', gap: 14,
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -34,7 +35,7 @@ function SkeletonCard() {
                 <div className="skeleton" style={{ height: 12, width: '85%', borderRadius: 6 }} />
                 <div className="skeleton" style={{ height: 12, width: '55%', borderRadius: 6 }} />
             </div>
-            <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid rgba(35,55,109,0.15)', paddingTop: 12 }}>
+            <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid rgba(43, 95, 42, 0.15)', paddingTop: 12 }}>
                 <div className="skeleton" style={{ height: 34, width: 100, borderRadius: 14 }} />
                 <div className="skeleton" style={{ height: 34, width: 130, borderRadius: 14 }} />
             </div>
@@ -42,21 +43,21 @@ function SkeletonCard() {
     )
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
+// ─── Empty State (Estilo Actualizado con acento verde) ─────────────────────────────
 function EmptyState({ filter, isSearch, query }) {
     return (
         <div className="animate-fade-up" style={{
             textAlign: 'center', padding: '60px 20px',
-            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(35,55,109,0.15)',
+            background: '#fff', borderRadius: 24, border: '0.5px solid rgba(43, 95, 42, 0.15)',
         }}>
             <svg viewBox="0 0 120 90" width="120" height="90" style={{ marginBottom: 20, opacity: 0.7 }}>
-                <rect x="15" y="20" width="90" height="58" rx="10" fill="#eef1f9" stroke="rgba(35,55,109,0.15)" strokeWidth="1"/>
-                <rect x="25" y="32" width="50" height="7" rx="3" fill="rgba(35,55,109,0.15)"/>
-                <rect x="25" y="44" width="70" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
-                <rect x="25" y="53" width="60" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
-                <rect x="25" y="62" width="40" height="5" rx="2" fill="rgba(35,55,109,0.15)"/>
-                <circle cx="90" cy="28" r="14" fill="#eef1f9" stroke="rgba(35,55,109,0.15)" strokeWidth="1"/>
-                <path d="M85 28 L88 31 L95 24" stroke="#eb7207" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <rect x="15" y="20" width="90" height="58" rx="10" fill="#EEF3ED" stroke="rgba(43, 95, 42, 0.15)" strokeWidth="1"/>
+                <rect x="25" y="32" width="50" height="7" rx="3" fill="rgba(43, 95, 42, 0.15)"/>
+                <rect x="25" y="44" width="70" height="5" rx="2" fill="rgba(43, 95, 42, 0.15)"/>
+                <rect x="25" y="53" width="60" height="5" rx="2" fill="rgba(43, 95, 42, 0.15)"/>
+                <rect x="25" y="62" width="40" height="5" rx="2" fill="rgba(43, 95, 42, 0.15)"/>
+                <circle cx="90" cy="28" r="14" fill="#EEF3ED" stroke="rgba(43, 95, 42, 0.15)" strokeWidth="1"/>
+                <path d="M85 28 L88 31 L95 24" stroke="#2B5F2A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/> {/* Verde */}
             </svg>
             <p style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>
                 {isSearch
@@ -76,7 +77,7 @@ function EmptyState({ filter, isSearch, query }) {
     )
 }
 
-// ─── Filter Button ────────────────────────────────────────────────────────────
+// ─── Filter Button (Estilo Actualizado con acento verde y borde sutil) ─────────────────────────────
 function FilterBtn({ active, onClick, children, count }) {
     return (
         <button
@@ -84,17 +85,17 @@ function FilterBtn({ active, onClick, children, count }) {
             style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 padding: '10px 22px', fontSize: 13, fontWeight: 700,
-                borderRadius: 14, cursor: 'pointer',
+                borderRadius: 99, cursor: 'pointer', // Totalmente redondeado
                 transition: 'all 0.2s', border: 'none',
-                background: active ? '#23376d' : 'transparent',
-                color: active ? '#fdb500' : '#4b5a8a',
+                background: active ? '#2B5F2A' : 'transparent', // Verde oscuro de la imagen
+                color: active ? '#EEF3ED' : '#4b5a8a', // Color claro de fondo
             }}
         >
             {children}
             <span style={{
                 padding: '2px 8px', borderRadius: 10, fontSize: 10,
-                background: active ? 'rgba(35,55,109,0.3)' : '#eef1f9',
-                color: active ? '#111827' : '#4b5a8a',
+                background: active ? 'rgba(238, 243, 237, 0.3)' : '#EEF3ED',
+                color: active ? '#EEF3ED' : '#4b5a8a',
             }}>
                 {count}
             </span>
@@ -128,27 +129,30 @@ export default function ForoPage() {
     const [imagePreviews, setImagePreviews] = useState([])
     const [toast, setToast]                 = useState({ show: false, text: '', type: 'success' })
 
-    // ── Búsqueda ──────────────────────────────────────────────────────────────
+    // ── Búsqueda ──
     const [inputSearch, setInputSearch] = useState('')
     const isSearchMode = searchQuery.trim().length > 0
+    const searchTimeoutRef = useRef(null)
 
-    // Debounce de 400ms para no disparar una request por cada tecla
-    const debounceSearch = useCallback(
-        (() => {
-            let timer
-            return (val) => {
-                clearTimeout(timer)
-                timer = setTimeout(() => {
-                    if (val.trim()) {
-                        searchPosts(val.trim())
-                    } else {
-                        clearSearch()
-                    }
-                }, 400)
+    const debounceSearch = useCallback((val) => {
+        if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current)
+        }
+        searchTimeoutRef.current = setTimeout(() => {
+            if (val.trim()) {
+                searchPosts(val.trim())
+            } else {
+                clearSearch()
             }
-        })(),
-        [searchPosts, clearSearch]
-    )
+        }, 400)
+    }, [searchPosts, clearSearch])
+
+    // Limpieza del temporizador si el componente se desmonta
+    useEffect(() => {
+        return () => {
+            if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current)
+        }
+    }, [])
 
     const handleSearchChange = (e) => {
         const val = e.target.value
@@ -157,6 +161,7 @@ export default function ForoPage() {
     }
 
     const handleClearSearch = () => {
+        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current)
         setInputSearch('')
         clearSearch()
     }
@@ -171,15 +176,30 @@ export default function ForoPage() {
     const handleImageChange = (e) => {
         const selected = Array.from(e.target.files)
         if (!selected.length) return
-        setImageFiles(prev => [...prev, ...selected].slice(0, 5))
-        setImagePreviews(prev => [...prev, ...selected.map(f => URL.createObjectURL(f))].slice(0, 5))
+        
+        const nextFiles = [...imageFiles, ...selected].slice(0, 5)
+        const nextPreviews = [...imagePreviews, ...selected.map(f => URL.createObjectURL(f))].slice(0, 5)
+        
+        setImageFiles(nextFiles)
+        setImagePreviews(nextPreviews)
         e.target.value = ''
     }
 
     const handleRemoveImage = (index) => {
+        // Liberar revocando la URL de memoria para evitar leaks
+        if (imagePreviews[index]) {
+            URL.revokeObjectURL(imagePreviews[index])
+        }
         setImageFiles(prev => prev.filter((_, i) => i !== index))
         setImagePreviews(prev => prev.filter((_, i) => i !== index))
     }
+
+    // Limpiar previsualizaciones restantes al desmontar o guardar
+    useEffect(() => {
+        return () => {
+            imagePreviews.forEach(src => URL.revokeObjectURL(src))
+        }
+    }, [imagePreviews])
 
     const handlePublish = async (e) => {
         e.preventDefault()
@@ -195,18 +215,17 @@ export default function ForoPage() {
 
         const res = await createPost(fd)
         if (res.success) {
+            imagePreviews.forEach(src => URL.revokeObjectURL(src))
             setTitle(''); setContent(''); setSelectedTag('')
             setImageFiles([]); setImagePreviews([])
             setIsComposeOpen(false)
             showToast('¡Publicación compartida con éxito!')
-            // Completar reto del foro automáticamente
             completarRetoPorAccion('foro_publicar')
         } else {
             showToast(res.message, 'error')
         }
     }
 
-    // Posts que se muestran según modo (búsqueda o filtro)
     const displayPosts = isSearchMode
         ? searchResults
         : filter === 'Todos'
@@ -216,7 +235,7 @@ export default function ForoPage() {
     const isLoading = isSearchMode ? searchLoading : loading
 
     return (
-        <div style={{ background: '#eef1f9', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
+        <div style={{ background: '#EEF3ED', minHeight: '100vh', height: '100%', padding: '2.5rem 3rem', boxSizing: 'border-box' }}>
             <style>{pageStyles}</style>
 
             {/* ── Toast ── */}
@@ -225,9 +244,9 @@ export default function ForoPage() {
                     position: 'fixed', bottom: 24, right: 24, zIndex: 50,
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '14px 18px', borderRadius: 14, fontSize: 13, fontWeight: 500,
-                    background: toast.type === 'error' ? '#FCEBEB' : '#eef1f9',
-                    border: `0.5px solid ${toast.type === 'error' ? '#F09595' : 'rgba(35,55,109,0.15)'}`,
-                    color: toast.type === 'error' ? '#791F1F' : '#23376d',
+                    background: toast.type === 'error' ? '#FCEBEB' : '#EEF3ED',
+                    border: `0.5px solid ${toast.type === 'error' ? '#F09595' : 'rgba(43, 95, 42, 0.15)'}`,
+                    color: toast.type === 'error' ? '#791F1F' : '#2B5F2A',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                 }} className="animate-fade-up">
                     <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16, flexShrink: 0 }} stroke="currentColor" strokeWidth="2">
@@ -247,18 +266,23 @@ export default function ForoPage() {
                     <div style={{
                         display: 'inline-flex', alignItems: 'center', gap: 8,
                         padding: '6px 14px', borderRadius: 99, width: 'fit-content',
-                        background: 'rgba(35,55,109,0.15)', border: '0.5px solid #23376d',
+                        background: 'rgba(219, 230, 221, 1)', border: '0.5px solid #2B5F2A',
                     }}>
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.221-1.11-2.203-2.5-2.203-3.69 0-7.38 0-11.07 0C2.36 4.434 1.25 5.416 1.25 6.637v8.508c0 1.22 1.11 2.203 2.5 2.203h.75v3.136l3.328-3.136h3.172" />
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#2B5F2A" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#23376d', textTransform: 'uppercase' }}>
-                            EcoKinal · Comunidad
+                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#2B5F2A', textTransform: 'uppercase' }}>
+                            V2.6 · ECOKINAL FORO
                         </span>
                     </div>
-                    <h1 className="eco-font" style={{ fontSize: 48, fontWeight: 800, color: '#111827', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
-                        Foro <span style={{ color: '#eb7207' }}>Comunitario</span>
-                    </h1>
+                    <div className="eco-header" style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                        <h1 className="outline-title" style={{ fontSize: 48, fontWeight: 800, color: '#2B5F2A', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
+                            Foro
+                        </h1>
+                        <h1 className="filled-title" style={{ fontSize: 48, fontWeight: 800, color: '#2B5F2A', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}>
+                            Comunitario
+                        </h1>
+                    </div>
                     <p style={{ fontSize: 15, color: '#4b5a8a', maxWidth: 500, lineHeight: 1.75, margin: 0 }}>
                         Comparte ideas, publica tus logros ambientales y resuelve tus dudas con otros usuarios.
                     </p>
@@ -267,17 +291,17 @@ export default function ForoPage() {
                 {/* ── Barra de búsqueda ── */}
                 <div style={{
                     display: 'flex', alignItems: 'center', gap: 12,
-                    background: '#fff', border: `0.5px solid ${isSearchMode ? '#eb7207' : 'rgba(35,55,109,0.15)'}`,
+                    background: '#fff', border: `0.5px solid ${isSearchMode ? '#2B5F2A' : 'rgba(43, 95, 42, 0.15)'}`,
                     borderRadius: 16, padding: '10px 16px',
                     transition: 'border-color 0.2s',
-                    boxShadow: isSearchMode ? '0 0 0 3px rgba(235,114,7,0.15)' : 'none',
+                    boxShadow: isSearchMode ? '0 0 0 3px rgba(43, 95, 42, 0.15)' : 'none',
                 }}>
                     {searchLoading ? (
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#eb7207', animation: 'spin 0.8s linear infinite' }} stroke="currentColor" strokeWidth="2">
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#2B5F2A', animation: 'spin 0.8s linear infinite' }} stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
                     ) : (
-                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#23376d' }} stroke="currentColor" strokeWidth="2">
+                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18, flexShrink: 0, color: '#2B5F2A' }} stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>
                     )}
@@ -294,19 +318,19 @@ export default function ForoPage() {
                     {inputSearch && (
                         <button
                             onClick={handleClearSearch}
-                            style={{ background: '#eef1f9', border: 'none', borderRadius: 8, padding: '4px 10px', fontSize: 12, color: '#23376d', cursor: 'pointer', fontWeight: 600, flexShrink: 0 }}
+                            style={{ background: '#EEF3ED', border: 'none', borderRadius: 8, padding: '4px 10px', fontSize: 12, color: '#2B5F2A', cursor: 'pointer', fontWeight: 600, flexShrink: 0 }}
                         >
                             Limpiar
                         </button>
                     )}
                 </div>
 
-                {/* ── Filtros (solo visibles fuera del modo búsqueda) ── */}
+                {/* ── Filtros ── */}
                 {!isSearchMode && (
                     <div style={{
                         display: 'flex', padding: 8, gap: 6,
                         borderRadius: 20, width: 'fit-content',
-                        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)',
+                        background: '#fff', border: '0.5px solid rgba(43, 95, 42, 0.15)',
                         overflowX: 'auto',
                     }}>
                         <FilterBtn active={filter === 'Todos'} onClick={() => setFilter('Todos')} count={posts.length}>
@@ -330,17 +354,17 @@ export default function ForoPage() {
                                 : `${searchResults.length} resultado${searchResults.length !== 1 ? 's' : ''} para`}
                         </span>
                         {!searchLoading && (
-                            <span style={{ fontSize: 13, fontWeight: 700, color: '#eb7207', background: '#eef1f9', borderRadius: 8, padding: '2px 10px' }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: '#2B5F2A', background: '#EEF3ED', borderRadius: 8, padding: '2px 10px' }}>
                                 "{searchQuery}"
                             </span>
                         )}
                     </div>
                 )}
 
-                {/* ── Compose Box (solo cuando no se está buscando) ── */}
+                {/* ── Compose Box ── */}
                 {!isSearchMode && (
                     <div style={{
-                        background: '#fff', border: '0.5px solid rgba(35,55,109,0.15)', borderRadius: 18,
+                        background: '#fff', border: '0.5px solid rgba(43, 95, 42, 0.15)', borderRadius: 18,
                         overflow: 'hidden', transition: 'all 0.3s ease',
                     }}>
                         {!isComposeOpen ? (
@@ -351,22 +375,22 @@ export default function ForoPage() {
                                     background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left',
                                 }}
                             >
-                                <div style={{ width: 44, height: 44, borderRadius: 12, background: '#eef1f9', border: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#23376d" strokeWidth="2">
+                                <div style={{ width: 44, height: 44, borderRadius: 12, background: '#EEF3ED', border: '0.5px solid rgba(43, 95, 42, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <svg viewBox="0 0 24 24" fill="none" style={{ width: 20, height: 20 }} stroke="#2B5F2A" strokeWidth="2">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                                     <span style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
-                                        ¿Qué quieres aportar hoy, <span style={{ color: '#eb7207' }}>{name ? name.split(' ')[0] : 'Usuario'}</span>?
+                                        ¿Qué quieres aportar hoy, <span style={{ color: '#2B5F2A' }}>{name ? name.split(' ')[0] : 'Usuario'}</span>?
                                     </span>
                                     <span style={{ fontSize: 13, color: '#4b5a8a' }}>Comparte un logro, consejo, noticia o pregunta</span>
                                 </div>
                             </button>
                         ) : (
                             <form onSubmit={handlePublish} className="animate-fade-up" style={{ display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ padding: '16px 24px', background: '#eef1f9', borderBottom: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: 12, fontWeight: 700, color: '#23376d', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                                <div style={{ padding: '16px 24px', background: '#EEF3ED', borderBottom: '0.5px solid rgba(43, 95, 42, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: 12, fontWeight: 700, color: '#2B5F2A', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                                         Nueva Publicación
                                     </span>
                                     <button type="button" onClick={() => setIsComposeOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#4b5a8a' }}>
@@ -376,23 +400,23 @@ export default function ForoPage() {
 
                                 <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título</label>
+                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Título</label>
                                         <input
                                             type="text" placeholder="Escribe un título descriptivo..." value={title} onChange={e => setTitle(e.target.value)}
-                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(35,55,109,0.15)', background: '#eef1f9', color: '#111827', fontSize: 14, outline: 'none' }}
+                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(43, 95, 42, 0.15)', background: '#EEF3ED', color: '#111827', fontSize: 14, outline: 'none' }}
                                         />
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido</label>
+                                        <label style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contenido</label>
                                         <textarea
                                             placeholder="Describe tu consejo, idea o pregunta con detalle... Usa #hashtags para que te encuentren." value={content} onChange={e => setContent(e.target.value)} rows={4}
-                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(35,55,109,0.15)', background: '#eef1f9', color: '#111827', fontSize: 14, outline: 'none', resize: 'none' }}
+                                            style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '0.5px solid rgba(43, 95, 42, 0.15)', background: '#EEF3ED', color: '#111827', fontSize: 14, outline: 'none', resize: 'none' }}
                                         />
                                     </div>
 
                                     <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
                                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, minWidth: 250 }}>
-                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoría</label>
+                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Categoría</label>
                                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                                 {TAGS.map(t => {
                                                     const isSelected = selectedTag === t
@@ -402,8 +426,8 @@ export default function ForoPage() {
                                                             style={{
                                                                 padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600,
                                                                 display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
-                                                                border: `0.5px solid ${isSelected ? s.border : 'rgba(35,55,109,0.15)'}`,
-                                                                background: isSelected ? s.bg : '#eef1f9',
+                                                                border: `0.5px solid ${isSelected ? s.border : 'rgba(43, 95, 42, 0.15)'}`,
+                                                                background: isSelected ? s.bg : '#EEF3ED',
                                                                 color: isSelected ? s.color : '#4b5a8a',
                                                             }}
                                                         >
@@ -416,14 +440,13 @@ export default function ForoPage() {
                                         </div>
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#23376d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                            <label style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Fotos (Opcional · {imageFiles.length}/5)
                                             </label>
 
-                                            {/* Grid de previews + botón agregar */}
                                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                                                 {imagePreviews.map((src, i) => (
-                                                    <div key={i} style={{ position: 'relative', width: 72, height: 72, borderRadius: 10, overflow: 'hidden', border: '0.5px solid rgba(35,55,109,0.15)', flexShrink: 0 }}>
+                                                    <div key={i} style={{ position: 'relative', width: 72, height: 72, borderRadius: 10, overflow: 'hidden', border: '0.5px solid rgba(43, 95, 42, 0.15)', flexShrink: 0 }}>
                                                         <img src={src} alt={`Foto ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                                                         <button
                                                             type="button"
@@ -435,11 +458,10 @@ export default function ForoPage() {
                                                     </div>
                                                 ))}
 
-                                                {/* Botón agregar (visible si hay menos de 5) */}
                                                 {imageFiles.length < 5 && (
                                                     <label style={{
                                                         width: 72, height: 72, borderRadius: 10,
-                                                        border: '0.5px dashed #23376d', background: '#eef1f9',
+                                                        border: '0.5px dashed #2B5F2A', background: '#EEF3ED',
                                                         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                                                         gap: 4, cursor: 'pointer', flexShrink: 0,
                                                         color: '#4b5a8a',
@@ -456,11 +478,11 @@ export default function ForoPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ padding: '16px 24px', background: '#eef1f9', borderTop: '0.5px solid rgba(35,55,109,0.15)', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                                <div style={{ padding: '16px 24px', background: '#EEF3ED', borderTop: '0.5px solid rgba(43, 95, 42, 0.15)', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
                                     <button type="button" onClick={() => setIsComposeOpen(false)} style={{ padding: '10px 20px', borderRadius: 99, background: 'transparent', border: 'none', color: '#4b5a8a', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                                         Cancelar
                                     </button>
-                                    <button type="submit" style={{ padding: '10px 24px', borderRadius: 99, background: '#eb7207', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <button type="submit" className="publish-btn" style={{ padding: '10px 24px', borderRadius: 99, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
                                         Publicar
                                         <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>
                                     </button>
@@ -510,13 +532,27 @@ const pageStyles = `
   .animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
   .skeleton {
-    background: linear-gradient(90deg, #eef1f9 25%, rgba(35,55,109,0.15) 50%, #eef1f9 75%);
+    background: linear-gradient(90deg, #EEF3ED 25%, rgba(43, 95, 42, 0.15) 50%, #EEF3ED 75%);
     background-size: 600px 100%;
     animation: shimmer 1.6s infinite linear;
   }
 
+  .outline-title {
+    color: transparent !important;
+    -webkit-text-stroke: 1.5px #2B5F2A; /* Borde verde */
+  }
+
+  .publish-btn {
+    background: #2B5F2A !important; /* Verde oscuro */
+    color: #EEF3ED !important; /* Texto claro */
+    transition: background 0.2s;
+  }
+  .publish-btn:hover {
+    background: #1e451d !important; /* Verde más oscuro al hover */
+  }
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(35,55,109,0.15); border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(35,55,109,0.3); }
+  ::-webkit-scrollbar-thumb { background: rgba(43, 95, 42, 0.15); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(43, 95, 42, 0.3); }
 `

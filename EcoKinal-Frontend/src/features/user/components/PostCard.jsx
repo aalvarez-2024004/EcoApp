@@ -12,20 +12,17 @@ const TAG_STYLES = {
 }
 const FALLBACK_TAG = { bg: '#eef1f9', color: '#23376d', border: 'rgba(35,55,109,0.15)', dot: '#eb7207' }
 
-// Tipos de reacción que maneja el backend
 const REACTIONS = [
-    { key: 'like', emoji: '👍', label: 'Me gusta',  activeColor: '#E11D48', activeBg: '#FFEBEF', activeBorder: '#FDA4AF' },
+    { key: 'like', emoji: '👍', label: 'Me gusta',   activeColor: '#E11D48', activeBg: '#FFEBEF', activeBorder: '#FDA4AF' },
     { key: 'love', emoji: '❤️',  label: 'Me encanta', activeColor: '#E11D48', activeBg: '#FFEBEF', activeBorder: '#FDA4AF' },
     { key: 'haha', emoji: '😂', label: 'Jaja',       activeColor: '#D97706', activeBg: '#FFFBEB', activeBorder: '#FDE68A' },
     { key: 'wow',  emoji: '😮', label: 'Asombro',    activeColor: '#7C3AED', activeBg: '#F5F3FF', activeBorder: '#DDD6FE' },
     { key: 'sad',  emoji: '😢', label: 'Tristeza',   activeColor: '#0369A1', activeBg: '#F0F9FF', activeBorder: '#BAE6FD' },
 ]
 
-// Suma total de todas las reacciones de un post
 const totalReactions = (reactions = {}) =>
     Object.values(reactions).reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0)
 
-// Qué reacción tiene el usuario actual en este post (o null)
 const myReaction = (reactions = {}, userId) => {
     for (const r of REACTIONS) {
         if (Array.isArray(reactions[r.key]) && reactions[r.key].includes(userId)) return r.key
@@ -38,12 +35,11 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
 
     const [isExpanded, setIsExpanded] = useState(false)
     const [isEditing,  setIsEditing]  = useState(false)
-    const [editTitle,   setEditTitle]   = useState(post.title   || '')
+    const [editTitle,  setEditTitle]   = useState(post.title   || '')
     const [editContent, setEditContent] = useState(post.content || '')
 
-    // ── Lightbox y Carrusel ───────────────────────────────────────────────────
     const [lightboxOpen, setLightboxOpen] = useState(false)
-    const [currentImage, setCurrentImage] = useState(0)
+    const [lightboxImageIndex, setLightboxImageIndex] = useState(0)
 
     const postImages = post.photos?.length > 0
         ? post.photos
@@ -51,18 +47,13 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
             ? [post.photo]
             : []
 
-    // ── Contador de comentarios local ─────────────────────────────────────────
     const [commentCount, setCommentCount] = useState(post.commentsCount ?? null)
-
-    // ── Picker de reacciones ──────────────────────────────────────────────────
     const [showReactionPicker, setShowReactionPicker] = useState(false)
-    let pickerTimeout = null
+    const [pickerTimeout, setPickerTimeout] = useState(null)
 
-    // ── Optimistic reactions ──────────────────────────────────────────────────
     const userId = String(currentUserId || currentUser?.uid || '')
 
     const [optimisticReactions, setOptimisticReactions] = useState(() => {
-        // Clonar el objeto de reacciones del post
         const r = {}
         REACTIONS.forEach(({ key }) => {
             r[key] = Array.isArray(post.reactions?.[key]) ? [...post.reactions[key]] : []
@@ -76,18 +67,14 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
     const handleReact = async (reactionKey) => {
         setShowReactionPicker(false)
 
-        // Si ya tiene esa reacción → quitarla (toggle off → 'none')
         const isSame    = currentMyReaction === reactionKey
         const newKey    = isSame ? 'none' : reactionKey
 
-        // Optimistic update
         setOptimisticReactions(prev => {
             const next = {}
             REACTIONS.forEach(({ key }) => {
-                // Quitar al usuario de TODAS las reacciones
                 next[key] = (prev[key] || []).filter(id => id !== userId)
             })
-            // Agregar en la nueva (si no es 'none')
             if (newKey !== 'none') {
                 next[newKey] = [...next[newKey], userId]
             }
@@ -97,7 +84,6 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
         try {
             await reactToPost(post._id, newKey)
         } catch {
-            // Revertir si falla
             setOptimisticReactions(prev => {
                 const next = {}
                 REACTIONS.forEach(({ key }) => {
@@ -112,10 +98,8 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
         }
     }
 
-    // ── Info de la reacción activa del usuario ────────────────────────────────
     const activeReactionMeta = REACTIONS.find(r => r.key === currentMyReaction)
 
-    // ── Display info ──────────────────────────────────────────────────────────
     const isOwner     = String(post.autorId) === String(currentUserId || currentUser?.uid)
     const displayName = isOwner
         ? (currentUser?.name || post._authorName || 'Usuario')
@@ -127,7 +111,6 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
         ? (currentUser?.initials || displayName?.[0]?.toUpperCase() || 'U')
         : (post._authorName?.[0]?.toUpperCase() || 'U')
 
-    // ── Handlers ──────────────────────────────────────────────────────────────
     const handleDelete = async () => {
         if (window.confirm('¿Seguro que deseas eliminar esta publicación?')) {
             const res = await deletePost(post._id)
@@ -150,7 +133,7 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
         const res = await updatePost(post._id, formData)
         if (res?.success) {
             setIsEditing(false)
-            onToast?.('Publicación actualizada', 'success')
+                onToast?.('Publicación actualizada', 'success')
         } else {
             onToast?.(res?.message || 'Error al actualizar', 'error')
         }
@@ -162,7 +145,7 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
         <>
             {lightboxOpen && postImages.length > 0 && (
                 <ImageLightbox
-                    src={postImages[currentImage]}
+                    src={postImages[lightboxImageIndex]}
                     alt={post.title}
                     onClose={() => setLightboxOpen(false)}
                 />
@@ -214,7 +197,6 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#111827', lineHeight: 1.3 }}>{post.title}</h3>
                         <p style={{ margin: 0, fontSize: 13, color: '#4b5a8a', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{post.content}</p>
-                        {/* Hashtags */}
                         {post.hashtags?.length > 0 && (
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
                                 {post.hashtags.map(tag => (
@@ -227,127 +209,74 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                     </div>
                 )}
 
-                {/* ── Carrusel de imágenes ── */}
+                {/* ── Grid Estático de Imágenes (Basado en image_891e07.jpg) ── */}
                 {postImages.length > 0 && !isEditing && (
-                    <div
-                        style={{
-                            width: '100%',
-                            borderRadius: 18,
-                            overflow: 'hidden',
-                            border: '0.5px solid rgba(35,55,109,0.15)',
-                            background: '#eef1f9',
-                            position: 'relative'
-                        }}
-                    >
-                        <img
-                            src={postImages[currentImage]}
-                            alt={`Imagen ${currentImage + 1}`}
-                            onClick={() => setLightboxOpen(true)}
-                            style={{
-                                width: '100%',
-                                maxHeight: 420,
-                                objectFit: 'cover',
-                                display: 'block',
-                                cursor: 'zoom-in'
-                            }}
-                        />
-
-                        {postImages.length > 1 && (
-                            <>
-                                <button
-                                    onClick={() =>
-                                        setCurrentImage(prev =>
-                                            prev === 0
-                                                ? postImages.length - 1
-                                                : prev - 1
-                                        )
-                                    }
-                                    style={{
-                                        position: 'absolute',
-                                        left: 10,
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        width: 40,
-                                        height: 40,
-                                        borderRadius: '50%',
-                                        border: 'none',
-                                        background: 'rgba(0,0,0,.5)',
-                                        color: '#fff',
-                                        cursor: 'pointer',
-                                        fontSize: 20
-                                    }}
-                                >
-                                    ‹
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        setCurrentImage(prev =>
-                                            prev === postImages.length - 1
-                                                ? 0
-                                                : prev + 1
-                                        )
-                                    }
-                                    style={{
-                                        position: 'absolute',
-                                        right: 10,
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        width: 40,
-                                        height: 40,
-                                        borderRadius: '50%',
-                                        border: 'none',
-                                        background: 'rgba(0,0,0,.5)',
-                                        color: '#fff',
-                                        cursor: 'pointer',
-                                        fontSize: 20
-                                    }}
-                                >
-                                    ›
-                                </button>
-
+                    <div style={{
+                        display: 'grid',
+                        gap: 10,
+                        gridTemplateColumns: postImages.length === 1 ? '1fr' : 'repeat(2, 1fr)',
+                        width: '100%',
+                        borderRadius: 18,
+                        overflow: 'hidden'
+                    }}>
+                        {postImages.slice(0, 4).map((img, index) => {
+                            // Si son 3 imágenes, la primera toma todo el ancho de la primera fila
+                            const isThreeImagesFirst = postImages.length === 3 && index === 0;
+                            return (
                                 <div
+                                    key={index}
+                                    onClick={() => {
+                                        setLightboxImageIndex(index);
+                                        setLightboxOpen(true);
+                                    }}
                                     style={{
-                                        position: 'absolute',
-                                        bottom: 10,
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        display: 'flex',
-                                        gap: 6
+                                        position: 'relative',
+                                        gridColumn: isThreeImagesFirst ? 'span 2' : 'span 1',
+                                        aspectRatio: isThreeImagesFirst ? '21/9' : postImages.length === 1 ? '16/10' : '16/11',
+                                        cursor: 'zoom-in',
+                                        overflow: 'hidden',
+                                        borderRadius: 14,
+                                        border: '0.5px solid rgba(35,55,109,0.12)',
+                                        background: '#f3f4f6'
                                     }}
                                 >
-                                    {postImages.map((_, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={() => setCurrentImage(index)}
-                                            style={{
-                                                width: 8,
-                                                height: 8,
-                                                borderRadius: '50%',
-                                                cursor: 'pointer',
-                                                background:
-                                                    index === currentImage
-                                                        ? '#fff'
-                                                        : 'rgba(255,255,255,.5)'
-                                            }}
-                                        />
-                                    ))}
+                                    <img
+                                        src={img}
+                                        alt={`Imagen ${index + 1}`}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'cover',
+                                            display: 'block'
+                                        }}
+                                    />
+                                    
+                                    {/* Indicador de más imágenes si exceden de 4 */}
+                                    {index === 3 && postImages.length > 4 && (
+                                        <div style={{
+                                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            color: '#fff', fontSize: 18, fontWeight: 700
+                                        }}>
+                                            +{postImages.length - 4}
+                                        </div>
+                                    )}
+
+                                    {/* Etiqueta de Ampliar discreta en la esquina */}
+                                    <div style={{
+                                        position: 'absolute', bottom: 8, right: 8,
+                                        background: 'rgba(0,0,0,0.5)', borderRadius: 6,
+                                        padding: '3px 6px', display: 'flex', alignItems: 'center', gap: 4,
+                                        color: '#fff', fontSize: 10, pointerEvents: 'none',
+                                    }}>
+                                        <svg viewBox="0 0 24 24" fill="none" style={{ width: 10, height: 10 }} stroke="currentColor" strokeWidth="2.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                                        </svg>
+                                        Ampliar
+                                    </div>
                                 </div>
-                            </>
-                        )}
-                        
-                        {/* Indicador visual inferior derecho si es solo 1 imagen o carrusel para el hover del lightbox */}
-                        <div style={{
-                            position: 'absolute', bottom: 10, right: 10,
-                            background: 'rgba(10,24,5,0.45)', borderRadius: 8,
-                            padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4,
-                            color: '#fff', fontSize: 11, pointerEvents: 'none',
-                        }}>
-                            <svg viewBox="0 0 24 24" fill="none" style={{ width: 12, height: 12 }} stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
-                            </svg>
-                            Ampliar
-                        </div>
+                            )
+                        })}
                     </div>
                 )}
 
@@ -375,7 +304,7 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                                 setShowReactionPicker(true)
                             }}
                             onMouseLeave={() => {
-                                pickerTimeout = setTimeout(() => setShowReactionPicker(false), 300)
+                                setPickerTimeout(setTimeout(() => setShowReactionPicker(false), 300))
                             }}
                         >
                             {/* Picker flotante */}

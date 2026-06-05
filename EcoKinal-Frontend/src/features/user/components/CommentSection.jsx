@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import axios from 'axios'
-import Avatar from './Avatar'
+import axios from 'axios' 
 import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
@@ -48,14 +47,12 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
             await ForoApi.post('/comments/add', {
                 content: commentText.trim(),
                 publicationId: postId,
-                // Si estamos respondiendo, enviamos el ID del comentario padre
                 parentCommentId: replyingTo ? replyingTo.id : undefined 
             })
             setCommentText('')
-            setReplyingTo(null) // Limpiamos el estado al enviar
+            setReplyingTo(null)
             loadComments()
             onToast?.('Comentario publicado', 'success')
-            // Completar reto de comentar en el foro automáticamente
             completarRetoPorAccion('foro_comentar')
         } catch (err) {
             onToast?.(err.response?.data?.message || 'Error al comentar', 'error')
@@ -107,20 +104,18 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
         initials: currentUser?.initials || currentUser?.name?.[0]?.toUpperCase() || 'U',
     }
 
-    // ── Renderizar un comentario (raíz o reply) ───────────────────────────────
-    // Añadimos rootId para que las respuestas a respuestas se mantengan en el mismo nivel visual
     const renderComment = (comment, isReply = false, rootId = null) => {
         const isCommentOwner = String(comment.autorId) === String(currentUserId)
         const author         = resolveAuthor(comment)
-        const targetReplyId  = rootId || comment._id // Forzamos el ID padre para evitar nidos rotos
+        const targetReplyId  = rootId || comment._id
 
         return (
             <div key={comment._id} style={{
                 display: 'flex', gap: 10, alignItems: 'flex-start',
-                background: isReply ? '#eef1f9' : '#f5f7fc',
+                background: isReply ? '#EEF3ED' : '#f8faf7', // Fondos menta suaves adaptados a la paleta
                 padding: '10px 14px', borderRadius: 16,
                 marginLeft: isReply ? 28 : 0,
-                borderLeft: isReply ? '2px solid rgba(35,55,109,0.15)' : 'none',
+                borderLeft: isReply ? '2px solid rgba(43, 95, 42, 0.15)' : 'none', // Borde verde sutil
             }}>
                 <Avatar name={author.name} image={author.photo} initials={author.initials} size={32} />
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -138,16 +133,15 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                             <input
                                 value={editingCommentText}
                                 onChange={e => setEditingCommentText(e.target.value)}
-                                style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid rgba(35,55,109,0.15)', fontSize: 12, outline: 'none' }}
+                                style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid rgba(43, 95, 42, 0.15)', fontSize: 12, outline: 'none', background: '#fff' }}
                             />
-                            <button onClick={() => handleUpdateComment(comment._id)} style={{ padding: '4px 10px', background: '#23376d', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, cursor: 'pointer' }}>OK</button>
-                            <button onClick={() => setEditingCommentId(null)} style={{ padding: '4px 10px', background: 'transparent', border: '1px solid rgba(35,55,109,0.15)', color: '#23376d', borderRadius: 8, fontSize: 11, cursor: 'pointer' }}>X</button>
+                            <button onClick={() => handleUpdateComment(comment._id)} style={{ padding: '4px 10px', background: '#2B5F2A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>OK</button>
+                            <button onClick={() => setEditingCommentId(null)} style={{ padding: '4px 10px', background: 'transparent', border: '1px solid rgba(43, 95, 42, 0.15)', color: '#2B5F2A', borderRadius: 8, fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>X</button>
                         </div>
                     ) : (
                         <p style={{ margin: 0, fontSize: 12, color: '#4b5a8a', lineHeight: 1.4 }}>{comment.content}</p>
                     )}
 
-                    {/* ── Acciones del comentario ── */}
                     {editingCommentId !== comment._id && (
                         <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
                             <button 
@@ -155,7 +149,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                                     setReplyingTo({ id: targetReplyId, name: author.name }); 
                                     textRef.current?.focus(); 
                                 }} 
-                                style={{ background: 'none', border: 'none', fontSize: 11, color: '#23376d', padding: 0, cursor: 'pointer', fontWeight: 600 }}
+                                style={{ background: 'none', border: 'none', fontSize: 11, color: '#2B5F2A', padding: 0, cursor: 'pointer', fontWeight: 600 }}
                             >
                                 Responder
                             </button>
@@ -163,7 +157,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                             {isCommentOwner && (
                                 <>
                                     <button onClick={() => { setEditingCommentId(comment._id); setEditingCommentText(comment.content) }} style={{ background: 'none', border: 'none', fontSize: 11, color: '#4b5a8a', padding: 0, cursor: 'pointer' }}>Editar</button>
-                                    <button onClick={() => handleDeleteComment(comment._id)} style={{ background: 'none', border: 'none', fontSize: 11, color: '#E11D48', padding: 0, cursor: 'pointer' }}>Eliminar</button>
+                                    <button onClick={() => handleDeleteComment(comment._id)} style={{ background: 'none', border: 'none', fontSize: 11, color: '#791F1F', padding: 0, cursor: 'pointer' }}>Eliminar</button>
                                 </>
                             )}
                         </div>
@@ -181,11 +175,11 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                 {loadingComments ? (
                     <>
                         {[1, 2].map(i => (
-                            <div key={i} style={{ display: 'flex', gap: 10, padding: '10px 14px', background: '#f5f7fc', borderRadius: 16 }}>
-                                <div style={{ width: 32, height: 32, borderRadius: 10, background: '#eef1f9', flexShrink: 0, animation: 'shimmer 1.4s infinite linear', backgroundImage: 'linear-gradient(90deg,#eef1f9 25%,#d6dcef 50%,#eef1f9 75%)', backgroundSize: '400px 100%' }} />
+                            <div key={i} style={{ display: 'flex', gap: 10, padding: '10px 14px', background: '#f8faf7', borderRadius: 16 }}>
+                                <div style={{ width: 32, height: 32, borderRadius: 10, background: '#EEF3ED', flexShrink: 0, animation: 'shimmer 1.4s infinite linear', backgroundImage: 'linear-gradient(90deg,#EEF3ED 25%,rgba(43, 95, 42, 0.15) 50%,#EEF3ED 75%)', backgroundSize: '400px 100%' }} />
                                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, paddingTop: 2 }}>
-                                    <div style={{ height: 10, width: '35%', borderRadius: 5, background: '#eef1f9' }} />
-                                    <div style={{ height: 9,  width: '80%', borderRadius: 5, background: '#eef1f9' }} />
+                                    <div style={{ height: 10, width: '35%', borderRadius: 5, background: '#EEF3ED' }} />
+                                    <div style={{ height: 9,  width: '80%', borderRadius: 5, background: '#EEF3ED' }} />
                                 </div>
                             </div>
                         ))}
@@ -193,9 +187,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                 ) : comments.length > 0 ? (
                     comments.map(comment => (
                         <div key={comment._id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            {/* Comentario raíz */}
                             {renderComment(comment, false, comment._id)}
-                            {/* Respuestas anidadas */}
                             {comment.replies?.map(reply => renderComment(reply, true, comment._id))}
                         </div>
                     ))
@@ -209,13 +201,12 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
             {/* ── Input nuevo comentario ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 
-                {/* Indicador de que estás respondiendo */}
                 {replyingTo && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px', background: '#eef1f9', borderRadius: 8, border: '0.5px solid rgba(35,55,109,0.15)' }}>
-                        <span style={{ fontSize: 11, color: '#23376d' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px', background: '#EEF3ED', borderRadius: 8, border: '0.5px solid rgba(43, 95, 42, 0.15)' }}>
+                        <span style={{ fontSize: 11, color: '#2B5F2A', fontWeight: 500 }}>
                             Respondiendo a <strong>{replyingTo.name}</strong>
                         </span>
-                        <button onClick={() => setReplyingTo(null)} style={{ background: 'transparent', border: 'none', color: '#23376d', fontSize: 12, cursor: 'pointer', fontWeight: 'bold' }}>
+                        <button onClick={() => setReplyingTo(null)} style={{ background: 'transparent', border: 'none', color: '#2B5F2A', fontSize: 12, cursor: 'pointer', fontWeight: 'bold' }}>
                             ✕
                         </button>
                     </div>
@@ -223,7 +214,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
 
                 <div style={{
                     display: 'flex', gap: 10, alignItems: 'center',
-                    background: '#fff', borderRadius: 16, border: '0.5px solid rgba(35,55,109,0.15)', padding: '6px 12px',
+                    background: '#fff', borderRadius: 16, border: '0.5px solid rgba(43, 95, 42, 0.15)', padding: '6px 12px',
                 }}>
                     <Avatar name={currentAvatar.name} image={currentAvatar.photo} initials={currentAvatar.initials} size={28} />
                     <textarea
@@ -246,7 +237,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                             border: 'none', cursor: commentText.trim() ? 'pointer' : 'not-allowed',
                             transition: 'all 0.2s',
-                            background: commentText.trim() ? '#23376d' : '#eef1f9',
+                            background: commentText.trim() ? '#2B5F2A' : '#EEF3ED',
                             color:      commentText.trim() ? '#fff'    : '#4b5a8a',
                         }}
                     >

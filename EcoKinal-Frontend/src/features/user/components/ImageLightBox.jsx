@@ -14,12 +14,12 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
     }, [onClose])
 
     return (
-        // Overlay — clic fuera cierra
+        // Overlay — Fondo oscuro basado en el verde principal de EcoKinal (#2A5C2D / #1E3A1E)
         <div
             onClick={onClose}
             style={{
                 position: 'fixed', inset: 0, zIndex: 1000,
-                background: 'rgba(10, 24, 5, 0.85)',
+                background: 'rgba(18, 38, 20, 0.88)', 
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '24px',
                 animation: 'lbFadeIn 0.2s ease both',
@@ -36,19 +36,26 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
                 }
             `}</style>
 
-            {/* Botón cerrar */}
+            {/* Botón cerrar — Estilo minimalista traslúcido */}
             <button
                 onClick={onClose}
                 style={{
                     position: 'fixed', top: 20, right: 20,
                     width: 40, height: 40, borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.1)', border: '0.5px solid rgba(255,255,255,0.2)',
-                    color: '#fff', cursor: 'pointer',
+                    background: 'rgba(255, 255, 255, 0.08)', 
+                    border: '0.5px solid rgba(255, 255, 255, 0.2)',
+                    color: '#ffffff', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 1001, transition: 'background 0.2s',
+                    zIndex: 1001, transition: 'all 0.2s ease',
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseEnter={e => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                }}
                 aria-label="Cerrar imagen"
             >
                 <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="2">
@@ -56,19 +63,21 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
                 </svg>
             </button>
 
-            {/* Imagen — stopPropagation para no cerrar al clicar la imagen */}
+            {/* Imagen — Borde sutil basado en el fondo claro/verde de la app y sombra profunda */}
             <img
                 src={src}
                 alt={alt}
                 onClick={e => e.stopPropagation()}
                 style={{
                     maxWidth: '100%',
-                    maxHeight: '90vh',
-                    borderRadius: 16,
-                    border: '0.5px solid rgba(192, 221, 151, 0.3)',
+                    maxHeight: '85vh',
+                    borderRadius: 24,
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    background: '#ffffff',
+                    padding: '6px',
                     objectFit: 'contain',
                     animation: 'lbZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both',
-                    boxShadow: '0 32px 80px rgba(0,0,0,0.5)',
+                    boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
                 }}
             />
         </div>
