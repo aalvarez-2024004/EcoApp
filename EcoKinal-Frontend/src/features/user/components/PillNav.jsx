@@ -16,7 +16,8 @@ const PillNav = ({
   pillTextColor = '#f8fafc',
   onMobileMenuClick,
   initialLoadAnimation = true,
-  onLogoutAction
+  onLogoutAction,
+  onProfileClick 
 }) => {
   const location = useLocation();
   const resolvedPillTextColor = pillTextColor ?? baseColor;
@@ -262,7 +263,17 @@ const PillNav = ({
               </Link>
             );
           })}
-
+          {onProfileClick ? (
+            <button
+              type="button"
+              onClick={onProfileClick}
+              className="pill-link relative inline-flex h-[var(--nav-h)] w-[var(--nav-h)] items-center justify-center overflow-hidden rounded-full border border-[rgba(35,55,109,0.10)] bg-white/80 text-[rgba(35,55,109,0.8)] shadow-[0_10px_24px_rgba(35,55,109,0.10)] transition-all duration-500 hover:border-[rgba(35,55,109,0.2)] hover:bg-white hover:shadow-[0_14px_28px_rgba(35,55,109,0.16)]"
+              aria-label="Mi perfil"
+            >
+              <i className="ti ti-user h-4 w-4" aria-hidden="true" />
+            </button>
+          ) : null}
+          
           {onLogoutAction ? (
             <button
               type="button"
@@ -321,6 +332,20 @@ const PillNav = ({
                 </Link>
               );
             })}
+
+            {onProfileClick ? (
+              <button
+                type="button"
+                onClick={() => { onProfileClick(); setIsMobileMenuOpen(false); }}
+                className="flex items-center justify-between rounded-2xl border border-[rgba(35,55,109,0.08)] bg-white px-4 py-3 text-sm font-semibold text-[rgba(35,55,109,0.8)] transition-all duration-500 hover:border-[rgba(35,55,109,0.2)] hover:bg-[rgba(35,55,109,0.04)]"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <i className="ti ti-user" aria-hidden="true" />
+                  Mi perfil
+                </span>
+                <ChevronRight className="h-4 w-4 opacity-70" aria-hidden="true" />
+              </button>
+            ) : null}
 
             {onLogoutAction ? (
               <button

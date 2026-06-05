@@ -48,7 +48,13 @@ export default function ProfileModal({ onClose }) {
         },
       })
 
-      updateUser(data.user)
+      updateUser({ 
+        ...data.user,
+        // Normaliza la imagen a los 3 campos que usa useUser
+        profilePicture: data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
+        photo:          data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
+        image:          data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
+      })
       setSaveSuccess(true)
       setTimeout(() => { setSaveSuccess(false); setMode('view') }, 1500)
     } catch (err) {
@@ -167,7 +173,7 @@ export default function ProfileModal({ onClose }) {
                 style={{
                   width: '100%', padding: '11px', borderRadius: 14, fontSize: 14,
                   fontWeight: 600, cursor: 'pointer', border: '1px solid var(--card-border)',
-                  background: 'var(--green-800)', color: '#fff',
+                  background: 'var(--navy-700)', color: '#fff',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 }}
               >
