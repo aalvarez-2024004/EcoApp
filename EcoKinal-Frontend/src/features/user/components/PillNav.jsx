@@ -1,373 +1,418 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { ChevronRight, Leaf, LogOut, Menu, X } from 'lucide-react';
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
-const PillNav = ({
-  logo,
-  logoAlt = 'EcoKinal',
+export default function PillNav({
   items = [],
-  activeHref,
-  className = '',
-  ease = 'power3.out',
-  baseColor = '#f8fbf4',
-  pillColor = '#6ea84b',
-  hoveredPillTextColor = '#ffffff',
-  pillTextColor = '#f8fafc',
-  onMobileMenuClick,
-  initialLoadAnimation = true,
   onLogoutAction,
-  onProfileClick 
-}) => {
-  const location = useLocation();
-  const resolvedPillTextColor = pillTextColor ?? baseColor;
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const circleRefs = useRef([]);
-  const tlRefs = useRef([]);
-  const activeTweenRefs = useRef([]);
-  const logoImgRef = useRef(null);
-  const logoTweenRef = useRef(null);
-  const hamburgerRef = useRef(null);
-  const mobileMenuRef = useRef(null);
-  const navItemsRef = useRef(null);
-  const logoRef = useRef(null);
-
-  const currentPath = activeHref ?? location.pathname;
-
-  const normalizedItems = useMemo(() => {
-    return (items || []).filter(Boolean).map(item => ({
-      ...item,
-      href: item.href || '#'
-    }));
-  }, [items]);
-
-  useEffect(() => {
-    const layout = () => {
-      circleRefs.current.forEach(circle => {
-        if (!circle?.parentElement) return;
-
-        const pill = circle.parentElement;
-        const rect = pill.getBoundingClientRect();
-        const { width: w, height: h } = rect;
-        const R = ((w * w) / 4 + h * h) / (2 * h);
-        const D = Math.ceil(2 * R) + 2;
-        const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
-        const originY = D - delta;
-
-        circle.style.width = `${D}px`;
-        circle.style.height = `${D}px`;
-        circle.style.bottom = `-${delta}px`;
-
-        gsap.set(circle, {
-          xPercent: -50,
-          scale: 0,
-          transformOrigin: `50% ${originY}px`
-        });
-
-        const label = pill.querySelector('.pill-label');
-        const white = pill.querySelector('.pill-label-hover');
-
-        if (label) gsap.set(label, { y: 0 });
-        if (white) gsap.set(white, { y: h + 12, opacity: 0 });
-
-        const index = circleRefs.current.indexOf(circle);
-        if (index === -1) return;
-
-        tlRefs.current[index]?.kill();
-        const tl = gsap.timeline({ paused: true });
-
-        tl.to(circle, { scale: 1.18, xPercent: -50, duration: 0.85, ease, overwrite: 'auto' }, 0);
-
-        if (label) {
-          tl.to(label, { y: -(h + 8), duration: 0.8, ease, overwrite: 'auto' }, 0);
-        }
-
-        if (white) {
-          gsap.set(white, { y: Math.ceil(h + 56), opacity: 0 });
-          tl.to(white, { y: 0, opacity: 1, duration: 0.8, ease, overwrite: 'auto' }, 0);
-        }
-
-        tlRefs.current[index] = tl;
-      });
-    };
-
-    layout();
-
-    const onResize = () => layout();
-    window.addEventListener('resize', onResize);
-
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(layout).catch(() => {});
-    }
-
-    const menu = mobileMenuRef.current;
-    if (menu) {
-      gsap.set(menu, { visibility: 'hidden', opacity: 0, y: -10 });
-    }
-
-    if (initialLoadAnimation) {
-      const logoNode = logoRef.current;
-      const navItems = navItemsRef.current;
-
-      if (logoNode) {
-        gsap.set(logoNode, { scale: 0.94, opacity: 0 });
-        gsap.to(logoNode, { scale: 1, opacity: 1, duration: 0.75, ease });
-      }
-
-      if (navItems) {
-        gsap.set(navItems, { width: 0, overflow: 'hidden' });
-        gsap.to(navItems, { width: 'auto', duration: 0.75, ease });
-      }
-    }
-
-    return () => window.removeEventListener('resize', onResize);
-  }, [ease, initialLoadAnimation]);
-
-  const handleEnter = i => {
-    const tl = tlRefs.current[i];
-    if (!tl) return;
-    activeTweenRefs.current[i]?.kill();
-    activeTweenRefs.current[i] = tl.tweenTo(tl.duration(), { duration: 0.35, ease, overwrite: 'auto' });
-  };
-
-  const handleLeave = i => {
-    const tl = tlRefs.current[i];
-    if (!tl) return;
-    activeTweenRefs.current[i]?.kill();
-    activeTweenRefs.current[i] = tl.tweenTo(0, { duration: 0.28, ease, overwrite: 'auto' });
-  };
-
-  const handleLogoEnter = () => {
-    const img = logoImgRef.current;
-    if (!img) return;
-    logoTweenRef.current?.kill();
-    gsap.set(img, { rotate: 0 });
-    logoTweenRef.current = gsap.to(img, { rotate: 360, duration: 0.45, ease, overwrite: 'auto' });
-  };
-
-  const toggleMobileMenu = () => {
-    const newState = !isMobileMenuOpen;
-    setIsMobileMenuOpen(newState);
-
-    const hamburger = hamburgerRef.current;
-    const menu = mobileMenuRef.current;
-
-    if (hamburger) {
-      const lines = hamburger.querySelectorAll('.hamburger-line');
-      if (newState) {
-        gsap.to(lines[0], { rotation: 45, y: 5, duration: 0.35, ease });
-        gsap.to(lines[1], { rotation: -45, y: -5, duration: 0.35, ease });
-      } else {
-        gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.28, ease });
-        gsap.to(lines[1], { rotation: 0, y: 0, duration: 0.28, ease });
-      }
-    }
-
-    if (menu) {
-      if (newState) {
-        gsap.set(menu, { visibility: 'visible' });
-        gsap.fromTo(menu, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.35, ease, transformOrigin: 'top center' });
-      } else {
-        gsap.to(menu, {
-          opacity: 0,
-          y: -10,
-          duration: 0.25,
-          ease,
-          transformOrigin: 'top center',
-          onComplete: () => {
-            gsap.set(menu, { visibility: 'hidden' });
-          }
-        });
-      }
-    }
-
-    onMobileMenuClick?.();
-  };
-
-  const isExternalLink = href => href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#');
-
-  const cssVars = {
-    ['--base']: baseColor,
-    ['--pill-bg']: pillColor,
-    ['--hover-text']: hoveredPillTextColor,
-    ['--pill-text']: resolvedPillTextColor,
-    ['--nav-h']: '54px',
-    ['--logo']: '40px',
-    ['--pill-pad-x']: '18px',
-    ['--pill-gap']: '10px'
-  };
+  onProfileClick,
+}) {
+  const location = useLocation()
+  const [isOpen, setIsOpen] = useState(false)
+  const currentPath = location.pathname
 
   return (
-    <div className="fixed top-[1.5em] left-0 right-0 z-[1000] flex justify-center px-2 sm:px-4">
-      <nav
-        className={`flex w-full max-w-[1180px] items-center justify-between gap-3 rounded-full border border-[rgba(35,55,109,0.10)] bg-[linear-gradient(135deg,rgba(245,247,252,0.98)_0%,rgba(238,241,249,0.97)_100%)] px-3 py-3 shadow-[0_18px_40px_rgba(35,55,109,0.14)] backdrop-blur-2xl ${className}`}
-        aria-label="Primary"
-        style={cssVars}
-      >
-        <div ref={logoRef} className="flex shrink-0 items-center gap-3 pr-1 sm:pr-2" onMouseEnter={handleLogoEnter}>
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[linear-gradient(135deg,#fdb500_0%,#eb7207_100%)] text-[#fff] shadow-[0_10px_24px_rgba(235,114,7,0.16)]">
-            <Leaf className="h-5 w-5" aria-hidden="true" />
-          </div>
-          <div className="hidden sm:block">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[rgba(35,55,109,0.5)]">EcoKinal</p>
-            <p className="text-sm font-semibold tracking-[-0.02em] text-[rgba(35,55,109,0.9)]">{logoAlt}</p>
-          </div>
-          {logo ? <img ref={logoImgRef} src={logo} alt={logoAlt} className="hidden h-10 w-10 rounded-2xl object-cover sm:block" /> : <span ref={logoImgRef} className="hidden sm:block" />}
-        </div>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        <div ref={navItemsRef} className="hidden min-w-0 flex-1 items-center justify-center gap-[var(--pill-gap)] overflow-x-auto rounded-full px-1 py-1 lg:flex">
-          {normalizedItems.map((item, index) => {
-            const href = item.href;
-            const isActive = currentPath === href || currentPath?.startsWith(`${href}/`);
-            const pillStyles = {
-              color: isActive ? hoveredPillTextColor : resolvedPillTextColor,
-              background: isActive ? 'rgba(35,55,109,0.12)' : 'transparent',
-              borderColor: isActive ? 'rgba(35,55,109,0.18)' : 'transparent'
-            };
+        .econav-wrap {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          z-index: 1000;
+          pointer-events: none;
+        }
 
-            const pillBody = (
-              <>
-                <span className="pill-circle pointer-events-none absolute left-1/2 bottom-0 -z-[1] rounded-full bg-[radial-gradient(circle_at_top,#fdb500_0%,#eb7207_58%,#c45c00_100%)] opacity-95 shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_16px_28px_rgba(235,114,7,0.18)]" aria-hidden="true" ref={setCircleRef(index)} />
-                <span className="pill-label relative z-[1] inline-flex items-center gap-2 text-sm font-semibold tracking-[-0.01em] text-[rgba(35,55,109,0.9)]">
-                  {item.icon ? <i className={item.icon} aria-hidden="true" /> : null}
+        .econav {
+          pointer-events: all;
+          width: 100%;
+          background: linear-gradient(135deg, #162e15 0%, #1f4a1c 50%, #2b5626 100%);
+          padding: 0 32px;
+          height: 68px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          border-bottom: 1px solid rgba(168,216,154,0.12);
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.04) inset,
+            0 8px 32px rgba(0,0,0,0.25),
+            0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* subtle noise texture */
+        .econav::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          background-size: 160px;
+          opacity: 0.03;
+          pointer-events: none;
+        }
+
+        /* ── Logo ── */
+        .econav-brand {
+          display: flex;
+          align-items: center;
+          gap: 11px;
+          text-decoration: none;
+          flex-shrink: 0;
+        }
+
+        .econav-brand-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 11px;
+          background: linear-gradient(135deg, rgba(168,216,154,0.25) 0%, rgba(168,216,154,0.1) 100%);
+          border: 1px solid rgba(168,216,154,0.3);
+          display: grid;
+          place-items: center;
+          color: #a8d89a;
+          font-size: 20px;
+          transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .econav-brand:hover .econav-brand-icon {
+          background: rgba(168,216,154,0.28);
+          transform: rotate(-8deg) scale(1.05);
+        }
+
+        .econav-brand-name {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 17px;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: -0.03em;
+        }
+
+        .econav-brand-sub {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 10px;
+          font-weight: 500;
+          color: rgba(168,216,154,0.6);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          display: block;
+          margin-top: -2px;
+        }
+
+        /* ── Links ── */
+        .econav-links {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+          background: rgba(0,0,0,0.22);
+          border-radius: 14px;
+          padding: 5px;
+          flex: 1;
+          justify-content: center;
+          max-width: 720px;
+          border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .econav-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 9px 16px;
+          border-radius: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: rgba(255,255,255,0.55);
+          text-decoration: none;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          transition: color 0.18s, background 0.18s;
+          white-space: nowrap;
+          position: relative;
+        }
+
+        .econav-link i {
+          font-size: 16px;
+          flex-shrink: 0;
+        }
+
+        .econav-link:hover {
+          color: rgba(255,255,255,0.9);
+          background: rgba(255,255,255,0.07);
+        }
+
+        .econav-link.active {
+          background: linear-gradient(135deg, #a8d89a 0%, #7ec86e 100%);
+          color: #162e15;
+          font-weight: 700;
+          box-shadow: 0 2px 12px rgba(126,200,110,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .econav-link.active:hover {
+          background: linear-gradient(135deg, #b8e4ac 0%, #8ed47e 100%);
+          color: #162e15;
+        }
+
+        /* ── Actions ── */
+        .econav-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-shrink: 0;
+        }
+
+        .econav-icon-btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 11px;
+          background: rgba(255,255,255,0.07);
+          border: 1px solid rgba(255,255,255,0.1);
+          display: grid;
+          place-items: center;
+          color: rgba(255,255,255,0.7);
+          font-size: 18px;
+          cursor: pointer;
+          transition: all 0.18s;
+        }
+
+        .econav-icon-btn:hover {
+          background: rgba(255,255,255,0.14);
+          color: #fff;
+          border-color: rgba(255,255,255,0.2);
+          transform: translateY(-1px);
+        }
+
+        .econav-logout {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 9px 16px;
+          border-radius: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 13.5px;
+          font-weight: 600;
+          color: rgba(255,255,255,0.45);
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.09);
+          cursor: pointer;
+          transition: all 0.18s;
+          white-space: nowrap;
+        }
+
+        .econav-logout:hover {
+          color: #ff8585;
+          border-color: rgba(255,100,100,0.3);
+          background: rgba(255,100,100,0.07);
+          transform: translateY(-1px);
+        }
+
+        .econav-logout i { font-size: 16px; }
+
+        /* ── Hamburger ── */
+        .econav-hamburger {
+          display: none;
+          width: 42px;
+          height: 42px;
+          border-radius: 11px;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.1);
+          align-items: center;
+          justify-content: center;
+          color: rgba(255,255,255,0.8);
+          font-size: 20px;
+          cursor: pointer;
+          transition: background 0.18s;
+          flex-shrink: 0;
+        }
+
+        .econav-hamburger:hover { background: rgba(255,255,255,0.14); }
+
+        /* ── Mobile menu ── */
+        .econav-mobile {
+          display: none;
+          position: fixed;
+          top: 76px;
+          left: 12px;
+          right: 12px;
+          background: linear-gradient(160deg, #162e15 0%, #2b5626 100%);
+          border-radius: 18px;
+          border: 1px solid rgba(168,216,154,0.12);
+          box-shadow: 0 24px 56px rgba(0,0,0,0.4);
+          padding: 10px;
+          z-index: 999;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .econav-mobile.open { display: flex; }
+
+        .econav-mobile-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 13px 16px;
+          border-radius: 12px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          color: rgba(255,255,255,0.65);
+          text-decoration: none;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          width: 100%;
+          text-align: left;
+          transition: all 0.15s;
+        }
+
+        .econav-mobile-link:hover {
+          background: rgba(255,255,255,0.06);
+          color: #fff;
+        }
+
+        .econav-mobile-link.active {
+          background: rgba(168,216,154,0.15);
+          color: #a8d89a;
+          font-weight: 700;
+        }
+
+        .econav-mobile-link span {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .econav-mobile-link i { font-size: 17px; }
+
+        .econav-mobile-divider {
+          height: 1px;
+          background: rgba(255,255,255,0.07);
+          margin: 4px 2px;
+        }
+
+        .econav-mobile-logout { color: rgba(255,120,120,0.7) !important; }
+        .econav-mobile-logout:hover {
+          background: rgba(255,100,100,0.08) !important;
+          color: #ff8585 !important;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 960px) {
+          .econav-links { display: none; }
+          .econav-actions { display: none; }
+          .econav-hamburger { display: flex; }
+        }
+
+        @media (max-width: 480px) {
+          .econav { padding: 0 16px; height: 60px; }
+          .econav-brand-name { font-size: 15px; }
+          .econav-brand-sub { display: none; }
+        }
+      `}</style>
+
+      <div className="econav-wrap">
+        <nav className="econav" aria-label="Navegación principal">
+
+          <Link to="/dashboard/usuario" className="econav-brand">
+            <div className="econav-brand-icon">
+              <i className="ti ti-leaf" aria-hidden="true" />
+            </div>
+            <div>
+              <span className="econav-brand-name">EcoKinal</span>
+              <span className="econav-brand-sub">Dashboard</span>
+            </div>
+          </Link>
+
+          <div className="econav-links">
+            {items.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={`econav-link ${isActive ? 'active' : ''}`}
+                >
+                  {item.icon && <i className={item.icon} aria-hidden="true" />}
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })}
+          </div>
+
+          <div className="econav-actions">
+            {onProfileClick && (
+              <button className="econav-icon-btn" onClick={onProfileClick} aria-label="Mi perfil">
+                <i className="ti ti-user" aria-hidden="true" />
+              </button>
+            )}
+            {onLogoutAction && (
+              <button className="econav-logout" onClick={onLogoutAction}>
+                <i className="ti ti-logout" aria-hidden="true" />
+                Salir
+              </button>
+            )}
+          </div>
+
+          <button
+            className="econav-hamburger"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={isOpen}
+          >
+            <i className={isOpen ? 'ti ti-x' : 'ti ti-menu-2'} aria-hidden="true" />
+          </button>
+        </nav>
+
+        <div className={`econav-mobile ${isOpen ? 'open' : ''}`} role="menu">
+          {items.map((item) => {
+            const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={`econav-mobile-link ${isActive ? 'active' : ''}`}
+                onClick={() => setIsOpen(false)}
+                role="menuitem"
+              >
+                <span>
+                  {item.icon && <i className={item.icon} aria-hidden="true" />}
                   {item.label}
                 </span>
-                <span className="pill-label-hover absolute inset-0 z-[1] inline-flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em] text-[rgba(35,55,109,1)] opacity-0">
-                  {item.hoverLabel || item.label}
-                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                </span>
-              </>
-            );
-
-            return isExternalLink(href) ? (
-              <a
-                key={`${href}-${index}`}
-                href={href}
-                className="pill-link relative inline-flex h-[var(--nav-h)] min-w-[136px] items-center justify-center overflow-hidden rounded-full border px-[var(--pill-pad-x)] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px]"
-                style={pillStyles}
-                onMouseEnter={() => handleEnter(index)}
-                onMouseLeave={() => handleLeave(index)}
-              >
-                {pillBody}
-              </a>
-            ) : (
-              <Link
-                key={`${href}-${index}`}
-                to={href}
-                className="pill-link relative inline-flex h-[var(--nav-h)] min-w-[136px] items-center justify-center overflow-hidden rounded-full border px-[var(--pill-pad-x)] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px]"
-                style={pillStyles}
-                onMouseEnter={() => handleEnter(index)}
-                onMouseLeave={() => handleLeave(index)}
-              >
-                {pillBody}
+                <i className="ti ti-chevron-right" style={{ opacity: 0.35, fontSize: 14 }} aria-hidden="true" />
               </Link>
-            );
+            )
           })}
-          {onProfileClick ? (
-            <button
-              type="button"
-              onClick={onProfileClick}
-              className="pill-link relative inline-flex h-[var(--nav-h)] w-[var(--nav-h)] items-center justify-center overflow-hidden rounded-full border border-[rgba(35,55,109,0.10)] bg-white/80 text-[rgba(35,55,109,0.8)] shadow-[0_10px_24px_rgba(35,55,109,0.10)] transition-all duration-500 hover:border-[rgba(35,55,109,0.2)] hover:bg-white hover:shadow-[0_14px_28px_rgba(35,55,109,0.16)]"
-              aria-label="Mi perfil"
-            >
-              <i className="ti ti-user h-4 w-4" aria-hidden="true" />
-            </button>
-          ) : null}
-          
-          {onLogoutAction ? (
-            <button
-              type="button"
-              onClick={onLogoutAction}
-              className="pill-link relative inline-flex h-[var(--nav-h)] min-w-[136px] items-center justify-center gap-2 overflow-hidden rounded-full border border-transparent bg-transparent px-[var(--pill-pad-x)] text-sm font-semibold text-[rgba(35,55,109,0.9)] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px] hover:border-[rgba(235,114,7,0.3)] hover:bg-[rgba(235,114,7,0.05)] hover:text-[#eb7207] hover:shadow-[0_18px_30px_rgba(235,114,7,0.14)] ml-3 lg:ml-5 xl:ml-8"
-            >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
-              Cerrar sesión
-            </button>
-          ) : null}
-        </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
-          <button
-            ref={hamburgerRef}
-            type="button"
-            onClick={toggleMobileMenu}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(35,55,109,0.10)] bg-white/90 text-[rgba(35,55,109,0.8)] shadow-[0_10px_24px_rgba(35,55,109,0.12)] transition-all duration-500 hover:bg-white"
-            aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
-          </button>
-        </div>
-
-        <div ref={mobileMenuRef} className="absolute left-0 right-0 top-full mt-3 rounded-[28px] border border-[rgba(35,55,109,0.10)] bg-[linear-gradient(180deg,rgba(245,247,252,0.98)_0%,rgba(238,241,249,0.98)_100%)] p-3 shadow-[0_20px_60px_rgba(35,55,109,0.16)] lg:hidden">
-          <div className="grid gap-2">
-            {normalizedItems.map((item, index) => {
-              const href = item.href;
-              const isActive = currentPath === href || currentPath?.startsWith(`${href}/`);
-
-              return isExternalLink(href) ? (
-                <a
-                  key={`${href}-mobile-${index}`}
-                  href={href}
-                  className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-500 ${isActive ? 'border-[rgba(35,55,109,0.15)] bg-[rgba(35,55,109,0.10)] text-[#23376d]' : 'border-[rgba(35,55,109,0.08)] bg-white text-[rgba(35,55,109,0.8)]'}`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    {item.icon ? <i className={item.icon} aria-hidden="true" /> : null}
-                    {item.label}
-                  </span>
-                  <ChevronRight className="h-4 w-4 opacity-70" aria-hidden="true" />
-                </a>
-              ) : (
-                <Link
-                  key={`${href}-mobile-${index}`}
-                  to={href}
-                  className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-500 ${isActive ? 'border-[rgba(35,55,109,0.15)] bg-[rgba(35,55,109,0.10)] text-[#23376d]' : 'border-[rgba(35,55,109,0.08)] bg-white text-[rgba(35,55,109,0.8)]'}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    {item.icon ? <i className={item.icon} aria-hidden="true" /> : null}
-                    {item.label}
-                  </span>
-                  <ChevronRight className="h-4 w-4 opacity-70" aria-hidden="true" />
-                </Link>
-              );
-            })}
-
-            {onProfileClick ? (
+          {onProfileClick && (
+            <>
+              <div className="econav-mobile-divider" />
               <button
-                type="button"
-                onClick={() => { onProfileClick(); setIsMobileMenuOpen(false); }}
-                className="flex items-center justify-between rounded-2xl border border-[rgba(35,55,109,0.08)] bg-white px-4 py-3 text-sm font-semibold text-[rgba(35,55,109,0.8)] transition-all duration-500 hover:border-[rgba(35,55,109,0.2)] hover:bg-[rgba(35,55,109,0.04)]"
+                className="econav-mobile-link"
+                onClick={() => { onProfileClick(); setIsOpen(false) }}
+                role="menuitem"
               >
-                <span className="inline-flex items-center gap-2">
+                <span>
                   <i className="ti ti-user" aria-hidden="true" />
                   Mi perfil
                 </span>
-                <ChevronRight className="h-4 w-4 opacity-70" aria-hidden="true" />
+                <i className="ti ti-chevron-right" style={{ opacity: 0.35, fontSize: 14 }} aria-hidden="true" />
               </button>
-            ) : null}
+            </>
+          )}
 
-            {onLogoutAction ? (
-              <button
-                type="button"
-                onClick={onLogoutAction}
-                className="mt-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-[rgba(35,55,109,0.08)] bg-white px-4 py-3 text-sm font-semibold text-[rgba(35,55,109,0.8)] shadow-[0_10px_20px_rgba(35,55,109,0.08)] transition-all duration-500 hover:border-[rgba(235,114,7,0.3)] hover:bg-[rgba(235,114,7,0.05)] hover:text-[#eb7207] hover:shadow-[0_18px_30px_rgba(235,114,7,0.14)]"
-              >
-                <LogOut className="h-4 w-4" aria-hidden="true" />
+          {onLogoutAction && (
+            <button
+              className="econav-mobile-link econav-mobile-logout"
+              onClick={onLogoutAction}
+              role="menuitem"
+            >
+              <span>
+                <i className="ti ti-logout" aria-hidden="true" />
                 Cerrar sesión
-              </button>
-            ) : null}
-          </div>
+              </span>
+            </button>
+          )}
         </div>
-      </nav>
-    </div>
-  );
-
-  function setCircleRef(index) {
-    return element => {
-      if (element) circleRefs.current[index] = element;
-    };
-  }
-};
-
-export default PillNav;
+      </div>
+    </>
+  )
+}

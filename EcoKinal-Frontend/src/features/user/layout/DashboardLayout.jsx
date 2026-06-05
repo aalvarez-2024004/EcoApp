@@ -54,28 +54,23 @@ export default function DashboardLayout() {
       <style>{dashboardStyles}</style>
       <div className="db-layout">
         <PillNav
-            items={navigationItems}
-            baseColor="#f8fbf4"
-            pillColor="#9ecd6f"
-            hoveredPillTextColor="#ffffff"
-            pillTextColor="#18311f"
-            onLogoutAction={handleLogout}
-            onProfileClick={() => setShowEditModal(true)}
+          items={navigationItems}
+          onLogoutAction={handleLogout}
+          onProfileClick={() => setShowEditModal(true)}
         />
         <main
           className="db-main-content"
           style={{
-            paddingTop: '6rem',
+            paddingTop: '88px',
             paddingLeft: '20px',
             paddingRight: '20px',
-            paddingBottom: '28px'
+            paddingBottom: '28px',
+            overflowY: 'auto', 
+            height: '100vh',     
           }}
         >
           <Outlet />
         </main>
-        {showEditModal && (
-          <ProfileModal onClose={() => setShowEditModal(false)} />
-        )}
       </div>
     </>
   )
