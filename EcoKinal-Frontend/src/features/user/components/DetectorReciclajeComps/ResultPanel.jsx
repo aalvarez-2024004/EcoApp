@@ -1,5 +1,5 @@
-import { BinIcon, ConfidenceBar, LeafSpinner } from '../../../icons/DetectorIcons'
-import { detectarColorSet, CONSEJOS } from '../../../Styles/detector.styles'
+import { BinIcon, ConfidenceBar, LeafSpinner } from '../../../../icons/DetectorIcons'
+import { detectarColorSet, CONSEJOS } from '../../../../Styles/detector.styles'
 
 /* ─────────────────────────────────────────
     Estado Vacío — Cómo funciona (Glass)

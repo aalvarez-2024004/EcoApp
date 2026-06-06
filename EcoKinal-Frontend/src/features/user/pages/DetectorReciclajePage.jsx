@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react'
 import { useDetectorReciclaje } from '../store/useDetectorStore'
 import { detectorStyles, LEYENDA } from '../../../Styles/DetectorPage'
-import UploadPanel  from '../components/UploadPanel'
-import CameraPanel  from '../components/CameraPanel'
-import ResultPanel  from '../components/ResultPanel'
+import UploadPanel  from '../components/DetectorReciclajeComps/UploadPanel'
+import CameraPanel  from '../components/DetectorReciclajeComps/CameraPanel'
+import ResultPanel  from '../components/DetectorReciclajeComps/ResultPanel'
 
 function TabBtn({ active, onClick, children }) {
   return (

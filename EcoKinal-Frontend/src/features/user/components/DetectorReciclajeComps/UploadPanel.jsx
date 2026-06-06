@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { ScanOverlay } from '../../../icons/DetectorIcons'
+import { ScanOverlay } from '../../../../icons/DetectorIcons'
 
 function CloseBtn({ onClick }) {
   return (
