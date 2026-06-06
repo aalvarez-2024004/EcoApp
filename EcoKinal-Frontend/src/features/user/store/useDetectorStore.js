@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { clasificarImagen } from '../../../shared/DetectorReciclaje'
+import useGamificacionStore from './useGamificacionStore'
 
 export const useDetectorReciclaje = create((set, get) => ({
 
@@ -36,7 +37,14 @@ export const useDetectorReciclaje = create((set, get) => ({
     try {
       set({ isLoading: true, error: null })
       const response = await clasificarImagen(imagen)
-      if (response.success) set({ resultado: response.data })
+      if (response.success) {
+        set({ resultado: response.data })
+        // Notificar al módulo de gamificación que se realizó un reciclaje exitoso
+        const { completarRetoPorAccion } = useGamificacionStore.getState()
+        await completarRetoPorAccion('detector')
+        // También intentar completar el reto de 3 reciclajes
+        await completarRetoPorAccion('detector_3')
+      }
       return response
     } catch (err) {
       set({ error: err.response?.data?.message || 'Error al clasificar la imagen.' })

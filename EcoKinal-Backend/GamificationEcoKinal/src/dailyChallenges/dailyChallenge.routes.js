@@ -6,78 +6,51 @@ import {
     getDailyChallenges,
     completeDailyChallenge,
     getChallengeHistory,
-    completeAutoByKey
+    markActionByKey,
+    claimDailyChallenge
 } from './dailyChallenge.controller.js';
+import { seedChallengesIfEmpty } from './dailyChallenge.service.js';
+import DailyChallenge from './dailyChallenge.model.js';
 
 const router = Router();
 
 /**
- * @swagger
- * tags:
- *   name: DailyChallenges
- *   description: Retos diarios de gamificación
- */
-
-/**
- * @swagger
- * /daily-challenges:
- *   get:
- *     summary: Obtener todos los retos del día con estado del usuario
- *     tags: [DailyChallenges]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lista de retos con campo "completed"
+ * GET /daily-challenges
+ * Devuelve los 6 retos del día para el usuario autenticado,
+ * con campos: completed, claimed.
  */
 router.get('/', validateJWT, getDailyChallenges);
 
 /**
- * @swagger
- * /daily-challenges/history:
- *   get:
- *     summary: Historial de retos completados por el usuario (últimos 30)
- *     tags: [DailyChallenges]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Historial de completaciones
+ * GET /daily-challenges/history
+ * Historial de retos completados (últimos 30).
  */
 router.get('/history', validateJWT, getChallengeHistory);
 
 /**
- * @swagger
- * /daily-challenges/{id}/complete:
- *   post:
- *     summary: Marcar un reto como completado y obtener los puntos
- *     tags: [DailyChallenges]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID del reto a completar
- *     responses:
- *       200:
- *         description: Reto completado, puntos entregados
- *       409:
- *         description: Ya completaste este reto hoy
+ * POST /daily-challenges/auto/:key
+ * FASE 1: El usuario realizó la acción en otra sección.
+ * Marca el reto como completado (claimed:false), SIN dar puntos aún.
+ * Excepción: 'detector' y 'detector_3_check' se completan y reclaman solos.
+ */
+router.post('/auto/:key', validateJWT, markActionByKey);
+
+/**
+ * POST /daily-challenges/:id/claim
+ * FASE 2: El usuario presiona "Reclamar" en GamificacionPage.
+ * Suma los puntos y marca claimed:true.
+ */
+router.post('/:id/claim', validateJWT, claimDailyChallenge);
+
+/**
+ * POST /daily-challenges/:id/complete
+ * Uso manual / legacy (sin página externa).
  */
 router.post('/:id/complete', validateJWT, completeDailyChallenge);
 
-router.post('/auto/:key', validateJWT, completeAutoByKey);
-
-
-export default router;
-
-
-import { seedChallengesIfEmpty } from './dailyChallenge.service.js';
-import DailyChallenge from './dailyChallenge.model.js';
-
+/**
+ * DELETE /daily-challenges/reset-seed  (solo desarrollo)
+ */
 router.delete('/reset-seed', async (req, res) => {
     try {
         await DailyChallenge.deleteMany({});
@@ -87,3 +60,5 @@ router.delete('/reset-seed', async (req, res) => {
         return res.status(500).json({ ok: false, message: error.message });
     }
 });
+
+export default router;

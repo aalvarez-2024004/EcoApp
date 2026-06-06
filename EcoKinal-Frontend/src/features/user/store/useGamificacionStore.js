@@ -8,7 +8,7 @@ const useGamificacionStore = create((set, get) => ({
     loadingProfile:      false,
     loadingRanking:      false,
     loadingChallenges:   false,
-    completingChallenge: null,
+    completingChallenge: null,  // _id del reto siendo reclamado
     error:               null,
 
     fetchProfile: async () => {
@@ -45,35 +45,60 @@ const useGamificacionStore = create((set, get) => ({
         }
     },
 
-    completeChallenge: async (challengeId) => {
+    // ─── FASE 1: Marcar la acción como realizada (SIN puntos aún) ────────────
+    // Llamado desde otras páginas (Foro, Impacto, Mapa, Detector).
+    // El backend crea el registro UserChallenge con claimed:false.
+    // Los puntos se otorgan en FASE 2 cuando el usuario presiona "Reclamar".
+    completarRetoPorAccion: async (key) => {
+        try {
+            const res = await GamificationApi.post(`/daily-challenges/auto/${key}`)
+
+            // Si la respuesta trae autoComplete (detector), refrescar todo
+            if (res.data?.autoComplete) {
+                await Promise.all([get().fetchChallenges(), get().fetchProfile()])
+                return res.data
+            }
+
+            // Para otros retos: marcar como completed (pero no claimed) en el store
+            // para que ChallengeCard muestre "Reclamar" de inmediato sin esperar fetch
+            if (!res.data?.alreadyDone) {
+                set((state) => ({
+                    challenges: state.challenges.map(ch =>
+                        ch.verificationKey === key
+                            ? { ...ch, completed: true, claimed: false }
+                            : ch
+                    )
+                }))
+            }
+
+            return res.data
+        } catch (_) {
+            return null
+        }
+    },
+
+    // ─── FASE 2: Reclamar puntos de un reto ya marcado como completado ────────
+    // Llamado desde el botón "Reclamar" en ChallengeCard.
+    // El backend suma los puntos y marca claimed:true.
+    claimChallenge: async (challengeId) => {
         set({ completingChallenge: challengeId, error: null })
         try {
-            const res = await GamificationApi.post(
-                `/daily-challenges/${challengeId}/complete`,
-                { confirmed: true }   
-            )
+            const res = await GamificationApi.post(`/daily-challenges/${challengeId}/claim`)
 
+            // Marcar como claimed en el store
             set((state) => ({
                 challenges: state.challenges.map(ch =>
-                    ch._id === challengeId ? { ...ch, completed: true } : ch
+                    ch._id === challengeId ? { ...ch, claimed: true } : ch
                 ),
-                profile: res.data.data?.gamification
-                    ? {
-                        ...state.profile,
-                        points:         res.data.data.gamification.points,
-                        recyclingCount: res.data.data.gamification.recyclingCount,
-                        badges:         res.data.data.gamification.badges
-                    }
-                    : state.profile,
                 completingChallenge: null
             }))
 
-            get().fetchRanking()
-            get().fetchProfile()
+            // Refrescar perfil y ranking para actualizar puntos y barra
+            await Promise.all([get().fetchProfile(), get().fetchRanking()])
 
             return { ok: true, message: res.data.message }
         } catch (err) {
-            const msg = err.response?.data?.message || 'Error al completar el reto'
+            const msg = err.response?.data?.message || 'Error al reclamar los puntos'
             set({ completingChallenge: null, error: msg })
             return { ok: false, message: msg }
         }

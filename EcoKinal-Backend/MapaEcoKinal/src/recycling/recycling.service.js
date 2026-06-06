@@ -53,6 +53,10 @@ const searchNearby = async (lat, lon, radiusMeters, maxResults) => {
  * ESTRATEGIA 2: searchText con términos en español
  * Más útil en Guatemala donde recycling_center no está bien indexado.
  * Se ejecuta en paralelo con múltiples keywords.
+ *
+ * NOTA: searchText no soporta locationRestriction (solo locationBias),
+ * por lo que Google puede devolver resultados fuera del radio.
+ * El filtrado estricto se aplica después con calculateDistance.
  */
 const searchByText = async (lat, lon, radiusMeters) => {
     const keywords = [
@@ -67,10 +71,13 @@ const searchByText = async (lat, lon, radiusMeters) => {
             {
                 textQuery: keyword,
                 maxResultCount: 10,
+                // locationBias: Google puede ignorar el radio y devolver resultados lejanos.
+                // Usamos un radio generoso (3x) para capturar más candidatos,
+                // y luego filtramos estrictamente por distancia Haversine.
                 locationBias: {
                     circle: {
                         center: { latitude: lat, longitude: lon },
-                        radius: radiusMeters
+                        radius: radiusMeters * 3
                     }
                 }
             },
@@ -155,9 +162,13 @@ export const formatPlace = (place, userLat, userLon) => {
  * Estrategia:
  *  1. Ejecuta searchNearby y searchText en PARALELO.
  *  2. Fusiona los resultados deduplicando por place ID.
- *  3. Si searchNearby ya tiene suficientes resultados (>= 3), omite el text search.
+ *  3. Filtra estrictamente por radio usando distancia Haversine.
+ *     (searchNearby respeta el radio; searchText solo usa locationBias y puede ignorarlo)
+ *  4. Si searchNearby ya tiene suficientes resultados (>= 3), omite el text search.
  */
 export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, maxResults = 20) => {
+    const radiusKm = radiusMeters / 1000;
+
     // Ejecutar ambas estrategias en paralelo
     const [nearbyResults, textResults] = await Promise.all([
         searchNearby(lat, lon, radiusMeters, maxResults),
@@ -165,11 +176,17 @@ export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, 
     ]);
 
     // Si searchNearby ya trajo suficientes, usarlo solo (más barato)
+    // Igual aplicamos el filtro de distancia como segunda línea de defensa
     if (nearbyResults.length >= 3) {
-        return nearbyResults;
+        return nearbyResults.filter((place) => {
+            const pLat = place.location?.latitude;
+            const pLon = place.location?.longitude;
+            if (!pLat || !pLon) return false;
+            return calculateDistance(lat, lon, pLat, pLon) <= radiusKm;
+        });
     }
 
-    // Si no, fusionar ambos resultados deduplicando por ID
+    // Fusionar ambos resultados deduplicando por ID
     const seen = new Set(nearbyResults.map((p) => p.id));
     const merged = [...nearbyResults];
 
@@ -180,5 +197,14 @@ export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, 
         }
     }
 
-    return merged;
+    // ─── FILTRO ESTRICTO DE RADIO ───────────────────────────────────────────
+    // searchText usa locationBias, no locationRestriction: Google puede devolver
+    // lugares fuera del radio elegido por el usuario. Este filtro garantiza que
+    // solo se incluyan centros dentro del radio real seleccionado.
+    return merged.filter((place) => {
+        const pLat = place.location?.latitude;
+        const pLon = place.location?.longitude;
+        if (!pLat || !pLon) return false;
+        return calculateDistance(lat, lon, pLat, pLon) <= radiusKm;
+    });
 };

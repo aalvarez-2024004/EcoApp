@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import axios from 'axios'
+import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
 
@@ -63,10 +64,17 @@ export const useForoStore = create((set, get) => ({
     clearSearch: () => set({ searchResults: [], searchQuery: '' }),
 
     // ── Crear post ────────────────────────────────────────────────────────────
+    // Después de crear el post, registra la acción del reto "foro_publicar".
+    // Esto marca el reto como completado (sin puntos), el usuario los reclamará
+    // desde GamificacionPage.
     createPost: async (formData) => {
         try {
             await ForoApi.post('/posts/create', formData)
             await get().fetchPosts()
+
+            // Registrar acción de gamificación (FASE 1: sin puntos aún)
+            completarRetoPorAccion('foro_publicar')
+
             return { success: true }
         } catch (error) {
             return {
@@ -99,17 +107,14 @@ export const useForoStore = create((set, get) => ({
     },
 
     // ── Reaccionar ────────────────────────────────────────────────────────────
-    // El backend espera: POST /posts/react/:id  body: { reaction: 'like'|'love'|'haha'|'wow'|'sad'|'none' }
-    // Para quitar la reacción actual se manda reaction: 'none'
     reactToPost: async (id, reaction) => {
         try {
             await ForoApi.post(`/posts/react/${id}`, { reaction })
-            // Actualización silenciosa del store sin re-render completo
             const { data } = await ForoApi.get('/posts/listar')
             set({ posts: data.data || [] })
         } catch (error) {
             console.error('Error al reaccionar:', error)
-            throw error // PostCard revierte el optimistic update si falla
+            throw error
         }
     },
 }))

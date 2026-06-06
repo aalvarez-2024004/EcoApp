@@ -1,4 +1,4 @@
-import { findNearbyRecyclingCenters, formatPlace } from "./recycling.service.js";
+import { findNearbyRecyclingCenters, formatPlace, calculateDistance } from "./recycling.service.js";
 
 export const getRecyclingCenters = async (req, res) => {
     try {
@@ -13,6 +13,7 @@ export const getRecyclingCenters = async (req, res) => {
         }
 
         const radiusMeters = Math.min(Number(radius) || 5000, 50000);
+        const radiusKm     = radiusMeters / 1000;
         const maxResults   = Math.min(Number(limit)  || 20,   20);
 
         const places = await findNearbyRecyclingCenters(lat, lon, radiusMeters, maxResults);
@@ -27,13 +28,18 @@ export const getRecyclingCenters = async (req, res) => {
 
         const centers = places
             .map((place) => formatPlace(place, lat, lon))
-            .filter((c) => c.lat && c.lon) // descartar resultados sin coordenadas
+            // Descartar resultados sin coordenadas
+            .filter((c) => c.lat && c.lon)
+            // ─── FILTRO ESTRICTO DE RADIO (segunda línea de defensa) ───────────
+            // Aunque el servicio ya filtra, el controller valida contra distance_km
+            // formateado para garantizar consistencia en la respuesta.
+            .filter((c) => Number(c.distance_km) <= radiusKm)
             .sort((a, b) => Number(a.distance_km) - Number(b.distance_km))
             .slice(0, maxResults);
 
         return res.status(200).json({
             total: centers.length,
-            radius_km: (radiusMeters / 1000).toFixed(1),
+            radius_km: radiusKm.toFixed(1),
             centers
         });
 

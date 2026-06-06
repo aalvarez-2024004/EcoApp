@@ -1,5 +1,6 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useDetectorReciclaje } from '../store/useDetectorStore'
+import useGamificacionStore from '../store/useGamificacionStore'
 import { detectorStyles, LEYENDA } from '../../../Styles/DetectorPage'
 import UploadPanel  from '../components/DetectorReciclajeComps/UploadPanel'
 import CameraPanel  from '../components/DetectorReciclajeComps/CameraPanel'
@@ -33,6 +34,7 @@ function TabBtn({ active, onClick, children }) {
 export default function DetectorReciclajePage() {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const [toast, setToast] = useState(null)
 
   const {
     resultado, isLoading, error,
@@ -40,6 +42,35 @@ export default function DetectorReciclajePage() {
     seleccionarImagen, clasificar, limpiar,
     setTab, activarCamara, detenerCamara, capturarFoto, retomar,
   } = useDetectorReciclaje()
+
+  const challenges = useGamificacionStore(s => s.challenges)
+
+  const showToast = (ok, msg) => {
+    setToast({ ok, msg })
+    setTimeout(() => setToast(null), 4000)
+  }
+
+  const handleClasificar = async () => {
+    // Guardar estado de retos ANTES de clasificar para detectar cuáles se completaron
+    const prevChallenges = useGamificacionStore.getState().challenges
+    const response = await clasificar()
+    if (response?.success) {
+      // Esperar brevemente a que el store se actualice
+      setTimeout(() => {
+        const nextChallenges = useGamificacionStore.getState().challenges
+        const recienCompletados = nextChallenges.filter(ch => {
+          const prev = prevChallenges.find(p => p._id === ch._id)
+          return ch.completed && prev && !prev.completed
+        })
+        if (recienCompletados.length > 0) {
+          const nombres = recienCompletados.map(c => c.title).join(' y ')
+          showToast(true, `✅ ¡Reto completado! "${nombres}" — ve a Gamificación para reclamar tus puntos.`)
+        } else {
+          showToast(true, '♻️ ¡Reciclaje registrado correctamente!')
+        }
+      }, 800)
+    }
+  }
 
   useEffect(() => {
     return () => detenerCamara(videoRef)
@@ -59,6 +90,31 @@ export default function DetectorReciclajePage() {
           display: flex;
           flex-direction: column;
           gap: 2rem;
+        }
+
+        /* ── Toast de gamificación ── */
+        .detector-toast {
+          position: fixed;
+          top: 80px;
+          right: 24px;
+          z-index: 9999;
+          padding: 14px 20px;
+          border-radius: 16px;
+          font-weight: 600;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 8px 24px rgba(0,0,0,.15);
+          animation: toastSlideIn .3s cubic-bezier(0.16,1,0.3,1);
+          max-width: 420px;
+          line-height: 1.4;
+        }
+        .detector-toast.ok  { background: #21491e; color: white; }
+        .detector-toast.err { background: #c0392b; color: white; }
+        @keyframes toastSlideIn {
+          from { transform: translateX(120%); opacity: 0; }
+          to   { transform: translateX(0);    opacity: 1; }
         }
 
         /* ── Gran Contenedor Glassmorphic Futurista ── */
@@ -150,6 +206,13 @@ export default function DetectorReciclajePage() {
         }
       `}</style>
 
+      {/* ── Toast de notificación de reto completado ── */}
+      {toast && (
+        <div className={`detector-toast ${toast.ok ? 'ok' : 'err'}`}>
+          {toast.msg}
+        </div>
+      )}
+
       {/* ── Encabezado Limpio Superior ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div className="cyber-badge">
@@ -191,7 +254,7 @@ export default function DetectorReciclajePage() {
                   isLoading={isLoading}
                   onSelect={seleccionarImagen}
                   onLimpiar={limpiar}
-                  onClasificar={clasificar}
+                  onClasificar={handleClasificar}
                 />
               ) : (
                 <CameraPanel
@@ -203,7 +266,7 @@ export default function DetectorReciclajePage() {
                   onActivar={() => activarCamara(videoRef)}
                   onDetener={() => detenerCamara(videoRef)}
                   onCapturar={() => capturarFoto(videoRef, canvasRef)}
-                  onClasificar={clasificar}
+                  onClasificar={handleClasificar}
                   onRetomar={retomar}
                 />
               )}

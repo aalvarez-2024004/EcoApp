@@ -3,8 +3,14 @@
 import {
     getChallengesForUser,
     completeManualChallenge,
-    getUserChallengeHistory
+    getUserChallengeHistory,
+    markActionDone,
+    claimChallengeService,
+    completeDetectorChallenge,
+    tryCompleteDetector3
 } from './dailyChallenge.service.js';
+
+/* ─── GET /daily-challenges ─────────────────────────────────────────────── */
 
 export const getDailyChallenges = async (req, res) => {
     try {
@@ -18,6 +24,8 @@ export const getDailyChallenges = async (req, res) => {
         return res.status(500).json({ ok: false, message: 'Error al obtener retos', error: error.message });
     }
 };
+
+/* ─── POST /daily-challenges/:id/complete  (manual, sin página externa) ─── */
 
 export const completeDailyChallenge = async (req, res) => {
     try {
@@ -37,11 +45,7 @@ export const completeDailyChallenge = async (req, res) => {
             });
         }
 
-        const result = await completeManualChallenge(
-            userId,
-            challengeId,
-            { name, username }
-        );
+        const result = await completeManualChallenge(userId, challengeId, { name, username });
 
         return res.status(200).json({
             ok: true,
@@ -62,6 +66,8 @@ export const completeDailyChallenge = async (req, res) => {
     }
 };
 
+/* ─── GET /daily-challenges/history ─────────────────────────────────────── */
+
 export const getChallengeHistory = async (req, res) => {
     try {
         const userId = req.user?.uid || req.user?.id;
@@ -75,40 +81,101 @@ export const getChallengeHistory = async (req, res) => {
     }
 };
 
-export const completeAutoByKey = async (req, res) => {
+/* ─── POST /daily-challenges/auto/:key  (FASE 1: marcar acción, sin puntos) */
+/*
+ * Llamado desde Foro, Impacto, Mapa cuando el usuario realiza la acción.
+ * Solo crea el registro UserChallenge con claimed:false.
+ * Los retos 'detector' y 'detector_3' tienen su propio handler.
+ */
+export const markActionByKey = async (req, res) => {
     try {
         const userId   = req.user?.uid || req.user?.id;
-        const name     = req.user?.name     || '';
-        const username = req.user?.username || '';
         if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
 
         const { key } = req.params;
 
+        // Retos detector siguen su propio flujo (se completan y reclaman solos)
+        if (key === 'detector') {
+            const name     = req.user?.name     || '';
+            const username = req.user?.username || '';
+            const result   = await completeDetectorChallenge(userId, { name, username });
+            if (!result) return res.status(200).json({ ok: true, alreadyDone: true });
+            return res.status(200).json({
+                ok: true,
+                message: `¡Reto completado! Ganaste ${result.pointsEarned} eco-puntos 🌿`,
+                data: result,
+                autoComplete: true
+            });
+        }
+
         if (key === 'detector_3_check') {
-            const { tryCompleteDetector3 } = await import('./dailyChallenge.service.js');
-            const result = await tryCompleteDetector3(userId, { name, username });
+            const name     = req.user?.name     || '';
+            const username = req.user?.username || '';
+            const result   = await tryCompleteDetector3(userId, { name, username });
             if (!result) return res.status(200).json({ ok: true, alreadyDone: true });
             return res.status(200).json({
                 ok: true,
                 message: `¡Reto 3 clasificaciones completado! +${result.pointsEarned} pts 🌿`,
-                data: result
+                data: result,
+                autoComplete: true
             });
         }
 
-        const { completeAutoChallenge } = await import('./dailyChallenge.service.js');
-        const result = await completeAutoChallenge(userId, key, { name, username });
+        // Todos los demás: solo marcar la acción como realizada (sin puntos)
+        const result = await markActionDone(userId, key);
 
         if (!result) {
-            return res.status(200).json({ ok: true, message: 'Reto ya completado anteriormente o no existe', alreadyDone: true });
+            return res.status(200).json({
+                ok: true,
+                message: 'Acción ya registrada anteriormente',
+                alreadyDone: true
+            });
         }
 
         return res.status(200).json({
             ok: true,
-            message: `¡Reto completado! Ganaste ${result.pointsEarned} eco-puntos 🌿`,
+            message: 'Acción registrada. Regresa a Gamificación para reclamar tus puntos 🌿',
+            readyToClaim: true,
             data: result
         });
     } catch (error) {
-        console.error('Error en completeAutoByKey:', error);
-        return res.status(500).json({ ok: false, message: 'Error al completar reto', error: error.message });
+        console.error('Error en markActionByKey:', error);
+        return res.status(500).json({ ok: false, message: 'Error al registrar acción', error: error.message });
+    }
+};
+
+/* ─── POST /daily-challenges/:id/claim  (FASE 2: reclamar puntos) ─────────*/
+/*
+ * Llamado desde GamificacionPage cuando el usuario presiona "Reclamar".
+ * Aquí se suman los puntos y se marca claimed:true.
+ */
+export const claimDailyChallenge = async (req, res) => {
+    try {
+        const userId   = req.user?.uid || req.user?.id;
+        const name     = req.user?.name     || '';
+        const username = req.user?.username || '';
+
+        if (!userId) return res.status(400).json({ ok: false, message: 'Usuario no identificado' });
+
+        const { id: challengeId } = req.params;
+
+        const result = await claimChallengeService(userId, challengeId, { name, username });
+
+        return res.status(200).json({
+            ok: true,
+            message: `¡+${result.pointsEarned} eco-puntos reclamados! 🌿`,
+            data: result
+        });
+    } catch (error) {
+        const known = [
+            'Primero debes realizar la acción del reto',
+            'Ya reclamaste los puntos de este reto hoy',
+            'Reto no encontrado o inactivo'
+        ];
+        if (known.includes(error.message)) {
+            return res.status(409).json({ ok: false, message: error.message });
+        }
+        console.error('Error en claimDailyChallenge:', error);
+        return res.status(500).json({ ok: false, message: 'Error al reclamar puntos', error: error.message });
     }
 };
