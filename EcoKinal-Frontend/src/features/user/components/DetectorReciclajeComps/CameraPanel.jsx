@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react'
 import { ScanOverlay } from '../../../../icons/DetectorIcons'
-// Importamos tu componente Sparkle
 import SparkleClasificar from './SparkleClasificar'
+
+const G = {
+  green1:    '#1b3c1a',
+  green2:    '#2d5a27',
+  green3:    '#52b788',
+  green4:    '#74c69d',
+  border:    '#ddeedd',
+  textMuted: '#6b8e66',
+}
 
 function CloseBtn({ onClick }) {
   return (
@@ -11,50 +19,64 @@ function CloseBtn({ onClick }) {
         position: 'absolute', top: 12, right: 12, zIndex: 20,
         width: 32, height: 32, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'rgba(255, 255, 255, 0.9)', 
-        border: '1px solid rgba(220, 38, 38, 0.2)',
+        background: 'rgba(255,255,255,0.92)',
+        border: '1px solid rgba(220,38,38,0.2)',
         color: '#dc2626', fontSize: 18, lineHeight: 1, cursor: 'pointer',
-        backdropFilter: 'blur(4px)',
-        transition: 'all 0.2s ease',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+        backdropFilter: 'blur(4px)', transition: 'all 0.2s ease',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
       }}
       onMouseEnter={e => { e.currentTarget.style.background = '#dc2626'; e.currentTarget.style.color = '#fff' }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'; e.currentTarget.style.color = '#dc2626' }}
-    >
-      ×
-    </button>
+      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.92)'; e.currentTarget.style.color = '#dc2626' }}
+    >×</button>
   )
 }
 
 function Viewfinder() {
-  const cornerStyle = (pos) => ({ position: 'absolute', width: 24, height: 24, ...pos })
+  const c = (pos) => ({ position: 'absolute', width: 24, height: 24, ...pos })
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10, padding: 20 }}>
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <div style={{ ...cornerStyle({ top: 0, left: 0 }), borderTop: '2.5px solid #52b788', borderLeft: '2.5px solid #52b788', borderRadius: '8px 0 0 0' }} />
-        <div style={{ ...cornerStyle({ top: 0, right: 0 }), borderTop: '2.5px solid #52b788', borderRight: '2.5px solid #52b788', borderRadius: '0 8px 0 0' }} />
-        <div style={{ ...cornerStyle({ bottom: 0, left: 0 }), borderBottom: '2.5px solid #52b788', borderLeft: '2.5px solid #52b788', borderRadius: '0 0 0 8px' }} />
-        <div style={{ ...cornerStyle({ bottom: 0, right: 0 }), borderBottom: '2.5px solid #52b788', borderRight: '2.5px solid #52b788', borderRadius: '0 0 8px 0' }} />
+        <div style={{ ...c({ top: 0, left: 0 }),    borderTop: `2.5px solid ${G.green3}`, borderLeft:  `2.5px solid ${G.green3}`, borderRadius: '8px 0 0 0' }} />
+        <div style={{ ...c({ top: 0, right: 0 }),   borderTop: `2.5px solid ${G.green3}`, borderRight: `2.5px solid ${G.green3}`, borderRadius: '0 8px 0 0' }} />
+        <div style={{ ...c({ bottom: 0, left: 0 }),  borderBottom: `2.5px solid ${G.green3}`, borderLeft:  `2.5px solid ${G.green3}`, borderRadius: '0 0 0 8px' }} />
+        <div style={{ ...c({ bottom: 0, right: 0 }), borderBottom: `2.5px solid ${G.green3}`, borderRight: `2.5px solid ${G.green3}`, borderRadius: '0 0 8px 0' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 14, height: 1, background: 'rgba(255,255,255,0.25)' }} />
-          <div style={{ position: 'absolute', width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
+          <div style={{ width: 14, height: 1, background: 'rgba(255,255,255,0.3)' }} />
+          <div style={{ position: 'absolute', width: 1, height: 14, background: 'rgba(255,255,255,0.3)' }} />
         </div>
       </div>
     </div>
   )
 }
 
+/* Idle placeholder */
+function CameraIdle() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center', padding: '0 24px', zIndex: 10 }}>
+      <div style={{
+        width: 72, height: 72, borderRadius: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: '#f0f9f0', border: `1px solid ${G.border}`,
+        boxShadow: `0 8px 24px rgba(45,90,39,0.1)`,
+      }}>
+        <svg viewBox="0 0 24 24" fill="none" style={{ width: 30, height: 30 }} stroke={G.green2} strokeWidth="1.8">
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+        </svg>
+      </div>
+      <div>
+        <p style={{ fontSize: 15, fontWeight: 700, color: G.green1, margin: 0 }}>Inicializar capturador óptico</p>
+        <p style={{ fontSize: 13, color: G.textMuted, marginTop: 4, margin: 0 }}>Apunta directamente al residuo</p>
+      </div>
+    </div>
+  )
+}
+
 export default function CameraPanel({
-  videoRef,
-  canvasRef,
-  camaraActiva,
-  fotoCapturada,
-  isLoading,
-  onActivar,
-  onDetener,
-  onCapturar,
-  onClasificar,
-  onRetomar,
+  videoRef, canvasRef,
+  camaraActiva, fotoCapturada, isLoading,
+  onActivar, onDetener, onCapturar, onClasificar, onRetomar,
 }) {
   const [capturedSrc, setCapturedSrc] = useState(null)
 
@@ -66,220 +88,209 @@ export default function CameraPanel({
     if (fotoCapturada && canvasRef.current) {
       setCapturedSrc(canvasRef.current.toDataURL('image/jpeg', 0.92))
     }
-    if (!fotoCapturada) {
-      setCapturedSrc(null)
-    }
+    if (!fotoCapturada) setCapturedSrc(null)
   }, [fotoCapturada])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-      {/* Visor Óptico / Render de Cámara */}
-      <div
-        style={{
-          position: 'relative', overflow: 'hidden',
-          width: '100%',
-          maxWidth: '420px',
-          aspectRatio: '1.2 / 1',
-          alignSelf: 'center',
-          borderRadius: 20,
-          background: camIdle ? 'rgba(45, 90, 39, 0.02)' : '#0a1409',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          border: camIdle ? '2px dashed rgba(45, 90, 39, 0.25)' : '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        {/* Stream de Video en Vivo */}
+      {/* Visor */}
+      <div style={{
+        position: 'relative', overflow: 'hidden',
+        width: '100%', maxWidth: 480,
+        aspectRatio: '4 / 3',
+        alignSelf: 'center',
+        borderRadius: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'all 0.3s ease',
+        ...(camIdle
+          ? { background: '#f7fdf7', border: `2px dashed rgba(82,183,136,0.4)` }
+          : { background: '#0a1409', border: '1px solid rgba(255,255,255,0.08)' }
+        ),
+      }}>
+        {/* Video stream */}
         <video
-          ref={videoRef}
-          autoPlay playsInline muted
+          ref={videoRef} autoPlay playsInline muted
           style={{
             position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover',
+            width: '100%', height: '100%', objectFit: 'cover',
             opacity: camLive ? 1 : 0,
             pointerEvents: camLive ? 'auto' : 'none',
             transition: 'opacity 0.3s ease',
           }}
         />
-
-        {/* Captura de fotogramas */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-        {/* Congelamiento Estático de Captura */}
+        {/* Foto capturada */}
         {camCapturada && capturedSrc && (
           <>
-            <img
-              src={capturedSrc}
-              aria-hidden="true"
+            <img src={capturedSrc} aria-hidden="true"
               style={{
                 position: 'absolute', inset: 0,
-                width: '100%', height: '100%',
-                objectFit: 'cover',
-                filter: 'blur(20px) brightness(0.4) saturate(0.8)',
+                width: '100%', height: '100%', objectFit: 'cover',
+                filter: 'blur(20px) brightness(0.35) saturate(0.7)',
                 transform: 'scale(1.1)',
               }}
             />
-            <img
-              src={capturedSrc}
-              alt="Foto capturada"
+            <img src={capturedSrc} alt="Foto capturada"
               style={{
                 position: 'relative', zIndex: 2,
-                maxWidth: '85%',
-                maxHeight: '85%',
-                objectFit: 'contain',
-                borderRadius: 12,
-                boxShadow: '0 12px 30px rgba(0,0,0,0.5)'
+                maxWidth: '85%', maxHeight: '85%',
+                objectFit: 'contain', borderRadius: 14,
+                boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
               }}
             />
           </>
         )}
 
         {camCapturada && isLoading && <ScanOverlay />}
-
-        {/* Panel Inactivo Inicial */}
-        {camIdle && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center', padding: '0 24px', zIndex: 10 }}>
-            <div style={{
-              width: 72, height: 72, borderRadius: 20,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: '#ffffff', border: '1px solid rgba(0,0,0,0.05)',
-              boxShadow: '0 8px 24px rgba(45, 90, 39, 0.08)',
-            }}>
-              <svg viewBox="0 0 24 24" fill="none" style={{ width: 30, height: 30 }} stroke="#2d5a27" strokeWidth="1.8">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
-              </svg>
-            </div>
-            <div>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#1b3c1a', margin: 0 }}>Inicializar Capturador Óptico</p>
-              <p style={{ fontSize: 13, color: '#6b8e66', marginTop: 4, margin: 0 }}>Apunta directamente a la estructura del residuo</p>
-            </div>
-          </div>
-        )}
-
+        {camIdle && <CameraIdle />}
         {camLive && <Viewfinder />}
 
-        {/* Feedback visual de Capturado */}
+        {/* Badge fotograma fijado */}
         {camCapturada && !isLoading && (
           <div style={{
-            position: 'absolute', bottom: 12, left: 12, zIndex: 10,
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '6px 14px', borderRadius: 99,
-            background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(4px)',
-            border: '1px solid rgba(45, 90, 39, 0.15)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+            position: 'absolute', bottom: 14, left: 14, zIndex: 10,
+            display: 'flex', alignItems: 'center', gap: 7,
+            padding: '6px 14px', borderRadius: 100,
+            background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)',
+            border: '1px solid rgba(82,183,136,0.25)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
           }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#52b788', boxShadow: '0 0 8px #52b788' }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#1b3c1a' }}>Fotograma fijado</span>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: G.green3, boxShadow: `0 0 6px ${G.green3}` }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: G.green1 }}>Fotograma fijado</span>
           </div>
         )}
 
-        {/* Feedback de Análisis Core */}
+        {/* Overlay analizando */}
         {camCapturada && isLoading && (
           <div style={{
             position: 'absolute', top: '50%', left: '50%', zIndex: 20,
             transform: 'translate(-50%,-50%)',
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '12px 20px', borderRadius: 16,
-            background: 'rgba(13, 31, 13, 0.85)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(8px)'
+            padding: '12px 20px', borderRadius: 14,
+            background: 'rgba(13,31,13,0.88)',
+            border: '1px solid rgba(82,183,136,0.2)',
+            backdropFilter: 'blur(8px)',
           }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#ffffff', letterSpacing: '0.02em' }}>Analizando redes moleculares…</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', letterSpacing: '0.02em' }}>
+              Analizando redes moleculares…
+            </span>
           </div>
         )}
 
         {camCapturada && <CloseBtn onClick={onRetomar} />}
       </div>
 
-      {/* Interfaz de Botones y Triggers */}
-      {camIdle && (
-        <button onClick={onActivar}
-          style={{
-            width: '100%', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            background: '#2d5a27', color: '#ffffff', border: 'none', borderRadius: '14px', fontWeight: 600, fontSize: 14,
-            cursor: 'pointer', boxShadow: '0 8px 20px rgba(45, 90, 39, 0.15)', transition: 'all 0.2s'
+      {/* Tip card (Mejores resultados) - Se muestra cuando NO hay una foto fijada */}
+      {!camCapturada && (
+        <div style={{
+          display: 'flex', gap: 10, alignItems: 'flex-start',
+          padding: '12px 16px', borderRadius: 14,
+          background: '#f0f9f0', border: `1px solid ${G.border}`,
+        }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: 8,
+            background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}>
-          <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
-          </svg>
-          Activar Cámara
+            <i className="ti ti-bulb" style={{ fontSize: 14, color: G.green2 }} />
+          </div>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 600, color: G.green1, margin: 0 }}>Mejores resultados</p>
+            <p style={{ fontSize: 12, color: G.textMuted, margin: '2px 0 0 0', lineHeight: 1.5 }}>
+              Asegúrate de que el residuo ocupe al menos el 60% del encuadre con buena iluminación.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Botones según estado */}
+      {camIdle && (
+        <button
+          onClick={onActivar}
+          style={{
+            width: '100%', padding: '13px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            background: G.green2, color: '#fff', border: 'none',
+            borderRadius: 14, fontWeight: 600, fontSize: 14,
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(45,90,39,0.2)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(45,90,39,0.28)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(45,90,39,0.2)' }}
+        >
+          <i className="ti ti-camera" style={{ fontSize: 17 }} />
+          Activar cámara
         </button>
       )}
 
       {camLive && (
-        <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-          <button onClick={onDetener}
+        <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+          <button
+            onClick={onDetener}
             style={{
-              padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8,
-              background: 'rgba(0,0,0,0.03)', color: '#2d5a27', border: '1px solid rgba(45, 90, 39, 0.2)', 
-              borderRadius: '14px', fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s'
-            }}>
+              padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              background: '#fff', color: G.green2,
+              border: `1px solid ${G.border}`,
+              borderRadius: 14, fontWeight: 600, fontSize: 13,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              cursor: 'pointer', transition: 'all 0.2s',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#f7fdf7'; e.currentTarget.style.borderColor = G.green3 }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = G.border }}
+          >
             Cancelar
           </button>
-          <button onClick={onCapturar}
+          <button
+            onClick={onCapturar}
             style={{
-              flex: 1, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              background: '#52b788', color: '#ffffff', border: 'none', borderRadius: '14px', fontWeight: 600, fontSize: 14,
-              cursor: 'pointer', boxShadow: '0 6px 18px rgba(82, 183, 136, 0.25)', transition: 'all 0.2s'
-            }}>
+              flex: 1, padding: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              background: G.green3, color: '#fff', border: 'none',
+              borderRadius: 14, fontWeight: 600, fontSize: 14,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              cursor: 'pointer',
+              boxShadow: `0 4px 16px rgba(82,183,136,0.3)`,
+              transition: 'transform 0.2s, box-shadow 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(82,183,136,0.4)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(82,183,136,0.3)' }}
+          >
             <svg viewBox="0 0 24 24" fill="none" style={{ width: 18, height: 18 }} stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="9" stroke="currentColor" />
               <circle cx="12" cy="12" r="4" fill="currentColor" />
             </svg>
-            Capturar Foto
+            Capturar foto
           </button>
         </div>
       )}
 
       {camCapturada && (
-        <div style={{ 
-          display: 'flex', 
-          gap: 12, 
-          width: '100%', 
-          alignItems: 'center',
-          flexWrap: 'wrap' // <-- PERMITE QUE EN MÓVILES SE ACOMODEN UNO ABAJO DEL OTRO SI NO CABEN
-        }}>
-          <button onClick={onRetomar}
+        <div style={{ display: 'flex', gap: 10, width: '100%', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={onRetomar}
             style={{
-              padding: '12px 20px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 8,
-              background: 'rgba(0,0,0,0.03)', 
-              color: '#2d5a27', 
-              border: '1px solid rgba(45, 90, 39, 0.2)', 
-              borderRadius: '14px', 
-              fontWeight: 600, 
-              fontSize: 14, 
-              cursor: 'pointer', 
-              transition: 'all 0.2s',
-              height: '46px',
-              // Opcional para móvil: si la pantalla es muy chica, el botón de reintentar también crecerá
-              flex: '1 1 auto', 
-              justifyContent: 'center'
-            }}>
-            <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round"
-                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
+              padding: '12px 20px', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', gap: 7, flex: '1 1 auto',
+              background: '#fff', color: G.green2,
+              border: `1px solid ${G.border}`,
+              borderRadius: 14, fontWeight: 600, fontSize: 13,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              cursor: 'pointer', transition: 'all 0.2s',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#f7fdf7'; e.currentTarget.style.borderColor = G.green3 }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = G.border }}
+          >
+            <i className="ti ti-refresh" style={{ fontSize: 15 }} />
             Reintentar
           </button>
-          
-          {/* Contenedor del Sparkle optimizado */}
-          <div style={{ 
-            flex: '2 1 200px', // <-- Crece el doble que el de reintentar y tiene un tamaño mínimo base antes de saltar de línea
-            display: 'flex',
-            width: '100%'
-          }}>
-            <SparkleClasificar 
-              onClick={onClasificar} 
-              isLoading={isLoading} 
-            />
+
+          <div style={{ flex: '2 1 200px', display: 'flex' }}>
+            <SparkleClasificar onClick={onClasificar} isLoading={isLoading} />
           </div>
         </div>
       )}

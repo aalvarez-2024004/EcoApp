@@ -1,28 +1,52 @@
 import { useRef, useEffect } from 'react'
 import { useDetectorReciclaje } from '../store/useDetectorStore'
-import { detectorStyles, LEYENDA } from '../../../Styles/DetectorPage'
-import UploadPanel  from '../components/DetectorReciclajeComps/UploadPanel'
-import CameraPanel  from '../components/DetectorReciclajeComps/CameraPanel'
-import ResultPanel  from '../components/DetectorReciclajeComps/ResultPanel'
+import { LEYENDA } from '../../../Styles/DetectorPage'
+import UploadPanel from '../components/DetectorReciclajeComps/UploadPanel'
+import CameraPanel from '../components/DetectorReciclajeComps/CameraPanel'
+import ResultPanel from '../components/DetectorReciclajeComps/ResultPanel'
+
+/* ── Paleta & tokens globales ── */
+const G = {
+  pageBg:    '#f4f8f3',
+  cardBg:    '#ffffff',
+  green1:    '#1b3c1a',
+  green2:    '#2d5a27',
+  green3:    '#52b788',
+  green4:    '#74c69d',
+  green5:    '#d8eed8',
+  border:    '#ddeedd',
+  textMuted: '#6b8e66',
+  textSub:   '#9db89a',
+}
+
+const BIN_COLORS = {
+  Verde:    '#2d8a3e',
+  Azul:     '#2563eb',
+  Amarillo: '#d97706',
+  Rojo:     '#dc2626',
+  Gris:     '#6b7280',
+}
 
 function TabBtn({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`transition-all duration-300 ${active ? 'active' : ''}`}
       style={{
-        padding: '10px 24px',
+        padding: '12px 22px',
         fontSize: 13,
         fontWeight: 600,
-        borderRadius: '30px',
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
         border: 'none',
+        borderBottom: active ? `2.5px solid ${G.green2}` : '2.5px solid transparent',
         cursor: 'pointer',
-        background: active ? '#2d5a27' : 'transparent',
-        color: active ? '#ffffff' : '#6b8e66',
+        background: 'transparent',
+        color: active ? G.green2 : G.textSub,
         display: 'flex',
         alignItems: 'center',
-        gap: '8px',
-        boxShadow: active ? '0 4px 12px rgba(45, 90, 39, 0.2)' : 'none'
+        gap: 8,
+        transition: 'color 0.2s, border-color 0.2s',
+        borderRadius: 0,
+        whiteSpace: 'nowrap',
       }}
     >
       {children}
@@ -30,8 +54,55 @@ function TabBtn({ active, onClick, children }) {
   )
 }
 
+/* ── Decoración SVG de fondo ── */
+function BgPattern() {
+  return (
+    <svg
+      aria-hidden="true"
+      style={{
+        position: 'fixed', top: 0, left: 0,
+        width: '100%', height: '100%',
+        pointerEvents: 'none', zIndex: 0,
+        opacity: 0.035,
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <pattern id="leaf-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <circle cx="30" cy="30" r="1.5" fill={G.green2} />
+          <circle cx="0"  cy="0"  r="1"   fill={G.green2} />
+          <circle cx="60" cy="0"  r="1"   fill={G.green2} />
+          <circle cx="0"  cy="60" r="1"   fill={G.green2} />
+          <circle cx="60" cy="60" r="1"   fill={G.green2} />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#leaf-grid)" />
+    </svg>
+  )
+}
+
+/* ── Ilustración decorativa header ── */
+function HeaderIllustration() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 200 120"
+      style={{ width: 200, height: 120, opacity: 0.12, flexShrink: 0 }}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse cx="100" cy="90" rx="80" ry="20" fill={G.green3} />
+      <path d="M100 80 Q80 40 60 20 Q100 30 100 80Z" fill={G.green2} />
+      <path d="M100 80 Q120 40 140 20 Q100 30 100 80Z" fill={G.green3} />
+      <path d="M100 80 Q70 55 50 60 Q80 45 100 80Z" fill={G.green4} />
+      <path d="M100 80 Q130 55 150 60 Q120 45 100 80Z" fill={G.green4} />
+      <circle cx="100" cy="78" r="5" fill={G.green1} />
+    </svg>
+  )
+}
+
 export default function DetectorReciclajePage() {
-  const videoRef = useRef(null)
+  const videoRef  = useRef(null)
   const canvasRef = useRef(null)
 
   const {
@@ -41,9 +112,7 @@ export default function DetectorReciclajePage() {
     setTab, activarCamara, detenerCamara, capturarFoto, retomar,
   } = useDetectorReciclaje()
 
-  useEffect(() => {
-    return () => detenerCamara(videoRef)
-  }, [])
+  useEffect(() => { return () => detenerCamara(videoRef) }, [])
 
   const handleSwitchTab = (tab) => {
     if (camaraActiva) detenerCamara(videoRef)
@@ -51,140 +120,279 @@ export default function DetectorReciclajePage() {
   }
 
   return (
-    <div className="cyber-page-container">
-      <style>{detectorStyles}</style>
+    <>
+      {/* Google Font */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      />
+
       <style>{`
-        .cyber-page-container {
+        * { box-sizing: border-box; }
+
+        .detector-page {
           width: 100%;
+          max-width: 1200px; /* Evita que el contenido se estire de forma desproporcionada */
+          margin: 0 auto;    /* Centra la página horizontalmente */
+          min-height: 100vh;
+          background: ${G.pageBg};
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 24px;
+          position: relative;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          
+          padding: 60px 24px;
         }
 
-        /* ── Gran Contenedor Glassmorphic Futurista ── */
-        .glass-main-card {
-          background: rgba(255, 255, 255, 0.45);
-          backdrop-filter: blur(20px) saturate(160%);
-          -webkit-backdrop-filter: blur(20px) saturate(160%);
-          border: 1px solid rgba(255, 255, 255, 0.6);
-          border-radius: 32px;
-          padding: 2.5rem;
-          box-shadow: 0 24px 50px rgba(27, 60, 26, 0.04), 
-                      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+        /* ── Animaciones de entrada ── */
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
+        .anim-1 { animation: fadeUp 0.45s ease both; }
+        .anim-2 { animation: fadeUp 0.45s 0.08s ease both; }
+        .anim-3 { animation: fadeUp 0.45s 0.16s ease both; }
+        .anim-4 { animation: fadeUp 0.45s 0.24s ease both; }
 
-        /* Sub-paneles internos consistentes */
-        .glass-sub-panel {
-          background: rgba(255, 255, 255, 0.7);
-          border: 1px solid rgba(255, 255, 255, 0.8);
-          border-radius: 24px;
-          padding: 2rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
-        }
-
-        .glass-tabs-container {
-          display: flex;
-          padding: 6px;
-          gap: 4px;
-          border-radius: 100px;
-          width: fit-content;
-          background: rgba(45, 90, 39, 0.05);
-          border: 1px solid rgba(45, 90, 39, 0.03);
-          margin-bottom: 1.5rem;
-        }
-
-        .grid-layout {
+        /* ── Stats strip ── */
+        .stats-strip {
           display: grid;
-          grid-template-columns: 1fr 380px;
-          gap: 2rem;
-          align-items: start;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+        .stat-card {
+          background: #ffffff;
+          border: 1px solid ${G.border};
+          border-radius: 16px;
+          padding: 16px 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          box-shadow: 0 2px 12px rgba(45,90,39,0.05);
+          transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .stat-card:hover {
+          box-shadow: 0 6px 20px rgba(45,90,39,0.1);
+          transform: translateY(-1px);
+        }
+        .stat-val {
+          font-size: 26px;
+          font-weight: 800;
+          color: ${G.green2};
+          line-height: 1;
+        }
+        .stat-lbl {
+          font-size: 12px;
+          color: ${G.textMuted};
+          font-weight: 500;
         }
 
-        .cyber-badge {
-          display: inline-flex;
+        /* ── Main card ── */
+        .main-card {
+          background: ${G.cardBg};
+          border: 1px solid ${G.border};
+          border-radius: 24px;
+          box-shadow: 0 4px 32px rgba(45,90,39,0.07);
+          overflow: hidden;
+        }
+
+        /* ── Tabs bar ── */
+        .tabs-bar {
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid ${G.border};
+          padding: 0 24px;
+          background: #fafcfa;
+        }
+        .tabs-spacer { flex: 1; }
+        .module-indicator {
+          display: flex;
           align-items: center;
           gap: 6px;
-          padding: 6px 14px;
-          border-radius: 100px;
-          width: fit-content;
-          background: rgba(45, 90, 39, 0.08);
-          border: 1px solid rgba(45, 90, 39, 0.15);
-          color: #2d5a27;
           font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
+          font-weight: 600;
+          color: ${G.textMuted};
+          letter-spacing: 0.04em;
+        }
+        .module-dot {
+          width: 7px; height: 7px;
+          border-radius: 50%;
+          background: ${G.green3};
+          box-shadow: 0 0 6px ${G.green3};
+          animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+          0%,100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
 
-        .legend-section {
-          margin-top: 2.5rem;
-          border-top: 1px solid rgba(0, 0, 0, 0.05);
-          padding-top: 1.5rem;
-        }
-
-        .legend-grid-box {
+        /* ── Content grid ── */
+        .content-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          gap: 1rem;
-          margin-top: 1rem;
+          grid-template-columns: 1fr 360px;
+          align-items: start;
+        }
+        .left-col {
+          padding: 28px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .right-col {
+          padding: 28px;
+          border-left: 1px solid ${G.border};
+          background: #fafcfa;
+          min-height: 480px;
+          display: flex;
+          flex-direction: column;
         }
 
-        .legend-item-card {
-          background: rgba(255, 255, 255, 0.8);
-          border: 1px solid rgba(255, 255, 255, 0.9);
-          border-radius: 16px;
-          padding: 1rem;
+        /* ── Legend footer ── */
+        .legend-footer {
+          border-top: 1px solid ${G.border};
+          padding: 16px 24px;
           display: flex;
           align-items: center;
-          gap: 12px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+          gap: 8px;
+          flex-wrap: wrap;
+          background: #fafcfa;
+        }
+        .legend-label {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: ${G.textSub};
+          margin-right: 6px;
+        }
+        .bin-chip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 12px;
+          border-radius: 100px;
+          background: #ffffff;
+          border: 1px solid ${G.border};
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+          transition: box-shadow 0.2s;
+        }
+        .bin-chip:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+        .bin-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .bin-name { font-size: 12px; font-weight: 600; color: ${G.green1}; }
+        .bin-type { font-size: 11px; color: ${G.textMuted}; }
+
+        /* ── Error banner ── */
+        .error-banner {
+          display: flex; align-items: center; gap: 10px;
+          padding: 12px 16px; border-radius: 12px;
+          font-size: 13px; font-weight: 600;
+          background: #fff5f5; border: 1px solid #ffcccc; color: #dc2626;
         }
 
-        @media (max-width: 1100px) {
-          .grid-layout {
-            grid-template-columns: 1fr;
-          }
-          .glass-main-card {
-            padding: 1.5rem;
-          }
+        @media (max-width: 1024px) {
+          .content-grid { grid-template-columns: 1fr; }
+          .right-col { border-left: none; border-top: 1px solid ${G.border}; min-height: auto; }
+          .stats-strip { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 600px) {
+          .stats-strip { grid-template-columns: 1fr; }
+          .left-col, .right-col { padding: 20px; }
         }
       `}</style>
 
-      {/* ── Encabezado Limpio Superior ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div className="cyber-badge">
-          <i className="ti ti-cpu" style={{ fontSize: '13px' }} />
-          <span>AI Vision Engine v2.6 · Google Cloud</span>
-        </div>
-        <h1 className="eco-font" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1b3c1a', margin: 0, letterSpacing: '-0.02em' }}>
-          Detector de <span style={{ color: '#2d5a27' }}>Reciclaje</span>
-        </h1>
-        <p style={{ fontSize: '15px', color: '#4a4a4a', margin: 0, maxWidth: '600px', lineHeight: 1.5 }}>
-          Analiza flujos de residuos mediante captura óptica. Nuestra inteligencia artificial segmentará los materiales indicando su respectivo contenedor.
-        </p>
-      </div>
+      <div className="detector-page">
+        <BgPattern />
 
-      {/* ── Macro Contenedor Glassmorphic Translúcido ── */}
-      <div className="glass-main-card">
-        <div className="grid-layout">
-          
-          {/* Columna Izquierda: Captura/Subida */}
-          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            
-            {/* Pestañas */}
-            <div className="glass-tabs-container">
-              <TabBtn active={activeTab === 'subir'} onClick={() => handleSwitchTab('subir')}>
-                <i className="ti ti-upload" style={{ fontSize: 15 }} />
-                Subir Imagen
-              </TabBtn>
-              <TabBtn active={activeTab === 'camara'} onClick={() => handleSwitchTab('camara')}>
-                <i className="ti ti-camera" style={{ fontSize: 15 }} />
-                Cámara en Vivo
-              </TabBtn>
+        {/* ── Header ── */}
+        <div className="anim-1" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* Badge */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '5px 14px', borderRadius: 100, width: 'fit-content',
+              background: '#e8f5e9', border: `1px solid rgba(82,183,136,0.35)`,
+              color: G.green2, fontSize: 11, fontWeight: 700,
+              letterSpacing: '0.06em', textTransform: 'uppercase',
+            }}>
+              <i className="ti ti-cpu" style={{ fontSize: 12 }} />
+              AI Vision Engine v2.6 · Google Cloud
             </div>
 
-            {/* Panel de interacción */}
-            <div className="glass-sub-panel">
+            {/* Título con gradiente */}
+            <h1 style={{
+              margin: 0,
+              fontSize: '2.2rem',
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              letterSpacing: '-0.03em',
+              lineHeight: 1.1,
+              background: `linear-gradient(135deg, ${G.green1} 0%, ${G.green2} 60%, ${G.green3} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              Detector de Reciclaje
+            </h1>
+
+            <p style={{
+              margin: 0, fontSize: 14, color: G.textMuted,
+              maxWidth: 520, lineHeight: 1.6, fontWeight: 400,
+            }}>
+              Analiza flujos de residuos mediante captura óptica. Nuestra inteligencia
+              artificial segmentará los materiales indicando su respectivo contenedor.
+            </p>
+          </div>
+
+          <HeaderIllustration />
+        </div>
+
+        {/* ── Stats strip ── */}
+        <div className="stats-strip anim-2" style={{ position: 'relative', zIndex: 1 }}>
+          {[
+            { val: '1,284', lbl: 'Residuos analizados', icon: 'ti-chart-bar' },
+            { val: '94%',   lbl: 'Precisión del modelo', icon: 'ti-brain' },
+            { val: '5',     lbl: 'Tipos de contenedor',  icon: 'ti-trash' },
+          ].map(({ val, lbl, icon }) => (
+            <div className="stat-card" key={lbl}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: 8,
+                  background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <i className={`ti ${icon}`} style={{ fontSize: 14, color: G.green2 }} />
+                </div>
+              </div>
+              <div className="stat-val">{val}</div>
+              <div className="stat-lbl">{lbl}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Main card ── */}
+        <div className="main-card anim-3" style={{ position: 'relative', zIndex: 1 }}>
+
+          {/* Tabs */}
+          <div className="tabs-bar">
+            <TabBtn active={activeTab === 'subir'} onClick={() => handleSwitchTab('subir')}>
+              <i className="ti ti-upload" style={{ fontSize: 15 }} />
+              Subir imagen
+            </TabBtn>
+            <TabBtn active={activeTab === 'camara'} onClick={() => handleSwitchTab('camara')}>
+              <i className="ti ti-camera" style={{ fontSize: 15 }} />
+              Cámara en vivo
+            </TabBtn>
+            <div className="tabs-spacer" />
+            <div className="module-indicator">
+              <div className="module-dot" />
+              Módulo activo
+            </div>
+          </div>
+
+          {/* Grid */}
+          <div className="content-grid">
+            {/* Izquierda */}
+            <div className="left-col">
               {activeTab === 'subir' ? (
                 <UploadPanel
                   preview={preview}
@@ -207,58 +415,35 @@ export default function DetectorReciclajePage() {
                   onRetomar={retomar}
                 />
               )}
+
+              {error && (
+                <div className="error-banner">
+                  <i className="ti ti-alert-circle" style={{ fontSize: 16 }} />
+                  {error}
+                </div>
+              )}
             </div>
 
-            {/* Errores */}
-            {error && (
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '12px 16px', borderRadius: '14px', fontSize: '13px', fontWeight: 600,
-                background: '#fff5f5', border: '1px solid #ffcccc', color: '#dc2626', marginTop: '1rem'
-              }}>
-                <i className="ti ti-alert-circle" style={{ fontSize: '16px' }} />
-                {error}
-              </div>
-            )}
-          </div>
-
-          {/* Columna Derecha: Resultados */}
-          <div style={{ minWidth: 0 }}>
-            <div className="glass-sub-panel" style={{ height: '100%', boxSizing: 'border-box' }}>
+            {/* Derecha */}
+            <div className="right-col">
               <ResultPanel resultado={resultado} isLoading={isLoading} onLimpiar={limpiar} />
             </div>
           </div>
 
-        </div>
-
-        {/* Sección Inferior: Leyendas de Contenedores */}
-        <div className="legend-section">
-          <p style={{ fontSize: '11px', fontWeight: 800, color: '#2d5a27', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-            Infraestructura de Depósitos
-          </p>
-          <div className="legend-grid-box">
-            {LEYENDA.map(({ color, label, desc, icon }) => (
-              <div key={label} className="legend-item-card">
-                <div
-                  className={color}
-                  style={{
-                    width: 38, height: 38, borderRadius: '12px', flexShrink: 0,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '18px'
-                  }}
-                >
-                  {icon}
-                </div>
-                <div>
-                  <p style={{ fontSize: '13px', fontWeight: 700, color: '#121212', margin: 0 }}>{label}</p>
-                  <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0, marginTop: '2px' }}>{desc}</p>
-                </div>
+          {/* Legend footer */}
+          <div className="legend-footer">
+            <span className="legend-label">Contenedores</span>
+            {LEYENDA.map(({ label, desc }) => (
+              <div className="bin-chip" key={label}>
+                <div className="bin-dot" style={{ background: BIN_COLORS[label] ?? '#888' }} />
+                <span className="bin-name">{label}</span>
+                <span className="bin-type">· {desc}</span>
               </div>
             ))}
           </div>
-        </div>
 
+        </div>
       </div>
-    </div>
+    </>
   )
 }
