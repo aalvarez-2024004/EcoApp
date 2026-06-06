@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useUser } from '../store/useUserStore'
 import { useForoStore } from '../store/useForoStore'
-import PostCard from '../components/PostCard'
+import PostCard from '../components/ForoComps/PostCard'
 import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 // Se mantienen los TAGS y TAG_STYLES originales para preservar la lógica

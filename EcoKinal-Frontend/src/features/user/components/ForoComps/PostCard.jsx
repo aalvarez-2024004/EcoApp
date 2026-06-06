@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useForoStore } from '../store/useForoStore'
-import Avatar from './Avatar'
+import { useForoStore } from '../../store/useForoStore'
+import Avatar from '../Avatar'
 import CommentSection from './CommentSection'
 import ImageLightbox from './ImageLightbox'
 
