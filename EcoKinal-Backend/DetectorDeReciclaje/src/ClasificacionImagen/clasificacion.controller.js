@@ -45,7 +45,7 @@ export const clasificarImagen = async (req, res) => {
 
         console.log('Archivo recibido:', req.file?.originalname, req.file?.size, 'bytes'); // ← aquí
 
-        const labels = await detectarLabels(imagePath);
+        const { labels, labelsConScore } = await detectarLabels(imagePath);
 
         if (imagePath && fs.existsSync(imagePath)) {
             fs.unlinkSync(imagePath);
@@ -56,6 +56,7 @@ export const clasificarImagen = async (req, res) => {
         const registro = await Clasificacion.create({
             imagen: req.file.filename,
             labels,
+            labelsConScore: Object.fromEntries(labelsConScore),
             tipo: resultado.tipo,
             contenedor: resultado.contenedor
         });

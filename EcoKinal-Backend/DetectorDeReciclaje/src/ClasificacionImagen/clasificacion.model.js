@@ -15,6 +15,11 @@ const clasificacionSchema = mongoose.Schema({
         type:[String],
         default: []
     },
+    labelsConScore: {
+        type: Map,
+        of: Number,
+        default: {}
+    },
     tipo:{
         type: String,
         required: true

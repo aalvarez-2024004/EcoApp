@@ -2,6 +2,7 @@
  
 import express from 'express';
 import cors from 'cors';
+import { corsOptions } from './cors-configuration.js'
 import helmet from 'helmet';
 import{swaggerUi, swaggerDocs} from '../docs/swagger.js';
  
@@ -13,8 +14,8 @@ export const createApp = () => {
     const app = express();
  
     // Middlewares
+    app.use(cors(corsOptions));
     app.use(express.json());
-    app.use(cors());
     app.use(helmet());
  
     //se ignoran los errores de certificados SSL
