@@ -9,8 +9,7 @@ export default function ProfileModal({ onClose }) {
   const { name, username, email, image, initials } = useUser()
   const updateUser = useAuthStore((s) => s.updateUser)
 
-  const [mode, setMode] = useState('view') 
-
+  const [mode, setMode] = useState('view')
   const [form, setForm] = useState({ name, username })
   const [previewImage, setPreviewImage] = useState(image)
   const [imageFile, setImageFile] = useState(null)
@@ -48,12 +47,11 @@ export default function ProfileModal({ onClose }) {
         },
       })
 
-      updateUser({ 
+      updateUser({
         ...data.user,
-        // Normaliza la imagen a los 3 campos que usa useUser
         profilePicture: data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
-        photo:          data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
-        image:          data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
+        photo: data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
+        image: data.user?.profilePicture ?? data.user?.photo ?? data.user?.image ?? previewImage,
       })
       setSaveSuccess(true)
       setTimeout(() => { setSaveSuccess(false); setMode('view') }, 1500)
@@ -83,7 +81,11 @@ export default function ProfileModal({ onClose }) {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       setPwSuccess(true)
-      setTimeout(() => { setPwSuccess(false); setMode('view'); setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }, 1500)
+      setTimeout(() => {
+        setPwSuccess(false)
+        setMode('view')
+        setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      }, 1500)
     } catch (err) {
       setPwError(err.response?.data?.error || 'Error al cambiar la contraseña')
     } finally {
@@ -91,315 +93,418 @@ export default function ProfileModal({ onClose }) {
     }
   }
 
-  const inputStyle = {
-    width: '100%', padding: '10px 14px', borderRadius: 12, fontSize: 14,
-    border: '1px solid var(--card-border)', background: 'var(--bone)',
-    color: 'var(--ink)', outline: 'none', boxSizing: 'border-box',
-    fontFamily: 'inherit',
+  const styles = {
+    overlay: {
+      position: 'fixed', inset: 0,
+      background: 'rgba(10, 26, 10, 0.55)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      zIndex: 100, backdropFilter: 'blur(6px)',
+    },
+    modal: {
+      background: '#FAFAF7',
+      borderRadius: 28,
+      width: 420,
+      maxHeight: '92vh',
+      overflowY: 'auto',
+      border: '1px solid rgba(60, 109, 17, 0.15)',
+      boxShadow: '0 32px 64px rgba(10, 40, 10, 0.18), 0 0 0 1px rgba(60,109,17,0.08)',
+      fontFamily: "'DM Sans', system-ui, sans-serif",
+    },
+    topBanner: {
+      background: 'linear-gradient(135deg, #1B4D1B 0%, #2D6A2D 60%, #3B7A2A 100%)',
+      borderRadius: '28px 28px 0 0',
+      padding: '24px 24px 60px',
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    bannerLeaf1: {
+      position: 'absolute', right: -20, top: -20,
+      width: 120, height: 120,
+      borderRadius: '60% 40% 70% 30%',
+      background: 'rgba(255,255,255,0.05)',
+    },
+    bannerLeaf2: {
+      position: 'absolute', right: 30, bottom: -30,
+      width: 80, height: 80,
+      borderRadius: '40% 60% 30% 70%',
+      background: 'rgba(255,255,255,0.04)',
+    },
+    headerRow: {
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    },
+    headerTitle: {
+      fontSize: 15, fontWeight: 600, color: 'rgba(255,255,255,0.9)',
+      margin: 0, letterSpacing: '0.01em',
+    },
+    iconBtn: {
+      background: 'rgba(255,255,255,0.12)',
+      border: '1px solid rgba(255,255,255,0.2)',
+      borderRadius: 10, width: 32, height: 32,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      cursor: 'pointer', color: '#fff', transition: 'background 0.15s',
+    },
+    avatarFloat: {
+      position: 'relative',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      marginTop: -44,
+      marginBottom: 12,
+    },
+    avatarRing: {
+      padding: 4,
+      background: '#FAFAF7',
+      borderRadius: '50%',
+      boxShadow: '0 4px 16px rgba(27,77,27,0.18)',
+    },
+    body: {
+      padding: '0 24px 28px',
+    },
+    nameBlock: {
+      textAlign: 'center', marginBottom: 24,
+    },
+    nameText: {
+      fontSize: 20, fontWeight: 700, color: '#1A2E1A', margin: '0 0 2px',
+      letterSpacing: '-0.01em',
+    },
+    usernameText: {
+      fontSize: 13, color: '#5A7A5A', margin: 0, fontWeight: 500,
+    },
+    infoCard: {
+      background: '#fff',
+      border: '1px solid rgba(60,109,17,0.12)',
+      borderRadius: 16,
+      padding: '4px 0',
+      marginBottom: 20,
+    },
+    infoRow: {
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '12px 16px',
+    },
+    infoRowBorder: {
+      borderTop: '1px solid rgba(60,109,17,0.08)',
+    },
+    infoIcon: {
+      width: 34, height: 34, borderRadius: 10,
+      background: 'rgba(60,109,17,0.08)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+      color: '#2D6A2D', fontSize: 16,
+    },
+    infoLabel: {
+      fontSize: 11, color: '#8A9E8A', fontWeight: 600,
+      textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 2px',
+    },
+    infoValue: {
+      fontSize: 14, color: '#1A2E1A', fontWeight: 500, margin: 0,
+    },
+    btnPrimary: {
+      width: '100%', padding: '13px',
+      borderRadius: 14, fontSize: 14, fontWeight: 600,
+      cursor: 'pointer', border: 'none',
+      background: 'linear-gradient(135deg, #1B4D1B 0%, #2D6A2D 100%)',
+      color: '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+      letterSpacing: '0.01em', transition: 'opacity 0.15s',
+    },
+    btnSecondary: {
+      width: '100%', padding: '13px',
+      borderRadius: 14, fontSize: 14, fontWeight: 500,
+      cursor: 'pointer',
+      border: '1px solid rgba(60,109,17,0.2)',
+      background: '#fff', color: '#2D6A2D',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+      transition: 'background 0.15s',
+    },
+    btnStack: {
+      display: 'flex', flexDirection: 'column', gap: 10,
+    },
+    label: {
+      fontSize: 11, color: '#8A9E8A', fontWeight: 600,
+      textTransform: 'uppercase', letterSpacing: '0.06em',
+      margin: '0 0 6px',
+    },
+    input: {
+      width: '100%', padding: '11px 14px',
+      borderRadius: 12, fontSize: 14,
+      border: '1px solid rgba(60,109,17,0.18)',
+      background: '#fff', color: '#1A2E1A',
+      outline: 'none', boxSizing: 'border-box',
+      fontFamily: 'inherit', transition: 'border-color 0.15s',
+    },
+    inputDisabled: {
+      opacity: 0.5, cursor: 'not-allowed',
+      background: '#F5F5F0',
+    },
+    fieldGroup: {
+      display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 22,
+    },
+    alertError: {
+      padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+      background: '#FEF2F2', border: '1px solid #FECACA',
+      fontSize: 13, color: '#991B1B', lineHeight: 1.4,
+    },
+    alertSuccess: {
+      padding: '10px 14px', borderRadius: 12, marginBottom: 14,
+      background: '#F0FDF4', border: '1px solid rgba(60,109,17,0.25)',
+      fontSize: 13, color: '#166534', fontWeight: 500,
+    },
+    btnRow: {
+      display: 'flex', gap: 10,
+    },
+    btnCancel: {
+      flex: 1, padding: '12px',
+      borderRadius: 14, fontSize: 14, fontWeight: 500, cursor: 'pointer',
+      border: '1px solid rgba(60,109,17,0.18)',
+      background: '#fff', color: '#5A7A5A',
+    },
+    btnSave: (disabled) => ({
+      flex: 2, padding: '12px',
+      borderRadius: 14, fontSize: 14, fontWeight: 600,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      border: 'none',
+      background: disabled
+        ? 'rgba(45,106,45,0.35)'
+        : 'linear-gradient(135deg, #1B4D1B 0%, #2D6A2D 100%)',
+      color: '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+    }),
   }
 
-  const labelStyle = {
-    fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase',
-    fontWeight: 600, margin: '0 0 5px 0',
-  }
+  const Spinner = () => (
+    <svg style={{ width: 15, height: 15, animation: 'ekSpin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
+      <style>{`@keyframes ekSpin { to { transform: rotate(360deg) } }`}</style>
+      <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.35)" strokeWidth="3" />
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  )
 
   return (
-    <div
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(17,33,23,0.4)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 100, backdropFilter: 'blur(4px)',
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: 'var(--white)', borderRadius: 24, padding: 28,
-          width: 400, border: '1px solid var(--card-border)',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          maxHeight: '90vh', overflowY: 'auto',
-        }}
-      >
+    <div style={styles.overlay} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={styles.modal}>
 
-        {/* ── Header ── */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {mode !== 'view' && (
-              <button
-                onClick={() => { setMode('view'); setSaveError(null); setPwError(null) }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', padding: 4, display: 'flex' }}
-              >
-                <i className="ti ti-arrow-left" style={{ fontSize: 18 }} />
-              </button>
-            )}
-            <h2 style={{ fontSize: 18, fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--ink)', margin: 0 }}>
-              {mode === 'view' && 'Mi perfil'}
-              {mode === 'edit' && 'Editar perfil'}
-              {mode === 'password' && 'Cambiar contraseña'}
-            </h2>
+        {/* ── Top banner ── */}
+        <div style={styles.topBanner}>
+          <div style={styles.bannerLeaf1} />
+          <div style={styles.bannerLeaf2} />
+          <div style={styles.headerRow}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {mode !== 'view' && (
+                <button
+                  onClick={(e) => { 
+                    e.stopPropagation(); // Evita interferencias
+                    setMode('view'); 
+                    setSaveError(null); 
+                    setPwError(null); 
+                  }}
+                  style={styles.iconBtn}
+                  type="button"
+                >
+                  <i className="ti ti-arrow-left" style={{ fontSize: 16 }} />
+                </button>
+              )}
+              <p style={styles.headerTitle}>
+                {mode === 'view' && 'Mi perfil'}
+                {mode === 'edit' && 'Editar perfil'}
+                {mode === 'password' && 'Cambiar contraseña'}
+              </p>
+            </div>
+            
+            {/* AQUÍ ESTÁ EL AJUSTE IMPORTANTE: Forzamos la ejecución limpia del onClose */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                console.log('CLICK X')
+                onClose()
+              }}
+              style={{
+                ...styles.iconBtn,
+                zIndex: 9999
+              }}
+              type="button"
+            >
+              <i
+                className="ti ti-x"
+                style={{
+                  fontSize: 16,
+                  pointerEvents: 'none'
+                }}
+              />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', padding: 4 }}
-          >
-            <i className="ti ti-x" style={{ fontSize: 18 }} />
-          </button>
         </div>
 
-        {mode === 'view' && (
-          <>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-              <Avatar image={image} initials={initials} size={72} />
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink)', margin: 0 }}>{name}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)', margin: 0 }}>@{username}</p>
-              </div>
-            </div>
+        {/* ── Body ── */}
+        <div style={styles.body}>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, borderTop: '1px solid var(--card-border)', paddingTop: 20, marginBottom: 24 }}>
-              <div>
-                <p style={labelStyle}>Correo Electrónico</p>
-                <p style={{ fontSize: 14, color: 'var(--ink)', margin: 0, fontWeight: 500 }}>{email}</p>
+          {mode === 'view' && (
+            <>
+              <div style={styles.avatarFloat}>
+                <div style={styles.avatarRing}>
+                  <Avatar image={image} initials={initials} size={72} />
+                </div>
               </div>
-              <div>
-                <p style={labelStyle}>Nombre de usuario</p>
-                <p style={{ fontSize: 14, color: 'var(--ink)', margin: 0, fontWeight: 500 }}>@{username}</p>
+
+              <div style={styles.nameBlock}>
+                <p style={styles.nameText}>{name}</p>
+                <p style={styles.usernameText}>@{username}</p>
               </div>
-            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button
-                onClick={() => { setForm({ name, username }); setPreviewImage(image); setImageFile(null); setMode('edit') }}
-                style={{
-                  width: '100%', padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 600, cursor: 'pointer', border: '1px solid var(--card-border)',
-                  background: 'var(--navy-700)', color: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}
-              >
-                <i className="ti ti-pencil" style={{ fontSize: 16 }} />
-                Editar perfil
-              </button>
-              <button
-                onClick={() => setMode('password')}
-                style={{
-                  width: '100%', padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 500, cursor: 'pointer',
-                  border: '1px solid var(--card-border)', background: 'var(--bone)', color: 'var(--ink)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}
-              >
-                <i className="ti ti-lock" style={{ fontSize: 16 }} />
-                Cambiar contraseña
-              </button>
-            </div>
-          </>
-        )}
+              <div style={styles.infoCard}>
+                <div style={styles.infoRow}>
+                  <div style={styles.infoIcon}>
+                    <i className="ti ti-mail" />
+                  </div>
+                  <div>
+                    <p style={styles.infoLabel}>Correo electrónico</p>
+                    <p style={styles.infoValue}>{email}</p>
+                  </div>
+                </div>
+                <div style={{ ...styles.infoRow, ...styles.infoRowBorder }}>
+                  <div style={styles.infoIcon}>
+                    <i className="ti ti-at" />
+                  </div>
+                  <div>
+                    <p style={styles.infoLabel}>Nombre de usuario</p>
+                    <p style={styles.infoValue}>@{username}</p>
+                  </div>
+                </div>
+              </div>
 
-        {mode === 'edit' && (
-          <>
-            {/* Avatar con botón de cambio */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-              <div style={{ position: 'relative' }}>
-                <Avatar image={previewImage} initials={initials} size={80} />
+              <div style={styles.btnStack}>
                 <button
-                  onClick={() => fileInputRef.current?.click()}
-                  style={{
-                    position: 'absolute', bottom: 0, right: 0,
-                    width: 28, height: 28, borderRadius: '50%',
-                    background: 'var(--green-800)', border: '2px solid var(--white)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer',
-                  }}
+                  onClick={() => { setForm({ name, username }); setPreviewImage(image); setImageFile(null); setMode('edit') }}
+                  style={styles.btnPrimary}
+                  type="button"
                 >
-                  <i className="ti ti-camera" style={{ fontSize: 13, color: '#fff' }} />
+                  <i className="ti ti-pencil" style={{ fontSize: 16 }} />
+                  Editar perfil
                 </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  style={{ display: 'none' }}
-                  onChange={handleImageChange}
-                />
+                <button onClick={() => setMode('password')} style={styles.btnSecondary} type="button">
+                  <i className="ti ti-lock" style={{ fontSize: 16 }} />
+                  Cambiar contraseña
+                </button>
               </div>
-              <p style={{ fontSize: 12, color: 'var(--muted)', margin: 0 }}>Haz clic en la cámara para cambiar tu foto</p>
-            </div>
+            </>
+          )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
-              <div>
-                <p style={labelStyle}>Nombre</p>
-                <input
-                  style={inputStyle}
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  placeholder="Tu nombre completo"
-                />
+          {mode === 'edit' && (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 24, marginTop: 8 }}>
+                <div style={{ position: 'relative' }}>
+                  <div style={styles.avatarRing}>
+                    <Avatar image={previewImage} initials={initials} size={72} />
+                  </div>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      position: 'absolute', bottom: 2, right: 2,
+                      width: 26, height: 26, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #1B4D1B, #2D6A2D)',
+                      border: '2px solid #FAFAF7',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                    type="button"
+                  >
+                    <i className="ti ti-camera" style={{ fontSize: 12, color: '#fff' }} />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: 'none' }}
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <p style={{ fontSize: 12, color: '#8A9E8A', margin: 0 }}>Toca la cámara para cambiar tu foto</p>
               </div>
-              <div>
-                <p style={labelStyle}>Nombre de usuario</p>
-                <input
-                  style={inputStyle}
-                  value={form.username}
-                  onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-                  placeholder="tu_username"
-                />
-              </div>
-              <div>
-                <p style={labelStyle}>Correo electrónico</p>
-                <input
-                  style={{ ...inputStyle, opacity: 0.5, cursor: 'not-allowed' }}
-                  value={email}
-                  disabled
-                />
-                <p style={{ fontSize: 11, color: 'var(--muted)', margin: '4px 0 0 4px' }}>El correo no se puede modificar</p>
-              </div>
-            </div>
 
-            {saveError && (
-              <div style={{
-                padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#FCEBEB', border: '1px solid #F09595',
-                fontSize: 13, color: '#791F1F',
-              }}>
-                {saveError}
+              <div style={styles.fieldGroup}>
+                <div>
+                  <p style={styles.label}>Nombre</p>
+                  <input
+                    style={styles.input}
+                    value={form.name}
+                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    placeholder="Tu nombre completo"
+                  />
+                </div>
+                <div>
+                  <p style={styles.label}>Nombre de usuario</p>
+                  <input
+                    style={styles.input}
+                    value={form.username}
+                    onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+                    placeholder="tu_username"
+                  />
+                </div>
+                <div>
+                  <p style={styles.label}>Correo electrónico</p>
+                  <input
+                    style={{ ...styles.input, ...styles.inputDisabled }}
+                    value={email}
+                    disabled
+                  />
+                  <p style={{ fontSize: 11, color: '#8A9E8A', margin: '4px 0 0 4px' }}>El correo no se puede modificar</p>
+                </div>
               </div>
-            )}
 
-            {saveSuccess && (
-              <div style={{
-                padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#eef1f9', border: '1px solid rgba(35,55,109,0.15)',
-                fontSize: 13, color: '#23376d', fontWeight: 500,
-              }}>
-                ✓ Perfil actualizado correctamente
+              {saveError && <div style={styles.alertError}>{saveError}</div>}
+              {saveSuccess && <div style={styles.alertSuccess}>✓ Perfil actualizado correctamente</div>}
+
+              <div style={styles.btnRow}>
+                <button onClick={() => setMode('view')} style={styles.btnCancel} type="button">Cancelar</button>
+                <button onClick={handleSaveProfile} disabled={saving} style={styles.btnSave(saving)} type="button">
+                  {saving ? <><Spinner /> Guardando…</> : 'Guardar cambios'}
+                </button>
               </div>
-            )}
+            </>
+          )}
 
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                onClick={() => setMode('view')}
-                style={{
-                  flex: 1, padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 500, cursor: 'pointer',
-                  border: '1px solid var(--card-border)', background: 'var(--bone)', color: 'var(--ink)',
-                }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSaveProfile}
-                disabled={saving}
-                style={{
-                  flex: 2, padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
-                  border: 'none', background: saving ? 'rgba(35,55,109,0.3)' : '#23376d', color: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}
-              >
-                {saving ? (
-                  <>
-                    <svg style={{ width: 15, height: 15, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="3" opacity="0.3" />
-                      <path d="M12 2a10 10 0 0 1 10 10" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
-                    </svg>
-                    Guardando…
-                  </>
-                ) : 'Guardar cambios'}
-              </button>
-            </div>
-          </>
-        )}
-
-        {mode === 'password' && (
-          <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
-              <div>
-                <p style={labelStyle}>Contraseña actual</p>
-                <input
-                  style={inputStyle}
-                  type="password"
-                  value={pwForm.currentPassword}
-                  onChange={e => setPwForm(f => ({ ...f, currentPassword: e.target.value }))}
-                  placeholder="••••••••"
-                />
+          {mode === 'password' && (
+            <>
+              <div style={{ ...styles.fieldGroup, marginTop: 8 }}>
+                <div>
+                  <p style={styles.label}>Contraseña actual</p>
+                  <input
+                    style={styles.input} type="password"
+                    value={pwForm.currentPassword}
+                    onChange={e => setPwForm(f => ({ ...f, currentPassword: e.target.value }))}
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div>
+                  <p style={styles.label}>Nueva contraseña</p>
+                  <input
+                    style={styles.input} type="password"
+                    value={pwForm.newPassword}
+                    onChange={e => setPwForm(f => ({ ...f, newPassword: e.target.value }))}
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div>
+                  <p style={styles.label}>Confirmar nueva contraseña</p>
+                  <input
+                    style={styles.input} type="password"
+                    value={pwForm.confirmPassword}
+                    onChange={e => setPwForm(f => ({ ...f, confirmPassword: e.target.value }))}
+                    placeholder="••••••••"
+                  />
+                </div>
               </div>
-              <div>
-                <p style={labelStyle}>Nueva contraseña</p>
-                <input
-                  style={inputStyle}
-                  type="password"
-                  value={pwForm.newPassword}
-                  onChange={e => setPwForm(f => ({ ...f, newPassword: e.target.value }))}
-                  placeholder="••••••••"
-                />
-              </div>
-              <div>
-                <p style={labelStyle}>Confirmar nueva contraseña</p>
-                <input
-                  style={inputStyle}
-                  type="password"
-                  value={pwForm.confirmPassword}
-                  onChange={e => setPwForm(f => ({ ...f, confirmPassword: e.target.value }))}
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
 
-            {pwError && (
-              <div style={{
-                padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#FCEBEB', border: '1px solid #F09595',
-                fontSize: 13, color: '#791F1F',
-              }}>
-                {pwError}
+              {pwError && <div style={styles.alertError}>{pwError}</div>}
+              {pwSuccess && <div style={styles.alertSuccess}>✓ Contraseña actualizada correctamente</div>}
+
+              <div style={styles.btnRow}>
+                <button onClick={() => setMode('view')} style={styles.btnCancel} type="button">Cancelar</button>
+                <button onClick={handleChangePassword} disabled={pwSaving} style={styles.btnSave(pwSaving)} type="button">
+                  {pwSaving ? <><Spinner /> Guardando…</> : 'Actualizar contraseña'}
+                </button>
               </div>
-            )}
+            </>
+          )}
 
-            {pwSuccess && (
-              <div style={{
-                padding: '10px 14px', borderRadius: 12, marginBottom: 16,
-                background: '#eef1f9', border: '1px solid rgba(35,55,109,0.15)',
-                fontSize: 13, color: '#23376d', fontWeight: 500,
-              }}>
-                ✓ Contraseña actualizada correctamente
-              </div>
-            )}
-
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                onClick={() => setMode('view')}
-                style={{
-                  flex: 1, padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 500, cursor: 'pointer',
-                  border: '1px solid var(--card-border)', background: 'var(--bone)', color: 'var(--ink)',
-                }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleChangePassword}
-                disabled={pwSaving}
-                style={{
-                  flex: 2, padding: '11px', borderRadius: 14, fontSize: 14,
-                  fontWeight: 600, cursor: pwSaving ? 'not-allowed' : 'pointer',
-                  border: 'none', background: pwSaving ? 'rgba(35,55,109,0.3)' : '#23376d', color: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}
-              >
-                {pwSaving ? (
-                  <>
-                    <svg style={{ width: 15, height: 15, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="3" opacity="0.3" />
-                      <path d="M12 2a10 10 0 0 1 10 10" stroke="rgba(35,55,109,0.3)" strokeWidth="3" strokeLinecap="round" />
-                    </svg>
-                    Guardando…
-                  </>
-                ) : 'Actualizar contraseña'}
-              </button>
-            </div>
-          </>
-        )}
-
+        </div>
       </div>
     </div>
   )
