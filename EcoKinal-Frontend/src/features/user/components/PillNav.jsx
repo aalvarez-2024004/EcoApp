@@ -1,11 +1,8 @@
+// 📁 src/features/user/components/PillNav.jsx
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-export default function PillNav({
-  items = [],
-  onLogoutAction,
-  onProfileClick,
-}) {
+export default function PillNav({ items = [], onLogoutAction, onProfileClick }) {
   const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
   const currentPath = location.pathname
@@ -13,17 +10,14 @@ export default function PillNav({
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
         .econav-wrap {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 1000;
-          pointer-events: none;
+          /* ✅ FIX: SIN pointer-events: none en el wrapper — bloqueaba los clicks */
         }
 
         .econav {
-          pointer-events: all;
           width: 100%;
           background: linear-gradient(135deg, #162e15 0%, #1f4a1c 50%, #2b5626 100%);
           padding: 0 32px;
@@ -51,23 +45,16 @@ export default function PillNav({
         }
 
         .econav-brand {
-          display: flex;
-          align-items: center;
-          gap: 11px;
-          text-decoration: none;
-          flex-shrink: 0;
+          display: flex; align-items: center; gap: 11px;
+          text-decoration: none; flex-shrink: 0;
         }
 
         .econav-brand-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 11px;
+          width: 40px; height: 40px; border-radius: 11px;
           background: linear-gradient(135deg, rgba(168,216,154,0.25) 0%, rgba(168,216,154,0.1) 100%);
           border: 1px solid rgba(168,216,154,0.3);
-          display: grid;
-          place-items: center;
-          color: #a8d89a;
-          font-size: 20px;
+          display: grid; place-items: center;
+          color: #a8d89a; font-size: 20px;
           transition: all 0.2s;
           box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
@@ -79,53 +66,36 @@ export default function PillNav({
 
         .econav-brand-name {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 17px;
-          font-weight: 800;
-          color: #fff;
-          letter-spacing: -0.03em;
+          font-size: 17px; font-weight: 800;
+          color: #fff; letter-spacing: -0.03em;
         }
 
         .econav-brand-sub {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 10px;
-          font-weight: 500;
+          font-size: 10px; font-weight: 500;
           color: rgba(168,216,154,0.6);
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          display: block;
-          margin-top: -2px;
+          letter-spacing: 0.12em; text-transform: uppercase;
+          display: block; margin-top: -2px;
         }
 
         .econav-links {
-          display: flex;
-          align-items: center;
-          gap: 2px;
+          display: flex; align-items: center; gap: 2px;
           background: rgba(0,0,0,0.22);
-          border-radius: 14px;
-          padding: 5px;
-          flex: 1;
-          justify-content: center;
-          max-width: 720px;
+          border-radius: 14px; padding: 5px;
+          flex: 1; justify-content: center; max-width: 720px;
           border: 1px solid rgba(255,255,255,0.04);
         }
 
         .econav-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 7px;
-          padding: 9px 16px;
-          border-radius: 10px;
+          display: inline-flex; align-items: center; gap: 7px;
+          padding: 9px 16px; border-radius: 10px;
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 13.5px;
-          font-weight: 500;
+          font-size: 13.5px; font-weight: 500;
           color: rgba(255,255,255,0.55);
-          text-decoration: none;
-          border: none;
-          background: transparent;
-          cursor: pointer;
+          text-decoration: none; border: none;
+          background: transparent; cursor: pointer;
           transition: color 0.18s, background 0.18s;
           white-space: nowrap;
-          position: relative;
         }
 
         .econav-link i { font-size: 16px; flex-shrink: 0; }
@@ -137,8 +107,7 @@ export default function PillNav({
 
         .econav-link.active {
           background: linear-gradient(135deg, #a8d89a 0%, #7ec86e 100%);
-          color: #162e15;
-          font-weight: 700;
+          color: #162e15; font-weight: 700;
           box-shadow: 0 2px 12px rgba(126,200,110,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
         }
 
@@ -148,171 +117,113 @@ export default function PillNav({
         }
 
         .econav-actions {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-shrink: 0;
+          display: flex; align-items: center; gap: 8px; flex-shrink: 0;
         }
 
         .econav-icon-btn {
-          width: 40px;
-          height: 40px;
-          border-radius: 11px;
+          width: 40px; height: 40px; border-radius: 11px;
           background: rgba(255,255,255,0.07);
           border: 1px solid rgba(255,255,255,0.1);
-          display: grid;
-          place-items: center;
-          color: rgba(255,255,255,0.7);
-          font-size: 18px;
-          cursor: pointer;
-          transition: all 0.18s;
+          display: grid; place-items: center;
+          color: rgba(255,255,255,0.7); font-size: 18px;
+          cursor: pointer; transition: all 0.18s;
         }
 
         .econav-icon-btn:hover {
-          background: rgba(255,255,255,0.14);
-          color: #fff;
+          background: rgba(255,255,255,0.14); color: #fff;
           border-color: rgba(255,255,255,0.2);
           transform: translateY(-1px);
         }
 
-        /* ── Logout uiverse button ── */
         .econav-logout-btn {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          width: 44px;
-          height: 44px;
-          background: #dc2626;
-          border-radius: 50%;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
+          display: flex; align-items: center; justify-content: flex-start;
+          width: 44px; height: 44px;
+          background: #dc2626; border-radius: 50%;
+          cursor: pointer; position: relative; overflow: hidden;
           border: none;
           transition: width 0.25s ease, border-radius 0.25s ease;
-          box-shadow: 0 4px 14px rgba(220,38,38,0.4);
-          flex-shrink: 0;
+          box-shadow: 0 4px 14px rgba(220,38,38,0.4); flex-shrink: 0;
         }
 
-        .econav-logout-btn:hover {
-          width: 108px;
-          border-radius: 12px;
-        }
-
-        .econav-logout-btn:active {
-          transform: translate(1px, 1px);
-        }
+        .econav-logout-btn:hover { width: 108px; border-radius: 12px; }
+        .econav-logout-btn:active { transform: translate(1px, 1px); }
 
         .econav-logout-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 44px;
-          width: 44px;
-          height: 44px;
-          flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center;
+          min-width: 44px; width: 44px; height: 44px; flex-shrink: 0;
         }
 
         .econav-logout-label {
-          position: absolute;
-          left: 44px;
-          right: 0;
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          transform: translateX(30px);
-          opacity: 0;
-          color: white;
-          font-size: 14px;
-          font-weight: 700;
+          position: absolute; left: 44px; right: 0;
+          display: flex; align-items: center; justify-content: flex-start;
+          transform: translateX(30px); opacity: 0;
+          color: white; font-size: 14px; font-weight: 700;
           font-family: 'Plus Jakarta Sans', sans-serif;
           transition: transform 0.25s ease, opacity 0.25s ease;
-          white-space: nowrap;
-          pointer-events: none;
+          white-space: nowrap; pointer-events: none;
         }
 
         .econav-logout-btn:hover .econav-logout-label {
-          transform: translateX(0);
-          opacity: 1;
+          transform: translateX(0); opacity: 1;
         }
 
         .econav-hamburger {
           display: none;
-          width: 42px;
-          height: 42px;
-          border-radius: 11px;
+          width: 42px; height: 42px; border-radius: 11px;
           background: rgba(255,255,255,0.08);
           border: 1px solid rgba(255,255,255,0.1);
-          align-items: center;
-          justify-content: center;
-          color: rgba(255,255,255,0.8);
-          font-size: 20px;
-          cursor: pointer;
-          transition: background 0.18s;
-          flex-shrink: 0;
+          align-items: center; justify-content: center;
+          color: rgba(255,255,255,0.8); font-size: 20px;
+          cursor: pointer; transition: background 0.18s; flex-shrink: 0;
         }
 
         .econav-hamburger:hover { background: rgba(255,255,255,0.14); }
 
+        /* ✅ FIX: menú móvil con pointer-events activos y z-index sobre el main */
         .econav-mobile {
           display: none;
           position: fixed;
-          top: 76px;
-          left: 12px;
-          right: 12px;
+          top: 76px; left: 12px; right: 12px;
           background: linear-gradient(160deg, #162e15 0%, #2b5626 100%);
           border-radius: 18px;
           border: 1px solid rgba(168,216,154,0.12);
           box-shadow: 0 24px 56px rgba(0,0,0,0.4);
           padding: 10px;
-          z-index: 999;
-          flex-direction: column;
-          gap: 3px;
+          z-index: 1001;        /* ✅ Por encima del main (z-index 1) */
+          pointer-events: all;  /* ✅ Clicks habilitados */
+          flex-direction: column; gap: 3px;
         }
 
         .econav-mobile.open { display: flex; }
 
         .econav-mobile-link {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 13px 16px;
-          border-radius: 12px;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 13px 16px; border-radius: 12px;
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 14px;
-          font-weight: 500;
+          font-size: 14px; font-weight: 500;
           color: rgba(255,255,255,0.65);
-          text-decoration: none;
-          border: none;
-          background: transparent;
-          cursor: pointer;
-          width: 100%;
-          text-align: left;
-          transition: all 0.15s;
+          text-decoration: none; border: none;
+          background: transparent; cursor: pointer;
+          width: 100%; text-align: left; transition: all 0.15s;
         }
 
         .econav-mobile-link:hover {
-          background: rgba(255,255,255,0.06);
-          color: #fff;
+          background: rgba(255,255,255,0.06); color: #fff;
         }
 
         .econav-mobile-link.active {
           background: rgba(168,216,154,0.15);
-          color: #a8d89a;
-          font-weight: 700;
+          color: #a8d89a; font-weight: 700;
         }
 
         .econav-mobile-link span {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
+          display: inline-flex; align-items: center; gap: 10px;
         }
 
         .econav-mobile-link i { font-size: 17px; }
 
         .econav-mobile-divider {
-          height: 1px;
-          background: rgba(255,255,255,0.07);
-          margin: 4px 2px;
+          height: 1px; background: rgba(255,255,255,0.07); margin: 4px 2px;
         }
 
         .econav-mobile-logout { color: rgba(255,120,120,0.7) !important; }
@@ -322,7 +233,7 @@ export default function PillNav({
         }
 
         @media (max-width: 960px) {
-          .econav-links { display: none; }
+          .econav-links   { display: none; }
           .econav-actions { display: none; }
           .econav-hamburger { display: flex; }
         }
@@ -363,7 +274,6 @@ export default function PillNav({
             })}
           </div>
 
-          {/* Desktop actions */}
           <div className="econav-actions">
             {onProfileClick && (
               <button className="econav-icon-btn" onClick={onProfileClick} aria-label="Mi perfil">
@@ -392,7 +302,6 @@ export default function PillNav({
           </button>
         </nav>
 
-        {/* Mobile menu */}
         <div className={`econav-mobile ${isOpen ? 'open' : ''}`} role="menu">
           {items.map((item) => {
             const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
