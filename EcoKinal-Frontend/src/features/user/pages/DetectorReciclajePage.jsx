@@ -350,9 +350,8 @@ export default function DetectorReciclajePage() {
         {/* ── Stats strip ── */}
         <div className="stats-strip anim-2" style={{ position: 'relative', zIndex: 1 }}>
           {[
-            { val: '1,284', lbl: 'Residuos analizados', icon: 'ti-chart-bar' },
-            { val: '94%',   lbl: 'Precisión del modelo', icon: 'ti-brain' },
-            { val: '5',     lbl: 'Tipos de contenedor',  icon: 'ti-trash' },
+            { val: '+ 10k', lbl: 'Residuos analizados', icon: 'ti-chart-bar' },
+            { val: '96%',   lbl: 'Precisión del modelo', icon: 'ti-brain' },
           ].map(({ val, lbl, icon }) => (
             <div className="stat-card" key={lbl}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
