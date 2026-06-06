@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ScanOverlay } from '../../../../icons/DetectorIcons'
+// Importamos tu componente Sparkle
+import SparkleClasificar from './SparkleClasificar'
 
 function CloseBtn({ onClick }) {
   return (
@@ -235,12 +237,31 @@ export default function CameraPanel({
       )}
 
       {camCapturada && (
-        <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: 12, 
+          width: '100%', 
+          alignItems: 'center',
+          flexWrap: 'wrap' // <-- PERMITE QUE EN MÓVILES SE ACOMODEN UNO ABAJO DEL OTRO SI NO CABEN
+        }}>
           <button onClick={onRetomar}
             style={{
-              padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8,
-              background: 'rgba(0,0,0,0.03)', color: '#2d5a27', border: '1px solid rgba(45, 90, 39, 0.2)', 
-              borderRadius: '14px', fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s'
+              padding: '12px 20px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 8,
+              background: 'rgba(0,0,0,0.03)', 
+              color: '#2d5a27', 
+              border: '1px solid rgba(45, 90, 39, 0.2)', 
+              borderRadius: '14px', 
+              fontWeight: 600, 
+              fontSize: 14, 
+              cursor: 'pointer', 
+              transition: 'all 0.2s',
+              height: '46px',
+              // Opcional para móvil: si la pantalla es muy chica, el botón de reintentar también crecerá
+              flex: '1 1 auto', 
+              justifyContent: 'center'
             }}>
             <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round"
@@ -248,31 +269,18 @@ export default function CameraPanel({
             </svg>
             Reintentar
           </button>
-          <button onClick={onClasificar} disabled={isLoading}
-            style={{
-              flex: 1, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              background: isLoading ? 'rgba(45, 90, 39, 0.4)' : '#2d5a27', color: '#ffffff', border: 'none', 
-              borderRadius: '14px', fontWeight: 600, fontSize: 14, cursor: isLoading ? 'not-allowed' : 'pointer',
-              boxShadow: isLoading ? 'none' : '0 8px 20px rgba(45, 90, 39, 0.15)', transition: 'all 0.2s'
-            }}>
-            {isLoading ? (
-              <>
-                <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" opacity="0.3" />
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
-                </svg>
-                Analizando…
-              </>
-            ) : (
-              <>
-                <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
-                </svg>
-                Clasificar Material
-              </>
-            )}
-          </button>
+          
+          {/* Contenedor del Sparkle optimizado */}
+          <div style={{ 
+            flex: '2 1 200px', // <-- Crece el doble que el de reintentar y tiene un tamaño mínimo base antes de saltar de línea
+            display: 'flex',
+            width: '100%'
+          }}>
+            <SparkleClasificar 
+              onClick={onClasificar} 
+              isLoading={isLoading} 
+            />
+          </div>
         </div>
       )}
     </div>
