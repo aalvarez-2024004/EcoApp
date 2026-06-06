@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import useGamificacionStore from '../store/useGamificacionStore'
 import useAuthStore from '../../auth/store/useAuthStore'
 
-import StatCard from '../components/StatCard'
-import BadgeItem from '../components/BadgeItem'
-import ChallengeCard from '../components/ChallengeCard'
-import RankingRow from '../components/RankingRow'
+import StatCard from '../components/GamificacionComps/StatCard'
+import BadgeItem from '../components/GamificacionComps/BadgeItem'
+import ChallengeCard from '../components/GamificacionComps/ChallengeCard'
+import RankingRow from '../components/GamificacionComps/RankingRow'
 
 const KEY_REDIRECT = {
   detector:      '/dashboard/usuario/detector',
