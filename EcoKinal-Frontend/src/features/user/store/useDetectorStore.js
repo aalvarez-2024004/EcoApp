@@ -43,7 +43,7 @@ export const useDetectorReciclaje = create((set, get) => ({
         const { completarRetoPorAccion } = useGamificacionStore.getState()
         await completarRetoPorAccion('detector')
         // También intentar completar el reto de 3 reciclajes
-        await completarRetoPorAccion('detector_3')
+        await completarRetoPorAccion('detector_3_check')
       }
       return response
     } catch (err) {

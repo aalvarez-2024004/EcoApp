@@ -416,7 +416,11 @@ export default function ForoPage() {
             setImageFiles([]); setImagePreviews([])
             setIsComposeOpen(false)
             showToast('¡Publicación compartida con éxito!')
-            completarRetoPorAccion('foro_publicar')
+            completarRetoPorAccion('foro_publicar').then(result => {
+                if (result && !result.alreadyDone) {
+                    showToast('📢 ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+                }
+            })
         } else {
             showToast(res.message, 'error')
         }

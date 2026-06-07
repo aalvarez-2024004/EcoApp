@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useMapaStore from '../store/useMapaStore'
 import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
@@ -161,6 +161,22 @@ const mapaStyles = `
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   .mapa-spinner { animation: spin 0.8s linear infinite; }
 
+  /* ── Toast ── */
+  .mapa-toast {
+    position: fixed; top: 24px; right: 24px; z-index: 9999;
+    padding: 14px 22px; border-radius: 16px; font-weight: 600; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    animation: toastIn .3s cubic-bezier(0.16,1,0.3,1);
+    max-width: 400px; line-height: 1.4;
+  }
+  .mapa-toast.ok  { background: #21491e; color: white; }
+  .mapa-toast.err { background: #c0392b; color: white; }
+  @keyframes toastIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+  }
+
   /* Responsive */
   @media (max-width: 1024px) {
     .mapa-lista { grid-template-columns: repeat(2, 1fr); }
@@ -189,9 +205,26 @@ export default function MapaPage() {
   const mapRef     = useRef(null)
   const markersRef = useRef([])
 
+  // ── Toast local para notificación de reto ────────────────────────────────
+  const [toast, setToast] = useState(null)
+
+  const showToast = (ok, msg) => {
+    setToast({ ok, msg })
+    setTimeout(() => setToast(null), 4000)
+  }
+
+  // ── Buscar centros Y completar el reto al mismo tiempo ───────────────────
+  // El reto se dispara AQUÍ (acción real del usuario), no al montar la página.
+  const handleBuscar = async () => {
+    buscarCentros()
+    const result = await completarRetoPorAccion('mapa')
+    // Solo mostrar toast si el reto se marcó ahora (no si ya estaba hecho)
+    if (result && !result.alreadyDone) {
+      showToast(true, '🗺️ ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+    }
+  }
+
   useEffect(() => {
-    // Completar reto del mapa automáticamente al visitar la página
-    completarRetoPorAccion('mapa')
     const initMap = async () => {
       const L = (await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js')).default || (await import('https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js'))
       if (mapRef.current) return
@@ -268,6 +301,14 @@ export default function MapaPage() {
     <div className="mapa-page">
       <style>{mapaStyles}</style>
 
+      {/* ── Toast de reto completado ── */}
+      {toast && (
+        <div className={`mapa-toast ${toast.ok ? 'ok' : 'err'}`}>
+          <i className={`ti ${toast.ok ? 'ti-circle-check' : 'ti-alert-circle'}`} />
+          {toast.msg}
+        </div>
+      )}
+
       <div className="mapa-badge">
         <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#23376d" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -292,7 +333,8 @@ export default function MapaPage() {
       )}
 
       <div className="mapa-controls">
-        <button className="mapa-btn-primary" onClick={buscarCentros} disabled={isLoading}>
+        {/* ── Botón: llama a handleBuscar (no a buscarCentros directamente) ── */}
+        <button className="mapa-btn-primary" onClick={handleBuscar} disabled={isLoading}>
           {isLoading ? (
             <svg className="mapa-spinner" viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }} stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />

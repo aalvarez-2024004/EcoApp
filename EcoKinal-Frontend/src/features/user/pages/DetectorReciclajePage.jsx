@@ -1,16 +1,10 @@
 import { useRef, useEffect, useState } from 'react'
 import { useDetectorReciclaje } from '../store/useDetectorStore'
-<<<<<<< HEAD
 import useGamificacionStore from '../store/useGamificacionStore'
-import { detectorStyles, LEYENDA } from '../../../Styles/DetectorPage'
+import { LEYENDA } from '../../../Styles/DetectorPage'
 import UploadPanel  from '../components/DetectorReciclajeComps/UploadPanel'
 import CameraPanel  from '../components/DetectorReciclajeComps/CameraPanel'
 import ResultPanel  from '../components/DetectorReciclajeComps/ResultPanel'
-=======
-import { LEYENDA } from '../../../Styles/DetectorPage'
-import UploadPanel from '../components/DetectorReciclajeComps/UploadPanel'
-import CameraPanel from '../components/DetectorReciclajeComps/CameraPanel'
-import ResultPanel from '../components/DetectorReciclajeComps/ResultPanel'
 
 /* ── Paleta & tokens globales ── */
 const G = {
@@ -33,7 +27,6 @@ const BIN_COLORS = {
   Rojo:     '#dc2626',
   Gris:     '#6b7280',
 }
->>>>>>> e6657528cb38f6659a8d36fd20162203574ee5a7
 
 function TabBtn({ active, onClick, children }) {
   return (
@@ -121,7 +114,6 @@ export default function DetectorReciclajePage() {
     setTab, activarCamara, detenerCamara, capturarFoto, retomar,
   } = useDetectorReciclaje()
 
-<<<<<<< HEAD
   const challenges = useGamificacionStore(s => s.challenges)
 
   const showToast = (ok, msg) => {
@@ -129,21 +121,24 @@ export default function DetectorReciclajePage() {
     setTimeout(() => setToast(null), 4000)
   }
 
+  // ── Clasificar + detectar retos completados y notificar ──────────────────
   const handleClasificar = async () => {
-    // Guardar estado de retos ANTES de clasificar para detectar cuáles se completaron
+    // Snapshot del estado de retos ANTES de clasificar
     const prevChallenges = useGamificacionStore.getState().challenges
     const response = await clasificar()
+
     if (response?.success) {
-      // Esperar brevemente a que el store se actualice
+      // Esperar brevemente a que el store actualice los retos
       setTimeout(() => {
         const nextChallenges = useGamificacionStore.getState().challenges
         const recienCompletados = nextChallenges.filter(ch => {
           const prev = prevChallenges.find(p => p._id === ch._id)
           return ch.completed && prev && !prev.completed
         })
+
         if (recienCompletados.length > 0) {
           const nombres = recienCompletados.map(c => c.title).join(' y ')
-          showToast(true, `✅ ¡Reto completado! "${nombres}" — ve a Gamificación para reclamar tus puntos.`)
+          showToast(true, `✅ ¡Reto desbloqueado! "${nombres}" — ve a Gamificación para reclamar tus puntos 🌿`)
         } else {
           showToast(true, '♻️ ¡Reciclaje registrado correctamente!')
         }
@@ -154,9 +149,6 @@ export default function DetectorReciclajePage() {
   useEffect(() => {
     return () => detenerCamara(videoRef)
   }, [])
-=======
-  useEffect(() => { return () => detenerCamara(videoRef) }, [])
->>>>>>> e6657528cb38f6659a8d36fd20162203574ee5a7
 
   const handleSwitchTab = (tab) => {
     if (camaraActiva) detenerCamara(videoRef)
@@ -176,8 +168,8 @@ export default function DetectorReciclajePage() {
 
         .detector-page {
           width: 100%;
-          max-width: 1200px; /* Evita que el contenido se estire de forma desproporcionada */
-          margin: 0 auto;    /* Centra la página horizontalmente */
+          max-width: 1200px;
+          margin: 0 auto;
           min-height: 100vh;
           background: ${G.pageBg};
           display: flex;
@@ -185,11 +177,9 @@ export default function DetectorReciclajePage() {
           gap: 24px;
           position: relative;
           font-family: 'Plus Jakarta Sans', sans-serif;
-          
           padding: 60px 24px;
         }
 
-<<<<<<< HEAD
         /* ── Toast de gamificación ── */
         .detector-toast {
           position: fixed;
@@ -215,22 +205,10 @@ export default function DetectorReciclajePage() {
           to   { transform: translateX(0);    opacity: 1; }
         }
 
-        /* ── Gran Contenedor Glassmorphic Futurista ── */
-        .glass-main-card {
-          background: rgba(255, 255, 255, 0.45);
-          backdrop-filter: blur(20px) saturate(160%);
-          -webkit-backdrop-filter: blur(20px) saturate(160%);
-          border: 1px solid rgba(255, 255, 255, 0.6);
-          border-radius: 32px;
-          padding: 2.5rem;
-          box-shadow: 0 24px 50px rgba(27, 60, 26, 0.04), 
-                      inset 0 1px 2px rgba(255, 255, 255, 0.5);
-=======
         /* ── Animaciones de entrada ── */
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
->>>>>>> e6657528cb38f6659a8d36fd20162203574ee5a7
         }
         .anim-1 { animation: fadeUp 0.45s ease both; }
         .anim-2 { animation: fadeUp 0.45s 0.08s ease both; }
@@ -383,7 +361,6 @@ export default function DetectorReciclajePage() {
         }
       `}</style>
 
-<<<<<<< HEAD
       {/* ── Toast de notificación de reto completado ── */}
       {toast && (
         <div className={`detector-toast ${toast.ok ? 'ok' : 'err'}`}>
@@ -391,23 +368,8 @@ export default function DetectorReciclajePage() {
         </div>
       )}
 
-      {/* ── Encabezado Limpio Superior ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div className="cyber-badge">
-          <i className="ti ti-cpu" style={{ fontSize: '13px' }} />
-          <span>AI Vision Engine v2.6 · Google Cloud</span>
-        </div>
-        <h1 className="eco-font" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1b3c1a', margin: 0, letterSpacing: '-0.02em' }}>
-          Detector de <span style={{ color: '#2d5a27' }}>Reciclaje</span>
-        </h1>
-        <p style={{ fontSize: '15px', color: '#4a4a4a', margin: 0, maxWidth: '600px', lineHeight: 1.5 }}>
-          Analiza flujos de residuos mediante captura óptica. Nuestra inteligencia artificial segmentará los materiales indicando su respectivo contenedor.
-        </p>
-      </div>
-=======
       <div className="detector-page">
         <BgPattern />
->>>>>>> e6657528cb38f6659a8d36fd20162203574ee5a7
 
         {/* ── Header ── */}
         <div className="anim-1" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
@@ -424,7 +386,7 @@ export default function DetectorReciclajePage() {
               AI Vision Engine v2.6 · Google Cloud
             </div>
 
-            {/* Título con gradiente */}
+            {/* Título */}
             <h1 style={{
               margin: 0,
               fontSize: '2.2rem',

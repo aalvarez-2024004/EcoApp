@@ -149,10 +149,16 @@ function LoadingSkeleton() {
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function ImpactoPage() {
     const { personal, global, isLoading, error, activeView, setActiveView, fetchAll } = useImpactoStore()
+    const [retoToast, setRetoToast] = useState(null)
 
     useEffect(() => {
         fetchAll()
-        completarRetoPorAccion('impacto')
+        completarRetoPorAccion('impacto').then(result => {
+            if (result && !result.alreadyDone) {
+                setRetoToast('📊 ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+                setTimeout(() => setRetoToast(null), 4000)
+            }
+        })
     }, []) // eslint-disable-line
 
     const goDetector = () => { window.location.href = '/dashboard/usuario/detector' }
@@ -162,6 +168,16 @@ export default function ImpactoPage() {
     return (
         <div className="imp-root">
         <style>{CSS}</style>
+        <style>{`
+            @keyframes impToastIn { from { transform:translateY(-8px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+            .imp-reto-toast { display:flex; align-items:center; gap:8px; padding:12px 16px; border-radius:14px; background:#21491e; color:white; font-size:13px; font-weight:600; line-height:1.4; margin-bottom:16px; animation:impToastIn .3s cubic-bezier(0.16,1,0.3,1); }
+        `}</style>
+        {retoToast && (
+            <div className="imp-reto-toast">
+                <i className="ti ti-circle-check" style={{ fontSize:16, flexShrink:0 }} />
+                {retoToast}
+            </div>
+        )}
 
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <div className="imp-header">

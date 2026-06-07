@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import axios from 'axios' 
+import axios from 'axios'
 import { completarRetoPorAccion } from '../../../../shared/Gamificacion'
 import Avatar from '../Avatar'
 
@@ -12,16 +12,49 @@ ForoApi.interceptors.request.use((config) => {
     return config
 })
 
+// ── Toast de reto (inline, sobre la sección de comentarios) ─────────────────
+function RetoToast({ msg, onDone }) {
+    useEffect(() => {
+        const t = setTimeout(onDone, 4000)
+        return () => clearTimeout(t)
+    }, [onDone])
+
+    return (
+        <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '10px 14px', borderRadius: 12,
+            background: '#21491e', color: 'white',
+            fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+            animation: 'retoToastIn .3s cubic-bezier(0.16,1,0.3,1)',
+            marginBottom: 8,
+        }}>
+            <style>{`
+                @keyframes retoToastIn {
+                  from { transform: translateY(-8px); opacity: 0; }
+                  to   { transform: translateY(0);    opacity: 1; }
+                }
+            `}</style>
+            <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16, flexShrink: 0 }} stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            {msg}
+        </div>
+    )
+}
+
 export default function CommentSection({ postId, currentUserId, currentUser, onToast, onCommentCountChange }) {
     const [comments,        setComments]        = useState([])
     const [loadingComments, setLoadingComments] = useState(false)
     const [commentText,     setCommentText]     = useState('')
-    
+
     // ── Estados para Edición y Respuestas ─────────────────────────────────────
     const [editingCommentId,   setEditingCommentId]   = useState(null)
     const [editingCommentText, setEditingCommentText] = useState('')
     const [replyingTo,         setReplyingTo]         = useState(null) // { id, name }
-    
+
+    // ── Toast de reto completado ──────────────────────────────────────────────
+    const [retoToast, setRetoToast] = useState(null)
+
     const textRef = useRef(null)
 
     const loadComments = useCallback(async () => {
@@ -48,13 +81,18 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
             await ForoApi.post('/comments/add', {
                 content: commentText.trim(),
                 publicationId: postId,
-                parentCommentId: replyingTo ? replyingTo.id : undefined 
+                parentCommentId: replyingTo ? replyingTo.id : undefined
             })
             setCommentText('')
             setReplyingTo(null)
             loadComments()
             onToast?.('Comentario publicado', 'success')
-            completarRetoPorAccion('foro_comentar')
+
+            // ── Completar reto y notificar si es la primera vez hoy ──────────
+            const result = await completarRetoPorAccion('foro_comentar')
+            if (result && !result.alreadyDone) {
+                setRetoToast('💬 ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+            }
         } catch (err) {
             onToast?.(err.response?.data?.message || 'Error al comentar', 'error')
         }
@@ -113,10 +151,10 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
         return (
             <div key={comment._id} style={{
                 display: 'flex', gap: 10, alignItems: 'flex-start',
-                background: isReply ? '#EEF3ED' : '#f8faf7', // Fondos menta suaves adaptados a la paleta
+                background: isReply ? '#EEF3ED' : '#f8faf7',
                 padding: '10px 14px', borderRadius: 16,
                 marginLeft: isReply ? 28 : 0,
-                borderLeft: isReply ? '2px solid rgba(43, 95, 42, 0.15)' : 'none', // Borde verde sutil
+                borderLeft: isReply ? '2px solid rgba(43, 95, 42, 0.15)' : 'none',
             }}>
                 <Avatar name={author.name} image={author.photo} initials={author.initials} size={32} />
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -145,16 +183,16 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
 
                     {editingCommentId !== comment._id && (
                         <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                            <button 
-                                onClick={() => { 
-                                    setReplyingTo({ id: targetReplyId, name: author.name }); 
-                                    textRef.current?.focus(); 
-                                }} 
+                            <button
+                                onClick={() => {
+                                    setReplyingTo({ id: targetReplyId, name: author.name })
+                                    textRef.current?.focus()
+                                }}
                                 style={{ background: 'none', border: 'none', fontSize: 11, color: '#2B5F2A', padding: 0, cursor: 'pointer', fontWeight: 600 }}
                             >
                                 Responder
                             </button>
-                            
+
                             {isCommentOwner && (
                                 <>
                                     <button onClick={() => { setEditingCommentId(comment._id); setEditingCommentText(comment.content) }} style={{ background: 'none', border: 'none', fontSize: 11, color: '#4b5a8a', padding: 0, cursor: 'pointer' }}>Editar</button>
@@ -170,6 +208,11 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+            {/* ── Toast de reto completado ── */}
+            {retoToast && (
+                <RetoToast msg={retoToast} onDone={() => setRetoToast(null)} />
+            )}
 
             {/* ── Lista de comentarios ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 400, overflowY: 'auto', paddingRight: 4 }}>
@@ -201,7 +244,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
 
             {/* ── Input nuevo comentario ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                
+
                 {replyingTo && (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px', background: '#EEF3ED', borderRadius: 8, border: '0.5px solid rgba(43, 95, 42, 0.15)' }}>
                         <span style={{ fontSize: 11, color: '#2B5F2A', fontWeight: 500 }}>
