@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { enviarMensaje, obtenerHistorial } from '../../../shared/EcoBot'
+import { enviarMensaje, obtenerHistorial } from '../../../shared/Api/EcoBot'
 
 export const useEcoBotStore = create((set, get) => ({
   mensajes: [],       // [{ rol: 'user'|'bot', texto, fecha }]

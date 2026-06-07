@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { GamificationApi } from '../../../shared/Api'
+import { GamificationApi } from '../../../shared/Api/Gamificacion'
 
 const useGamificacionStore = create((set, get) => ({
     profile:             null,

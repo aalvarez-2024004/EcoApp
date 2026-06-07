@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { setToken, setUser, logout as clearStorage, getToken, getUser } from '../../../shared/Auth'
-import { AuthApi } from '../../../shared/Api'
+import { setToken, setUser, logout as clearStorage, getToken, getUser } from '../../../shared/Api/Auth'
+import { AuthApi } from '../../../shared/Api/Api'
 
 const useAuthStore = create((set) => ({
   user: getUser(),

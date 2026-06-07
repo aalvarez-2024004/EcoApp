@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getDashboardPersonal, getDashboardGlobal } from '../../../shared/Impacto'
+import { getDashboardPersonal, getDashboardGlobal } from '../../../shared/Api/Impacto'
 
 export const useImpactoStore = create((set, get) => ({
     personal:        null,

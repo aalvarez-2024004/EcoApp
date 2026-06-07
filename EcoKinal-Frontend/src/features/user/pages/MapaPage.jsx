@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import useMapaStore from '../store/useMapaStore'
-import { completarRetoPorAccion } from '../../../shared/Gamificacion'
+import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
 
 /* ── Paleta & tokens (DetectorReciclaje) ── */
 const G = {

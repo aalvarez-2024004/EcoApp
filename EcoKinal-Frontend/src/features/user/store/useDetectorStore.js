@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { clasificarImagen } from '../../../shared/DetectorReciclaje'
+import { clasificarImagen } from '../../../shared/Api/DetectorReciclaje'
 import useGamificacionStore from './useGamificacionStore'
 
 export const useDetectorReciclaje = create((set, get) => ({

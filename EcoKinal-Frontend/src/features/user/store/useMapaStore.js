@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { MapaApi } from '../../../shared/MapaReciclaje'
+import { MapaApi } from '../../../shared/Api/MapaReciclaje'
 
 const useMapaStore = create((set, get) => ({
     centers: [],

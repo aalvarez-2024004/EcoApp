@@ -2,8 +2,8 @@ import { useState, useRef } from 'react'
 import { useUser } from '../store/useUserStore'
 import useAuthStore from '../../auth/store/useAuthStore'
 import Avatar from '../components/Avatar'
-import { AuthApi } from '../../../shared/Api'
-import { getToken } from '../../../shared/Auth'
+import { AuthApi } from '../../../shared/Api/Api'
+import { getToken } from '../../../shared/Api/Auth'
 
 export default function ProfileModal({ onClose }) {
   const { name, username, email, image, initials } = useUser()
