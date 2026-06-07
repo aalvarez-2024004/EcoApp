@@ -7,7 +7,8 @@ import helmet from 'helmet';
 import{swaggerUi, swaggerDocs} from '../docs/swagger.js';
  
 import visionRoutes from '../src/ClasificacionImagen/clasificacion.routes.js';
- 
+import ecoBotRoutes from '../src/EcoBot/ecoBot.routes.js';
+
 const BASE_PATH = '/DetectorImagenReciclaje/v1';
  
 export const createApp = () => {
@@ -25,6 +26,7 @@ export const createApp = () => {
  
     // Rutas
     app.use('/api/vision', visionRoutes);
+    app.use('/api/ecobot', ecoBotRoutes);
  
     // Ruta de prueba
     app.get(`${BASE_PATH}/health`, (req, res) => {

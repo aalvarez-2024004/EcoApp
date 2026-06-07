@@ -1,4 +1,5 @@
 allowBuilds:
+  '@google/genai': true
   '@scarf/scarf': true
   bcrypt: true
   core-js: true
