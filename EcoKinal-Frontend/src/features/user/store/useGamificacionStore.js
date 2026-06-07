@@ -8,7 +8,7 @@ const useGamificacionStore = create((set, get) => ({
     loadingProfile:      false,
     loadingRanking:      false,
     loadingChallenges:   false,
-    completingChallenge: null,  // _id del reto siendo reclamado
+    completingChallenge: null,
     error:               null,
 
     fetchProfile: async () => {
@@ -20,7 +20,7 @@ const useGamificacionStore = create((set, get) => ({
             if (err.response?.status === 404) {
                 set({ profile: { points: 0, recyclingCount: 0, badges: [], rankPosition: null, totalUsers: 0 }, loadingProfile: false })
             } else {
-                set({ error: 'Error al cargar tu perfil de gamificación', loadingProfile: false })
+                set({ error: 'Error al cargar perfil', loadingProfile: false })
             }
         }
     },
@@ -45,23 +45,23 @@ const useGamificacionStore = create((set, get) => ({
         }
     },
 
-    // ─── FASE 1: Marcar la acción como realizada (SIN puntos aún) ────────────
-    // Llamado desde otras páginas (Foro, Impacto, Mapa, Detector).
-    // El backend crea el registro UserChallenge con claimed:false.
-    // Los puntos se otorgan en FASE 2 cuando el usuario presiona "Reclamar".
+    // ── FASE 1: Registrar que el usuario hizo la acción ──────────────────────
+    // Llamado desde ForoPage, MapaPage, ImpactoPage, CommentSection y Detector.
+    // Retorna el resultado del backend para que la página pueda mostrar el toast.
+    // Después hace fetchChallenges() para que GamificacionPage vea "Reclamar".
     completarRetoPorAccion: async (key) => {
         try {
             const res = await GamificationApi.post(`/daily-challenges/auto/${key}`)
 
-            // Si la respuesta trae autoComplete (detector), refrescar todo
+            // Retos del detector: se auto-completan con puntos
             if (res.data?.autoComplete) {
                 await Promise.all([get().fetchChallenges(), get().fetchProfile()])
                 return res.data
             }
 
-            // Para otros retos: marcar como completed (pero no claimed) en el store
-            // para que ChallengeCard muestre "Reclamar" de inmediato sin esperar fetch
+            // Retos de 2 fases: sincronizar con backend
             if (!res.data?.alreadyDone) {
+                // Update optimístico local
                 set((state) => ({
                     challenges: state.challenges.map(ch =>
                         ch.verificationKey === key
@@ -69,23 +69,25 @@ const useGamificacionStore = create((set, get) => ({
                             : ch
                     )
                 }))
+                // Sincronizar con backend en background
+                get().fetchChallenges().catch(() => {})
             }
 
             return res.data
-        } catch (_) {
+        } catch (err) {
+            console.error(`[Gamificación] Error registrando acción '${key}':`, err?.response?.data || err.message)
             return null
         }
     },
 
-    // ─── FASE 2: Reclamar puntos de un reto ya marcado como completado ────────
-    // Llamado desde el botón "Reclamar" en ChallengeCard.
-    // El backend suma los puntos y marca claimed:true.
+    // ── FASE 2: Reclamar puntos ───────────────────────────────────────────────
+    // Llamado desde GamificacionPage cuando el usuario presiona "Reclamar".
     claimChallenge: async (challengeId) => {
         set({ completingChallenge: challengeId, error: null })
         try {
             const res = await GamificationApi.post(`/daily-challenges/${challengeId}/claim`)
 
-            // Marcar como claimed en el store
+            // Marcar como claimed localmente
             set((state) => ({
                 challenges: state.challenges.map(ch =>
                     ch._id === challengeId ? { ...ch, claimed: true } : ch
@@ -93,8 +95,12 @@ const useGamificacionStore = create((set, get) => ({
                 completingChallenge: null
             }))
 
-            // Refrescar perfil y ranking para actualizar puntos y barra
-            await Promise.all([get().fetchProfile(), get().fetchRanking()])
+            // Refrescar puntos, barra de progreso y ranking
+            await Promise.all([
+                get().fetchProfile(),
+                get().fetchRanking(),
+                get().fetchChallenges(),
+            ])
 
             return { ok: true, message: res.data.message }
         } catch (err) {

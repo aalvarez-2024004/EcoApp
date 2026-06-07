@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, useCallback } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import useGamificacionStore from '../store/useGamificacionStore'
 import useAuthStore from '../../auth/store/useAuthStore'
 
-import StatCard from '../components/GamificacionComps/StatCard'
-import BadgeItem from '../components/GamificacionComps/BadgeItem'
+import StatCard      from '../components/GamificacionComps/StatCard'
+import BadgeItem     from '../components/GamificacionComps/BadgeItem'
 import ChallengeCard from '../components/GamificacionComps/ChallengeCard'
-import RankingRow from '../components/GamificacionComps/RankingRow'
+import RankingRow    from '../components/GamificacionComps/RankingRow'
 
 const KEY_REDIRECT = {
   detector:      '/dashboard/usuario/detector',
@@ -27,39 +27,33 @@ export default function GamificacionPage() {
 
   const user     = useAuthStore(s => s.user)
   const navigate = useNavigate()
+  const location = useLocation()
   const [toast, setToast] = useState(null)
   const [tab,   setTab]   = useState('retos')
 
-  // Carga inicial
-  useEffect(() => {
+  // Función de recarga completa
+  const recargarTodo = useCallback(() => {
     fetchProfile()
     fetchRanking()
     fetchChallenges()
-  }, [])
+  }, [fetchProfile, fetchRanking, fetchChallenges])
 
-  // Refrescar al recuperar el foco (el usuario volvió de otra sección)
+  // Carga inicial (y cada vez que se navega a esta página)
   useEffect(() => {
-    const onFocus = () => {
-      fetchChallenges()
-      fetchProfile()
-      fetchRanking()
-    }
+    recargarTodo()
+  }, [location.pathname]) // eslint-disable-line
+
+  // Refrescar al recuperar foco de ventana (alt-tab, etc.)
+  useEffect(() => {
+    const onFocus   = () => recargarTodo()
+    const onVisible = () => { if (document.visibilityState === 'visible') recargarTodo() }
     window.addEventListener('focus', onFocus)
-    return () => window.removeEventListener('focus', onFocus)
-  }, [])
-
-  // Refrescar al volver a la pestaña (visibilitychange cubre SPAs sin recarga)
-  useEffect(() => {
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') {
-        fetchChallenges()
-        fetchProfile()
-        fetchRanking()
-      }
-    }
     document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
-  }, [])
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [recargarTodo])
 
   const showToast = (ok, msg) => {
     setToast({ ok, msg })
@@ -76,20 +70,19 @@ export default function GamificacionPage() {
     }
   }
 
-  // El usuario clickea "Ir a…" en una ChallengeCard (redirige a otra sección)
+  // El usuario clickea "Ir a…" en una ChallengeCard
   const handleOpen = (ch) => {
     const path = KEY_REDIRECT[ch.verificationKey] || '/dashboard/usuario/detector'
     navigate(path)
   }
 
-  // Un reto cuenta para la barra solo cuando sus puntos ya fueron otorgados:
-  // - claimed:true (el usuario presionó "Reclamar") para retos externos, O
-  // - completed:true para detector/detector_3 (se autocompletan con puntos)
+  // La barra solo sube cuando los puntos ya fueron otorgados:
+  // claimed:true para retos externos, o completed:true para detector/detector_3
   const completedClaimed = challenges.filter(c =>
     c.claimed || (['detector','detector_3'].includes(c.verificationKey) && c.completed)
   ).length
-  const total            = challenges.length
-  const currentUserId    = user?.id || user?.uid || ''
+  const total         = challenges.length
+  const currentUserId = user?.id || user?.uid || ''
 
   return (
     <div className="gam-page">
@@ -132,7 +125,7 @@ export default function GamificacionPage() {
         </div>
       )}
 
-      {/* ── Barra de progreso de retos del día ── */}
+      {/* ── Barra de progreso ── */}
       {!loadingChallenges && total > 0 && (
         <div className="gam-prog-wrap">
           <div className="gam-prog-label">

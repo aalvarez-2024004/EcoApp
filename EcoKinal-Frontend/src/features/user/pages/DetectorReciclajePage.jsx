@@ -168,8 +168,8 @@ export default function DetectorReciclajePage() {
 
         .detector-page {
           width: 100%;
-          max-width: 1200px;
-          margin: 0 auto;
+          max-width: 1200px; /* Evita que el contenido se estire de forma desproporcionada */
+          margin: 0 auto;    /* Centra la página horizontalmente */
           min-height: 100vh;
           background: ${G.pageBg};
           display: flex;
@@ -177,32 +177,8 @@ export default function DetectorReciclajePage() {
           gap: 24px;
           position: relative;
           font-family: 'Plus Jakarta Sans', sans-serif;
+          
           padding: 60px 24px;
-        }
-
-        /* ── Toast de gamificación ── */
-        .detector-toast {
-          position: fixed;
-          top: 80px;
-          right: 24px;
-          z-index: 9999;
-          padding: 14px 20px;
-          border-radius: 16px;
-          font-weight: 600;
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          box-shadow: 0 8px 24px rgba(0,0,0,.15);
-          animation: toastSlideIn .3s cubic-bezier(0.16,1,0.3,1);
-          max-width: 420px;
-          line-height: 1.4;
-        }
-        .detector-toast.ok  { background: #21491e; color: white; }
-        .detector-toast.err { background: #c0392b; color: white; }
-        @keyframes toastSlideIn {
-          from { transform: translateX(120%); opacity: 0; }
-          to   { transform: translateX(0);    opacity: 1; }
         }
 
         /* ── Animaciones de entrada ── */

@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import axios from 'axios'
-import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
 
@@ -9,7 +8,6 @@ const ForoApi = axios.create({ baseURL: FORO_BASE })
 ForoApi.interceptors.request.use((config) => {
     const token = localStorage.getItem('token')
     if (token) config.headers.Authorization = `Bearer ${token}`
-
     if (config.method === 'get') {
         delete config.headers['Content-Type']
     } else if (config.data instanceof FormData) {
@@ -30,7 +28,6 @@ export const useForoStore = create((set, get) => ({
 
     setFilter: (filter) => set({ filter }),
 
-    // ── Listar todos los posts ────────────────────────────────────────────────
     fetchPosts: async () => {
         set({ loading: true })
         try {
@@ -43,7 +40,6 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
-    // ── Buscar posts ──────────────────────────────────────────────────────────
     searchPosts: async (q) => {
         if (!q?.trim()) {
             set({ searchResults: [], searchQuery: '' })
@@ -63,18 +59,13 @@ export const useForoStore = create((set, get) => ({
 
     clearSearch: () => set({ searchResults: [], searchQuery: '' }),
 
-    // ── Crear post ────────────────────────────────────────────────────────────
-    // Después de crear el post, registra la acción del reto "foro_publicar".
-    // Esto marca el reto como completado (sin puntos), el usuario los reclamará
-    // desde GamificacionPage.
+    // ── Crear post ──────────────────────────────────────────────────────────
+    // NOTA: La acción de gamificación se registra en ForoPage DESPUÉS de
+    // que esta función retorna { success: true }, para evitar doble llamada.
     createPost: async (formData) => {
         try {
             await ForoApi.post('/posts/create', formData)
             await get().fetchPosts()
-
-            // Registrar acción de gamificación (FASE 1: sin puntos aún)
-            completarRetoPorAccion('foro_publicar')
-
             return { success: true }
         } catch (error) {
             return {
@@ -84,7 +75,6 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
-    // ── Actualizar post ───────────────────────────────────────────────────────
     updatePost: async (id, formData) => {
         try {
             await ForoApi.put(`/posts/update/${id}`, formData)
@@ -95,7 +85,6 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
-    // ── Eliminar post ─────────────────────────────────────────────────────────
     deletePost: async (id) => {
         try {
             await ForoApi.delete(`/posts/delete/${id}`)
@@ -106,7 +95,6 @@ export const useForoStore = create((set, get) => ({
         }
     },
 
-    // ── Reaccionar ────────────────────────────────────────────────────────────
     reactToPost: async (id, reaction) => {
         try {
             await ForoApi.post(`/posts/react/${id}`, { reaction })

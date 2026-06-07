@@ -51,11 +51,30 @@ router.post('/:id/complete', validateJWT, completeDailyChallenge);
 /**
  * DELETE /daily-challenges/reset-seed  (solo desarrollo)
  */
+/**
+ * DELETE /daily-challenges/reset-seed  (solo desarrollo)
+ * Borra todos los retos y los vuelve a crear con los datos correctos.
+ * USAR ESTO si los challenges en DB tienen verificationKey incorrecto.
+ */
 router.delete('/reset-seed', async (req, res) => {
     try {
         await DailyChallenge.deleteMany({});
         await seedChallengesIfEmpty();
-        return res.status(200).json({ ok: true, message: 'Seed reiniciado correctamente' });
+        const challenges = await DailyChallenge.find({}).lean();
+        return res.status(200).json({ ok: true, message: 'Seed reiniciado correctamente', challenges });
+    } catch (error) {
+        return res.status(500).json({ ok: false, message: error.message });
+    }
+});
+
+/**
+ * GET /daily-challenges/debug  (solo desarrollo)
+ * Muestra todos los challenges en DB para verificar verificationKey.
+ */
+router.get('/debug', async (req, res) => {
+    try {
+        const challenges = await DailyChallenge.find({}).lean();
+        return res.status(200).json({ ok: true, count: challenges.length, challenges });
     } catch (error) {
         return res.status(500).json({ ok: false, message: error.message });
     }

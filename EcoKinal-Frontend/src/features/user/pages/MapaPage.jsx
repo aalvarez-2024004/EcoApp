@@ -213,14 +213,16 @@ export default function MapaPage() {
     setTimeout(() => setToast(null), 4000)
   }
 
-  // ── Buscar centros Y completar el reto al mismo tiempo ───────────────────
-  // El reto se dispara AQUÍ (acción real del usuario), no al montar la página.
+  // ── Buscar centros Y registrar el reto ──────────────────────────────────
+  // buscarCentros() ya no llama completarRetoPorAccion internamente (se quitó
+  // del store para evitar doble llamada). La acción se registra aquí, una sola vez.
   const handleBuscar = async () => {
-    buscarCentros()
-    const result = await completarRetoPorAccion('mapa')
-    // Solo mostrar toast si el reto se marcó ahora (no si ya estaba hecho)
-    if (result && !result.alreadyDone) {
-      showToast(true, '🗺️ ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+    const ok = await buscarCentros()
+    if (ok) {
+      const result = await completarRetoPorAccion('mapa')
+      if (result && !result.alreadyDone) {
+        showToast(true, '🗺️ ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
+      }
     }
   }
 

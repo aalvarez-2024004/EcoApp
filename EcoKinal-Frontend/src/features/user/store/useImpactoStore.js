@@ -1,19 +1,13 @@
 import { create } from 'zustand'
 import { getDashboardPersonal, getDashboardGlobal } from '../../../shared/Impacto'
-import { completarRetoPorAccion } from '../../../shared/Gamificacion'
 
 export const useImpactoStore = create((set, get) => ({
-    // ── State ──────────────────────────────────────────────────────────────────
-    personal:        null,   // { totalClasificaciones, totales, porTipo, historial }
-    global:          null,   // { totalUsuarios, totalClasificaciones, totales, porTipo, mensaje }
+    personal:        null,
+    global:          null,
     isLoading:       false,
     isLoadingGlobal: false,
     error:           null,
-    activeView:      'personal',  // 'personal' | 'global'
-    // Controla que la acción de gamificación solo se dispare una vez por sesión
-    _gamificacionRegistrada: false,
-
-    // ── Actions ────────────────────────────────────────────────────────────────
+    activeView:      'personal',
 
     setActiveView: (view) => set({ activeView: view }),
 
@@ -43,19 +37,13 @@ export const useImpactoStore = create((set, get) => ({
         }
     },
 
-    // fetchAll es el punto de entrada principal al abrir ImpactoPage.
-    // Al cargarse por primera vez en la sesión, registra la acción de
-    // gamificación "impacto" (FASE 1: sin puntos, para reclamar después).
+    // fetchAll carga datos personales y globales.
+    // NOTA: La acción de gamificación se registra en ImpactoPage.useEffect
+    // DESPUÉS de que esta función termina, para evitar doble llamada.
     fetchAll: async () => {
-        const { fetchPersonal, fetchGlobal, _gamificacionRegistrada } = get()
+        const { fetchPersonal, fetchGlobal } = get()
         await Promise.all([fetchPersonal(), fetchGlobal()])
-
-        if (!_gamificacionRegistrada) {
-            set({ _gamificacionRegistrada: true })
-            // Fire-and-forget: registrar acción sin bloquear la UI
-            completarRetoPorAccion('impacto')
-        }
     },
 
-    reset: () => set({ personal: null, global: null, error: null, isLoading: false, _gamificacionRegistrada: false })
+    reset: () => set({ personal: null, global: null, error: null, isLoading: false }),
 }))
