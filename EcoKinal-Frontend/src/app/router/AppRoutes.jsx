@@ -17,6 +17,9 @@ import DetectorReciclaje from '../../features/user/pages/DetectorReciclajePage'
 import GamificacionPage  from '../../features/user/pages/GamificacionPage'
 import MapaPage          from '../../features/user/pages/MapaPage'
 import ImpactoPage       from '../../features/user/pages/ImpactoPage'
+import EcoBotPage from '../../features/user/pages/EcoBotPage'
+
+
 
 export const AppRoutes = () => {
   return (
@@ -42,6 +45,7 @@ export const AppRoutes = () => {
         <Route path="puntos"   element={<GamificacionPage />} />
         <Route path="impacto"  element={<ImpactoPage />} />
         <Route path="mapa"     element={<MapaPage />} />
+        <Route path="ecobot" element={<EcoBotPage />} />
       </Route>
 
       {/* ── Fallback ── */}

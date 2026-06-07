@@ -4,6 +4,11 @@ import mongoose from 'mongoose'
 
 const ecoBotSchema = mongoose.Schema({
 
+    usuarioId: {
+        type: String,
+        required: true
+    },
+
     mensajeUsuario: {
         type: String,
         required: true

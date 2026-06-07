@@ -8,7 +8,8 @@ const NAV_ITEMS = [
   { label: 'Foro eco', href: '/dashboard/usuario/foro', icon: 'ti ti-messages', hoverLabel: 'Comunidad' },
   { label: 'Gamificación', href: '/dashboard/usuario/puntos', icon: 'ti ti-trophy', hoverLabel: 'Retos' },
   { label: 'Mi impacto', href: '/dashboard/usuario/impacto', icon: 'ti ti-chart-bar', hoverLabel: 'Estadísticas' },
-  { label: 'Mapa reciclaje', href: '/dashboard/usuario/mapa', icon: 'ti ti-map-pin', hoverLabel: 'Ubicar' }
+  { label: 'Mapa reciclaje', href: '/dashboard/usuario/mapa', icon: 'ti ti-map-pin', hoverLabel: 'Ubicar' },
+  { label: 'EcoBot', href: '/dashboard/usuario/ecobot', icon: 'ti ti-robot', hoverLabel: 'Chatbot' },
 ]
 
 export default function NavBar() {

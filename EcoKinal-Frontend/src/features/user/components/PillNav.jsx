@@ -14,18 +14,17 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 1000;
-          /* ✅ FIX: SIN pointer-events: none en el wrapper — bloqueaba los clicks */
         }
 
         .econav {
           width: 100%;
           background: linear-gradient(135deg, #162e15 0%, #1f4a1c 50%, #2b5626 100%);
-          padding: 0 32px;
+          padding: 0 24px;
           height: 68px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 16px;
+          gap: 12px;
           border-bottom: 1px solid rgba(168,216,154,0.12);
           box-shadow:
             0 1px 0 rgba(255,255,255,0.04) inset,
@@ -82,15 +81,17 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
           display: flex; align-items: center; gap: 2px;
           background: rgba(0,0,0,0.22);
           border-radius: 14px; padding: 5px;
-          flex: 1; justify-content: center; max-width: 720px;
+          flex: 1; justify-content: center;
+          max-width: 860px;
           border: 1px solid rgba(255,255,255,0.04);
+          overflow: hidden;
         }
 
         .econav-link {
-          display: inline-flex; align-items: center; gap: 7px;
-          padding: 9px 16px; border-radius: 10px;
+          display: inline-flex; align-items: center; gap: 5px;
+          padding: 9px 11px; border-radius: 10px;
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 13.5px; font-weight: 500;
+          font-size: 12.5px; font-weight: 500;
           color: rgba(255,255,255,0.55);
           text-decoration: none; border: none;
           background: transparent; cursor: pointer;
@@ -98,7 +99,7 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
           white-space: nowrap;
         }
 
-        .econav-link i { font-size: 16px; flex-shrink: 0; }
+        .econav-link i { font-size: 15px; flex-shrink: 0; }
 
         .econav-link:hover {
           color: rgba(255,255,255,0.9);
@@ -179,7 +180,6 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
 
         .econav-hamburger:hover { background: rgba(255,255,255,0.14); }
 
-        /* ✅ FIX: menú móvil con pointer-events activos y z-index sobre el main */
         .econav-mobile {
           display: none;
           position: fixed;
@@ -189,8 +189,8 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
           border: 1px solid rgba(168,216,154,0.12);
           box-shadow: 0 24px 56px rgba(0,0,0,0.4);
           padding: 10px;
-          z-index: 1001;        /* ✅ Por encima del main (z-index 1) */
-          pointer-events: all;  /* ✅ Clicks habilitados */
+          z-index: 1001;
+          pointer-events: all;
           flex-direction: column; gap: 3px;
         }
 
@@ -232,7 +232,7 @@ export default function PillNav({ items = [], onLogoutAction, onProfileClick }) 
           color: #ff8585 !important;
         }
 
-        @media (max-width: 960px) {
+        @media (max-width: 1150px) {
           .econav-links   { display: none; }
           .econav-actions { display: none; }
           .econav-hamburger { display: flex; }
