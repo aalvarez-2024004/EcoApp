@@ -1,7 +1,7 @@
 // src/features/user/pages/ImpactoPage.jsx
 import { useEffect, useState } from 'react'
 import { useImpactoStore } from '../store/useImpactoStore'
-import { completarRetoPorAccion } from '../../../shared/Gamificacion'
+import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
 
 // ─── Paleta & tokens (DetectorReciclaje) ──────────────────────────────────────
 const G = {

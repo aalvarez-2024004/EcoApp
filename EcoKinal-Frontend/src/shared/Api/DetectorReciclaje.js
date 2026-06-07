@@ -1,4 +1,4 @@
-import { DetectorApi } from './Api/Api'
+import { DetectorApi } from "./Api"
 
 export const clasificarImagen = async (imagenFile) => {
   const formData = new FormData()

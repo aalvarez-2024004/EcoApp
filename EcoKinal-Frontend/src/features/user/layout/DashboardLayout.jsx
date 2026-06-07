@@ -1,4 +1,4 @@
-// 📁 src/features/user/layout/DashboardLayout.jsx
+
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import PillNav from '../components/PillNav'
@@ -26,7 +26,6 @@ export default function DashboardLayout() {
 
   return (
     <>
-      {/* ✅ Solo estilos de layout — fuentes e iconos van en index.html */}
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
 

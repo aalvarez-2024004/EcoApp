@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
-import {css} from '../../../Styles/LoginPage.js'
+import {css} from '../../../Styles/constants/LoginPage.js'
 import icon from "../../../assets/icon.png";
 import { ArrowLeftIcon, LeafIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '../../../icons/IconsAuth.jsx'
 

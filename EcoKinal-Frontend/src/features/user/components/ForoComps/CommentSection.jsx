@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import axios from 'axios'
-import { completarRetoPorAccion } from '../../../../shared/Gamificacion'
+import { completarRetoPorAccion } from '../../../../shared/Api/Gamificacion'
 import Avatar from '../Avatar'
 
 const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'

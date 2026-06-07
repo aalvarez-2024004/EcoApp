@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useUser } from '../store/useUserStore'
 import { useForoStore } from '../store/useForoStore'
 import PostCard from '../components/ForoComps/PostCard'
-import { completarRetoPorAccion } from '../../../shared/Gamificacion'
+import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
 
 const TAGS = ['Logro', 'Pregunta', 'Consejo', 'Noticia']
 

@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { useDetectorReciclaje } from '../store/useDetectorStore'
 import useGamificacionStore from '../store/useGamificacionStore'
-import { LEYENDA } from '../../../Styles/DetectorPage'
+import { LEYENDA } from '../../../Styles/constants/DetectorPage'
 import UploadPanel  from '../components/DetectorReciclajeComps/UploadPanel'
 import CameraPanel  from '../components/DetectorReciclajeComps/CameraPanel'
 import ResultPanel  from '../components/DetectorReciclajeComps/ResultPanel'

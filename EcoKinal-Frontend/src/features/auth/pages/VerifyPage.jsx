@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
-import { css } from '../../../Styles/VerifyPage.js'
+import { css } from '../../../Styles/constants/VerifyPage.js'
 import { ArrowLeftIcon, LeafIcon, MailIcon, CheckIcon, XIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function VerifyPage() {
@@ -60,7 +60,7 @@ export default function VerifyPage() {
           </Link>
 
           <div className="ek-brand">
-            
+            <LeafIcon size={40} />
           </div>
 
           <div className="ek-heading">
@@ -145,7 +145,7 @@ export default function VerifyPage() {
 
           <div className="ek-right-text">
             <div className="ek-right-icon">
-              <MailIcon size={64} />
+              <LeafIcon size={64} />
             </div>
             <h2>Verifica tu<br />identidad</h2>
             <p>Revisamos el enlace que llegó a tu correo para confirmar que eres tú. Solo tarda unos segundos.</p>

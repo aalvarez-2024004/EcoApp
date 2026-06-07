@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
-import { css } from '../../../Styles/ResetPasswordPage.js'
+import { css } from '../../../Styles/constants/ResetPasswordPage.js'
 import { ArrowLeftIcon, LeafIcon, LockIcon, EyeIcon, EyeOffIcon, CheckIcon, XIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function ResetPasswordPage() {

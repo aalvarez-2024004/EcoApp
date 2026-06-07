@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useAuthStore from '../store/useAuthStore'
 import Spinner from '../components/Spinner'
-import { css } from '../../../Styles/ForgotPasswordPage.js'
+import { css } from '../../../Styles/constants/ForgotPasswordPage.js'
 import { ArrowLeftIcon, LeafIcon, MailIcon, CheckIcon } from '../../../icons/IconsAuth.jsx'
 
 export default function ForgotPasswordPage() {
@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
           </Link>
 
           <div className="ek-brand">
-            
+            <LeafIcon size={40} />
           </div>
 
           <div className="ek-heading">

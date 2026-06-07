@@ -41,6 +41,11 @@ export const landingCss = `
     scroll-behavior: smooth;
   }
 
+  .nav-logo-img {
+    height: clamp(40px, 5vw, 60px);
+    width: auto;
+  }
+
   /* ══ TYPOGRAPHY ══ */
   .font-display { font-family: var(--font-family); font-weight: 800; }
   .hero-title, .sec-title, .nav-logo { font-family: var(--font-family); font-weight: 800; }

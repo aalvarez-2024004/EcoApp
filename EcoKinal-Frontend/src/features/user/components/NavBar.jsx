@@ -1,6 +1,6 @@
-// 📁 src/features/user/components/NavBar.jsx
+
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom' // ✅ agrega useLocation
+import { useNavigate, useLocation } from 'react-router-dom'
 import useAuthStore from '../../auth/store/useAuthStore'
 
 const NAV_ITEMS = [
@@ -16,8 +16,8 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
-  const location = useLocation()        // ✅ hook reactivo
-  const currentPath = location.pathname // ✅ reemplaza window.location.pathname
+  const location = useLocation()        
+  const currentPath = location.pathname
 
   const handleLogout = () => {
     logout()

@@ -1,5 +1,5 @@
 import { BinIcon, ConfidenceBar, LeafSpinner } from '../../../../icons/DetectorIcons'
-import { detectarColorSet, CONSEJOS } from '../../../../Styles/detector.styles'
+import { detectarColorSet, CONSEJOS } from '../../../../Styles/constants/detector.styles'
 
 const G = {
   green1:    '#1b3c1a',

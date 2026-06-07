@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import logoBlanco from "../../../assets/logo.png";
 import logoOscuro from "../../../assets/logo_2.png";
 import { Leaf, ArrowRight, X, Trophy, MapPin, Zap, MessageCircle, Lock } from "lucide-react";
-import { landingCss } from "../../../Styles/LandingPage.js";
-import { NAV_LINKS, MODULES, RECYCLING_TYPES, COMMUNITY_POSTS, STEPS } from "../../../Styles/LandingData.js";
+import { landingCss } from "../../../Styles/constants/LandingPage.js";
+import { NAV_LINKS, MODULES, RECYCLING_TYPES, COMMUNITY_POSTS, STEPS } from "../../../Styles/constants/LandingData.js";
 
 export const LandingPage = () => {
   const [activeModule, setActiveModule] = useState(null);
