@@ -1,4 +1,3 @@
-// src/features/user/pages/EcoBotPage.jsx
 import { useEcoBotStore } from '../store/useEcoBotStore'
 import EcoBotHeader   from '../components/EcoBotComps/EcoBotHeader'
 import EcoBotMessages from '../components/EcoBotComps/EcoBotMessages'
@@ -49,7 +48,7 @@ export default function EcoBotPage() {
         <div style={{
           background: 'white',
           border: '1px solid #ddeedd',
-          borderRadius: 0,           // sin bordes si va full
+          borderRadius: 0,          
           boxShadow: 'none',
           display: 'flex',
           flexDirection: 'column',
