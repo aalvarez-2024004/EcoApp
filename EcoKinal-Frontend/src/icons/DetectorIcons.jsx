@@ -114,3 +114,57 @@ export const LeafSpinner = () => (
     </svg>
   </div>
 )
+
+/* ── Botón de tab ── */
+export const TabBtn = ({ active, onClick, children }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`tab-btn ${active ? 'active' : ''}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+/* ── Decoración SVG de fondo ── */
+export const BgPattern = () => {
+  return (
+    <svg
+      aria-hidden="true"
+      className="bg-pattern"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <pattern id="leaf-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <circle cx="30" cy="30" r="1.5" fill="#2d5a27" />
+          <circle cx="0"  cy="0"  r="1"   fill="#2d5a27" />
+          <circle cx="60" cy="0"  r="1"   fill="#2d5a27" />
+          <circle cx="0"  cy="60" r="1"   fill="#2d5a27" />
+          <circle cx="60" cy="60" r="1"   fill="#2d5a27" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#leaf-grid)" />
+    </svg>
+  )
+}
+
+/* ── Ilustración decorativa header ── */
+export const HeaderIllustration = () => {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 200 120"
+      className="header-illustration"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse cx="100" cy="90" rx="80" ry="20" fill="#52b788" />
+      <path d="M100 80 Q80 40 60 20 Q100 30 100 80Z"   fill="#2d5a27" />
+      <path d="M100 80 Q120 40 140 20 Q100 30 100 80Z" fill="#52b788" />
+      <path d="M100 80 Q70 55 50 60 Q80 45 100 80Z"    fill="#74c69d" />
+      <path d="M100 80 Q130 55 150 60 Q120 45 100 80Z" fill="#74c69d" />
+      <circle cx="100" cy="78" r="5" fill="#1b3c1a" />
+    </svg>
+  )
+}
