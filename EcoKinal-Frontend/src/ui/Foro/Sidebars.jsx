@@ -1,4 +1,4 @@
-import{TAGS, NAV_ITEMS } from '../../Styles/constants/Foro.js'
+import{TAGS, NAV_ITEMS } from '../../Styles/constants/ForoPage.js'
 
 export function LeftSidebar({ currentUser, posts, navigate }) {
     const userId = String(currentUser?.id || currentUser?.uid || '')
@@ -14,7 +14,7 @@ export function LeftSidebar({ currentUser, posts, navigate }) {
     }
 
     return (
-        <aside style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 220, flexShrink: 0 }}>
+        <aside style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
 
             {/* Perfil */}
             <div style={{
@@ -128,7 +128,7 @@ export function RightSidebar({ posts }) {
     const medalColors = ['#F59E0B', '#9ca3af', '#cd7c2f']
 
     return (
-        <aside style={{ display: 'flex', flexDirection: 'column', gap: 12, width: 220, flexShrink: 0 }}>
+        <aside style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
 
             {/* Estadísticas */}
             <div style={{

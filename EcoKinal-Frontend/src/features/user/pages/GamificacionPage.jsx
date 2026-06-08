@@ -6,8 +6,7 @@ import StatCard      from '../components/GamificacionComps/StatCard'
 import BadgeItem     from '../components/GamificacionComps/BadgeItem'
 import ChallengeCard from '../components/GamificacionComps/ChallengeCard'
 import RankingRow    from '../components/GamificacionComps/RankingRow'
-import {gamificacionCss} from '../../../Styles/constants/GamificacionPage.js'
-import { KEY_REDIRECT } from '../../../Styles/constants/GamificacionPage.js'
+import {gamificacionCss, KEY_REDIRECT} from '../../../Styles/constants/GamificacionPage.js'
 
 export default function GamificacionPage() {
   const {

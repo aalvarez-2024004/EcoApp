@@ -49,7 +49,22 @@ export const pageStyles = `
   ::-webkit-scrollbar-thumb:hover { background: rgba(43, 95, 42, 0.3); }
 
   @media (max-width: 1024px) {
-    .foro-grid { grid-template-columns: 1fr !important; }
-    .foro-sidebar-left, .foro-sidebar-right { display: none !important; }
+    .foro-grid {
+      grid-template-columns: 160px minmax(0, 1fr) 160px !important;
+      gap: 12px !important;
+    }
+    .foro-page-wrapper {
+      padding: 1rem !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .foro-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .foro-sidebar-left,
+    .foro-sidebar-right {
+      display: none !important;
+    }
   }
 `

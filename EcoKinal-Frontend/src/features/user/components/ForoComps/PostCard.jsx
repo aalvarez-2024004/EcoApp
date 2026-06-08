@@ -232,7 +232,12 @@ export default function PostCard({ post, currentUserId, currentUser, onToast }) 
                                     style={{
                                         position: 'relative',
                                         gridColumn: isThreeImagesFirst ? 'span 2' : 'span 1',
-                                        aspectRatio: isThreeImagesFirst ? '21/9' : postImages.length === 1 ? '16/10' : '16/11',
+                                        aspectRatio: (() => {
+                                            const isMobile = window.innerWidth <= 768
+                                            if (isThreeImagesFirst) return isMobile ? '4/3' : '21/9'
+                                            if (postImages.length === 1) return isMobile ? '4/3' : '16/10'
+                                            return isMobile ? '1/1' : '16/11'
+                                        })(),
                                         cursor: 'zoom-in',
                                         overflow: 'hidden',
                                         borderRadius: 14,

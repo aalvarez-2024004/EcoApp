@@ -8,7 +8,7 @@ import {SkeletonCard} from '../../../ui/Foro/SkeletonCard'
 import {EmptyState} from '../../../ui/Foro/EmptyState'
 import {FilterBtn} from '../../../ui/Foro/FilterBtn'
 import { LeftSidebar, RightSidebar } from '../../../ui/Foro/Sidebars'
-import { TAGS, TAG_STYLES, NAV_ITEMS, pageStyles } from '../../../Styles/constants/Foro.js'
+import { TAGS, TAG_STYLES, NAV_ITEMS, pageStyles } from '../../../Styles/constants/ForoPage.js'
 
 export default function ForoPage() {
     const navigate = useNavigate()
@@ -129,7 +129,10 @@ export default function ForoPage() {
     const isLoading = isSearchMode ? searchLoading : loading
 
     return (
-        <div style={{ background: '#EEF3ED', minHeight: '100vh', padding: '2rem 2rem', boxSizing: 'border-box' }}>
+        <div 
+            className="foro-page-wrapper"
+            style={{ background: '#EEF3ED', minHeight: '100vh', padding: '2rem 2rem', boxSizing: 'border-box' }}
+        >
             <style>{pageStyles}</style>
 
             {/* ── Toast ── */}
@@ -154,17 +157,22 @@ export default function ForoPage() {
             )}
 
             {/* ── Layout 3 columnas ── */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: '220px minmax(0, 1fr) 220px',
-                gap: '20px',
-                maxWidth: 1200,
-                margin: '0 auto',
-                alignItems: 'start',
-            }}>
+            <div
+                className="foro-grid"
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: '220px minmax(0, 1fr) 220px',
+                    gap: '20px',
+                    maxWidth: 1200,
+                    margin: '0 auto',
+                    alignItems: 'start',
+                }}
+            >
 
                 {/* Columna izquierda */}
-                <LeftSidebar currentUser={currentUser} posts={posts} navigate={navigate} />
+                <div className="foro-sidebar-left">
+                    <LeftSidebar currentUser={currentUser} posts={posts} navigate={navigate} />
+                </div>
 
                 {/* Columna central — feed */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -234,12 +242,14 @@ export default function ForoPage() {
 
                     {/* Filtros */}
                     {!isSearchMode && (
-                        <div style={{
-                            display: 'flex', padding: 8, gap: 6,
-                            borderRadius: 20, width: 'fit-content',
-                            background: '#fff', border: '0.5px solid rgba(43, 95, 42, 0.15)',
-                            overflowX: 'auto',
-                        }}>
+                    <div style={{
+                        display: 'flex', padding: 8, gap: 6,
+                        borderRadius: 20,
+                        width: '100%',       
+                        maxWidth: '100%',     
+                        background: '#fff', border: '0.5px solid rgba(43, 95, 42, 0.15)',
+                        overflowX: 'auto',    
+                    }}>
                             <FilterBtn active={filter === 'Todos'} onClick={() => setFilter('Todos')} count={posts.length}>
                                 Todos
                             </FilterBtn>
@@ -414,7 +424,9 @@ export default function ForoPage() {
                 </div>
 
                 {/* Columna derecha */}
-                <RightSidebar posts={posts} />
+                <div className="foro-sidebar-right" style={{ alignSelf: 'start', top: 20 }}>
+                    <RightSidebar posts={posts} />
+                </div>
 
             </div>
         </div>
