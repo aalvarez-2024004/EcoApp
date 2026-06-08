@@ -3,7 +3,7 @@ import { useImpactoStore } from '../store/useImpactoStore'
 import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
 import {HeaderIllustration}from '../../../icons/ImpactoIcons.jsx'
 import{BgPattern} from '../../../icons/DetectorIcons.jsx'
-import {ImpactoPageCss, G,fmt, TIPO_META} from '../../../Styles/constants/ImpactoPage.js'
+import {ImpactoPageCSS, G,fmt, TIPO_META} from '../../../Styles/constants/ImpactoPage.js'
 import { StatCard } from '../../../ui/Impacto/StartCard.jsx'
 import { TipoBar } from '../../../ui/Impacto/TipoBar.jsx'
 import { HistorialRow } from '../../../ui/Impacto/HistorialRow.jsx'
@@ -53,7 +53,7 @@ export default function ImpactoPage() {
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       />
 
-      <style>{ImpactoPageCss}</style>
+      <style>{ImpactoPageCSS}</style>
 
       {/* Toast */}
       {retoToast && (

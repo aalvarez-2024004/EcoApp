@@ -1,4 +1,5 @@
-import {fmtDate, fmt, TIPO_META} from '../../../Styles/constants/ImpactoPage.js'
+import {fmt, fmtDate, TIPO_META} from '../../Styles/constants/ImpactoPage.js'
+
 export function HistorialRow({ item, index }) {
   const meta = TIPO_META[item.tipo] || { color: '#888', bg: 'rgba(128,128,128,.1)', icon: '📦', label: item.tipo }
   return (

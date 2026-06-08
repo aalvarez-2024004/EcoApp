@@ -1,4 +1,4 @@
-
+import {G} from '../Styles/constants/ImpactoPage.js'
 export const HeaderIllustration = () => {
   return (
     <svg

@@ -1,4 +1,18 @@
-export const CSS = `
+export const G = {
+  pageBg:    '#f4f8f3',
+  cardBg:    '#ffffff',
+  green1:    '#1b3c1a',
+  green2:    '#2d5a27',
+  green3:    '#52b788',
+  green4:    '#74c69d',
+  green5:    '#d8eed8',
+  border:    '#ddeedd',
+  textMuted: '#6b8e66',
+  textSub:   '#9db89a',
+}
+
+
+export const ImpactoPageCSS = `
   * { box-sizing: border-box; }
 
   .imp-root {
@@ -335,19 +349,6 @@ export const CSS = `
     .imp-hist-nums { display: none; }
   }
 `
-
-export const G = {
-  pageBg:    '#f4f8f3',
-  cardBg:    '#ffffff',
-  green1:    '#1b3c1a',
-  green2:    '#2d5a27',
-  green3:    '#52b788',
-  green4:    '#74c69d',
-  green5:    '#d8eed8',
-  border:    '#ddeedd',
-  textMuted: '#6b8e66',
-  textSub:   '#9db89a',
-}
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 export const fmt = (n = 0, decimals = 2) =>

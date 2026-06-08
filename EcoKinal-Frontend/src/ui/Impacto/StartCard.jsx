@@ -1,5 +1,5 @@
-import { fmt } from '../../../Styles/constants/ImpactoPage.js'
-
+import { fmt } from '../../Styles/constants/ImpactoPage.js'
+import { useCountUp } from '../../features/user/pages/ImpactoPage.jsx'
 export function StatCard({ icon, label, value, unit, color, delay = 0 }) {
   const animated = useCountUp(value, 1200)
   return (
