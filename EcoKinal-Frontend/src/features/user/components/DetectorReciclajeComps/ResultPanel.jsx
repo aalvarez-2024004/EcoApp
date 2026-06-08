@@ -1,4 +1,6 @@
-import { BinIcon, ConfidenceBar, LeafSpinner } from '../../../../icons/DetectorIcons'
+import { BinIcon} from '../../../../icons/DetectorIcons'
+import {ConfidenceBar} from '../../../../ui/DetectorReciclaje/ConfidenceBar.jsx'
+import { LeafSpinner } from '../../../../ui/DetectorReciclaje/LeafSpinner.jsx'
 import { detectarColorSet, CONSEJOS } from '../../../../Styles/constants/detector.styles'
 
 const G = {

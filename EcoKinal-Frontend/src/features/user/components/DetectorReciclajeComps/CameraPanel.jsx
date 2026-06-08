@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ScanOverlay } from '../../../../icons/DetectorIcons'
+import { ScanOverlay } from '../../../../ui/DetectorReciclaje/ScanOverlay.jsx'
 import SparkleClasificar from './SparkleClasificar'
 
 const G = {
