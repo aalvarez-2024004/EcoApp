@@ -13,7 +13,8 @@ const FIELD_MASK = [
     "places.regularOpeningHours",
     "places.currentOpeningHours",
     "places.rating",
-    "places.googleMapsUri"
+    "places.googleMapsUri",
+    "places.photos"
 ].join(",");
 
 /**
@@ -139,6 +140,10 @@ export const formatPlace = (place, userLat, userLon) => {
         place.currentOpeningHours?.weekdayDescriptions ||
         place.regularOpeningHours?.weekdayDescriptions ||
         [];
+    const firstPhoto = place.photos?.[0]?.name
+    const photoUrl = firstPhoto
+        ? `https://places.googleapis.com/v1/${firstPhoto}/media?maxWidthPx=400&key=${GOOGLE_API_KEY}`
+        : null
 
     return {
         id: place.id || null,
@@ -151,7 +156,8 @@ export const formatPlace = (place, userLat, userLon) => {
         google_maps_url: place.googleMapsUri || null,
         distance_km: distance,
         lat,
-        lon
+        lon,
+        photo_url: photoUrl
     };
 };
 
