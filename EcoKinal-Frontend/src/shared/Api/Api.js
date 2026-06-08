@@ -1,14 +1,21 @@
 import axios from 'axios'
 
+const isLocal = window.location.hostname === 'localhost'
+
 const AuthApi = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_URL
+  baseURL: isLocal
+    ? 'http://localhost:3005/api'
+    : import.meta.env.VITE_AUTH_URL,
 })
 
 const DetectorApi = axios.create({
-  baseURL: import.meta.env.VITE_DETECTOR_URL,
-  timeout: 60000, 
+  baseURL: isLocal
+    ? 'http://localhost:3007/api/vision'
+    : import.meta.env.VITE_DETECTOR_URL,
+  timeout: 60000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true',
   }
 })
 

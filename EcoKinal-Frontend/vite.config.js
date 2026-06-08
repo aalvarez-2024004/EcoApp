@@ -7,4 +7,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    allowedHosts: [
+      'surveillance-main-crop-associate.trycloudflare.com'
+    ]
+  }
 })
