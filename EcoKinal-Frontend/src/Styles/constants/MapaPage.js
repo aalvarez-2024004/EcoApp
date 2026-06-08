@@ -139,9 +139,12 @@ export const mapaStyles = `
   /* ── Card ── */
   .mapa-card {
     background: ${G.cardBg}; border: 1px solid ${G.border};
-    border-radius: 20px; padding: 18px 20px;
-    cursor: pointer; transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
-    display: flex; flex-direction: column; gap: 8px;
+    border-radius: 20px;
+    overflow: hidden;           /* clips the cover image corners */
+    padding: 0;                 /* padding handled per-section below */
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    display: flex; flex-direction: column;
     box-shadow: 0 2px 12px rgba(45,90,39,0.05);
   }
   .mapa-card:hover {
@@ -150,25 +153,69 @@ export const mapaStyles = `
     box-shadow: 0 8px 24px rgba(45,90,39,0.10);
   }
 
-  .mapa-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-  .mapa-card-num-name { display: flex; gap: 10px; align-items: flex-start; }
-  .mapa-card-num {
-    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    background: #e8f5e9; border: 1px solid ${G.border};
-    color: ${G.green2};
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800; margin-top: 1px;
+  /* Cover image — full-width, top of card, only rendered once */
+  .mapa-card-cover {
+    width: 100%; height: 240px;
+    overflow: hidden; flex-shrink: 0;
+    background: ${G.green5};
   }
-  .mapa-card-name { font-size: 13.5px; font-weight: 700; color: ${G.green1}; line-height: 1.35; }
+  .mapa-card-cover img {
+    width: 100%; height: 100%; object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+  .mapa-card:hover .mapa-card-cover img { transform: scale(1.04); }
+
+  /* Placeholder cover for cards without photo — keeps uniform height */
+  .mapa-card-cover-placeholder {
+    width: 100%; height: 240px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #e8f5e9 0%, #d4edda 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; opacity: 0.6;
+  }
+
+  /* Inner content padding */
+  .mapa-card-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px 0;
+  }
+
+  /* Small avatar — circular, 36px, shows photo or number */
+  .mapa-card-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    background: #e8f5e9; border: 2px solid ${G.border};
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: ${G.green2}; font-size: 11px; font-weight: 800;
+  }
+  .mapa-card-avatar img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  .mapa-card-name {
+    flex: 1;
+    font-size: 13px; font-weight: 700; color: ${G.green1}; line-height: 1.35;
+    margin: 0;
+  }
   .mapa-card-dist {
     font-size: 11px; font-weight: 700; color: ${G.green2};
     background: #e8f5e9; padding: 3px 10px; border-radius: 99px;
     white-space: nowrap; flex-shrink: 0; border: 1px solid ${G.border};
   }
 
-  .mapa-card-address { font-size: 11.5px; color: ${G.textMuted}; line-height: 1.5; flex: 1; }
+  .mapa-card-address {
+    font-size: 11.5px; color: ${G.textMuted}; line-height: 1.5;
+    padding: 6px 16px 0;
+    margin: 0; flex: 1;
+  }
 
-  .mapa-card-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .mapa-card-footer {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    padding: 10px 16px 14px;
+    margin-top: auto;
+  }
 
   .mapa-chip {
     display: inline-flex; align-items: center; gap: 4px;
@@ -224,7 +271,7 @@ export const mapaStyles = `
     background: linear-gradient(90deg, ${G.green5} 25%, ${G.border} 50%, ${G.green5} 75%);
     background-size: 400px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
-    border-radius: 20px; height: 130px;
+    border-radius: 20px; height: 160px;
     border: 1px solid ${G.border};
   }
 

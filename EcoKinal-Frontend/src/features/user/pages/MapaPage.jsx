@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import useMapaStore from '../store/useMapaStore'
 import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
-import {HeaderIllustration}from '../../../icons/ImpactoIcons.jsx'
-import{BgPattern} from '../../../icons/DetectorIcons.jsx'
-import {mapaStyles} from '../../../Styles/constants/MapaPage.js'
+import { HeaderIllustration } from '../../../icons/ImpactoIcons.jsx'
+import { BgPattern } from '../../../icons/DetectorIcons.jsx'
+import { mapaStyles } from '../../../Styles/constants/MapaPage.js'
 import { OpenChip } from '../../../ui/Mapa/OpenChip.jsx'
 import { G } from '../../../Styles/constants/ImpactoPage.js'
 
@@ -73,38 +73,8 @@ export default function MapaPage() {
         const icon = L.divIcon({
           className: '',
           html: c.photo_url
-            ? `
-              <img
-                src="${c.photo_url}"
-                alt="${c.name}"
-                style="
-                  width:40px;
-                  height:40px;
-                  border-radius:50%;
-                  object-fit:cover;
-                  border:3px solid white;
-                  box-shadow:0 2px 10px rgba(0,0,0,.25);
-                "
-              />
-            `
-            : `
-              <div
-                style="
-                  width:32px;
-                  height:32px;
-                  border-radius:50%;
-                  background:${G.green2};
-                  border:3px solid #fff;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  color:white;
-                  font-weight:bold;
-                "
-              >
-                ${i + 1}
-              </div>
-            `,
+            ? `<img src="${c.photo_url}" alt="${c.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,.25);" />`
+            : `<div style="width:32px;height:32px;border-radius:50%;background:${G.green2};border:3px solid #fff;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;">${i + 1}</div>`,
           iconSize: [40, 40],
           iconAnchor: [20, 20]
         })
@@ -240,33 +210,34 @@ export default function MapaPage() {
             onClick={() => {
               if (mapRef.current && c.lat && c.lon) {
                 mapRef.current.setView([c.lat, c.lon], 16)
+                // +1 because index 0 is the user marker
                 markersRef.current[i + 1]?.openPopup()
               }
             }}
           >
+            {/* Cover image — always shown, placeholder if no photo */}
+            {c.photo_url
+              ? (
+                <div className="mapa-card-cover">
+                  <img src={c.photo_url} alt={c.name} />
+                </div>
+              ) : (
+                <div className="mapa-card-cover-placeholder">♻️</div>
+              )
+            }
+
+            {/* Header row: avatar + name + distance */}
             <div className="mapa-card-header">
-              <div className="mapa-card-num-name">
-                <div className="mapa-card-num">
-                  <img
-                    src={c.photo_url}
-                    alt={c.name}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </div>                <p className="mapa-card-name">{c.name}</p>
+              <div className="mapa-card-avatar">
+                {c.photo_url
+                  ? <img src={c.photo_url} alt={c.name} />
+                  : <span>{i + 1}</span>
+                }
               </div>
-              {c.photo_url && (
-                  <img
-                      src={c.photo_url}
-                      alt={c.name}
-                      style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 12, marginBottom: 4 }}
-                  />
+              <p className="mapa-card-name">{c.name}</p>
+              {c.distance_km && (
+                <span className="mapa-card-dist">{c.distance_km} km</span>
               )}
-              {c.distance_km && <span className="mapa-card-dist">{c.distance_km} km</span>}
             </div>
 
             <p className="mapa-card-address">{c.address}</p>
