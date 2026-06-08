@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import useMapaStore from '../store/useMapaStore'
 import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
-import {HeaderIllustration}from '../../../icons/ImpactoIcons.jsx'
-import{BgPattern} from '../../../icons/DetectorIcons.jsx'
-import {mapaStyles} from '../../../Styles/constants/MapaPage.js'
+import { HeaderIllustration } from '../../../icons/ImpactoIcons.jsx'
+import { BgPattern } from '../../../icons/DetectorIcons.jsx'
+import { mapaStyles } from '../../../Styles/constants/MapaPage.js'
 import { OpenChip } from '../../../ui/Mapa/OpenChip.jsx'
+import { G } from '../../../Styles/constants/ImpactoPage.js'
 
 export default function MapaPage() {
   const {
@@ -71,8 +72,11 @@ export default function MapaPage() {
         if (!c.lat || !c.lon) return
         const icon = L.divIcon({
           className: '',
-          html: `<div style="width:32px;height:32px;border-radius:50%;background:${G.green2};border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;color:${G.green4};font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;">${i + 1}</div>`,
-          iconSize: [32, 32], iconAnchor: [16, 16]
+          html: c.photo_url
+            ? `<img src="${c.photo_url}" alt="${c.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,.25);" />`
+            : `<div style="width:32px;height:32px;border-radius:50%;background:${G.green2};border:3px solid #fff;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;">${i + 1}</div>`,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
         })
         const openBadge = c.open_status === 'Abierto'
           ? `<span style="color:${G.green2};font-weight:700">● Abierto</span>`
@@ -80,16 +84,17 @@ export default function MapaPage() {
           ? `<span style="color:#dc2626;font-weight:700">● Cerrado</span>`
           : `<span style="color:${G.textMuted}">Horario N/D</span>`
         const popupHtml = `
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:200px">
-            <p style="font-weight:700;font-size:14px;color:${G.green1};margin:0 0 4px">${c.name}</p>
-            <p style="font-size:12px;color:${G.textMuted};margin:0 0 6px">${c.address}</p>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              ${openBadge}
-              <span style="font-size:12px;color:${G.green2};font-weight:600">${c.distance_km} km</span>
-              ${c.rating ? `<span style="font-size:12px;color:${G.green2}">★ ${c.rating}</span>` : ''}
-            </div>
-            ${c.google_maps_url ? `<a href="${c.google_maps_url}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;color:${G.green2};font-weight:600">Ver en Google Maps ↗</a>` : ''}
-          </div>`
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:200px">
+          ${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px" />` : ''}
+          <p style="font-weight:700;font-size:14px;color:${G.green1};margin:0 0 4px">${c.name}</p>
+          <p style="font-size:12px;color:${G.textMuted};margin:0 0 6px">${c.address}</p>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            ${openBadge}
+            <span style="font-size:12px;color:${G.green2};font-weight:600">${c.distance_km} km</span>
+            ${c.rating ? `<span style="font-size:12px;color:${G.green2}">★ ${c.rating}</span>` : ''}
+          </div>
+          ${c.google_maps_url ? `<a href="${c.google_maps_url}" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;color:${G.green2};font-weight:600">Ver en Google Maps ↗</a>` : ''}
+        </div>`
         markersRef.current.push(
           L.marker([c.lat, c.lon], { icon }).addTo(mapRef.current).bindPopup(popupHtml, { maxWidth: 260 })
         )
@@ -205,16 +210,34 @@ export default function MapaPage() {
             onClick={() => {
               if (mapRef.current && c.lat && c.lon) {
                 mapRef.current.setView([c.lat, c.lon], 16)
+                // +1 because index 0 is the user marker
                 markersRef.current[i + 1]?.openPopup()
               }
             }}
           >
+            {/* Cover image — always shown, placeholder if no photo */}
+            {c.photo_url
+              ? (
+                <div className="mapa-card-cover">
+                  <img src={c.photo_url} alt={c.name} />
+                </div>
+              ) : (
+                <div className="mapa-card-cover-placeholder">♻️</div>
+              )
+            }
+
+            {/* Header row: avatar + name + distance */}
             <div className="mapa-card-header">
-              <div className="mapa-card-num-name">
-                <div className="mapa-card-num">{i + 1}</div>
-                <p className="mapa-card-name">{c.name}</p>
+              <div className="mapa-card-avatar">
+                {c.photo_url
+                  ? <img src={c.photo_url} alt={c.name} />
+                  : <span>{i + 1}</span>
+                }
               </div>
-              {c.distance_km && <span className="mapa-card-dist">{c.distance_km} km</span>}
+              <p className="mapa-card-name">{c.name}</p>
+              {c.distance_km && (
+                <span className="mapa-card-dist">{c.distance_km} km</span>
+              )}
             </div>
 
             <p className="mapa-card-address">{c.address}</p>
