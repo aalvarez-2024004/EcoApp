@@ -6,6 +6,10 @@ const AuthApi = axios.create({
   baseURL: isLocal
     ? 'http://localhost:3005/api'
     : import.meta.env.VITE_AUTH_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
+  }
 })
 
 const DetectorApi = axios.create({
@@ -15,14 +19,17 @@ const DetectorApi = axios.create({
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': 'true',
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
   }
 })
 
 const GamificationApi = axios.create({
-  baseURL: import.meta.env.VITE_GAMIFICATION_URL,
+  baseURL: isLocal
+    ? 'http://localhost:3008/GamificationEcoKinal/v1'
+    : import.meta.env.VITE_GAMIFICATION_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
   }
 })
 

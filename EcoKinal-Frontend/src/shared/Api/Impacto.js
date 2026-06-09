@@ -1,9 +1,16 @@
 // src/shared/Impacto.js
 import axios from 'axios'
+const isLocal = window.location.hostname === 'localhost'
 
 const ImpactoApi = axios.create({
-    baseURL: import.meta.env.VITE_IMPACTO_URL,   // agrega esto a tu .env: VITE_IMPACTO_URL=http://localhost:3002/api/impacto
-    headers: { 'Content-Type': 'application/json' }
+    baseURL: isLocal
+    ? 'http://localhost:3002/api/impacto'
+    : import.meta.env.VITE_IMPACTO_URL,
+    timeout: 60000,
+    headers: {
+        'Content-Type': 'application/json',
+        ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
+        }
 })
 
 ImpactoApi.interceptors.request.use((config) => {

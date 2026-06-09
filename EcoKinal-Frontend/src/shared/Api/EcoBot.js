@@ -1,12 +1,17 @@
-// src/shared/EcoBot.js
 import axios from 'axios'
 
-// Instancia propia apuntando a la raíz del backend, no a /api/vision
+const isLocal = window.location.hostname === 'localhost'
+
 const EcoBotApi = axios.create({
-  baseURL: import.meta.env.VITE_DETECTOR_URL.replace('/api/vision', ''),
+  baseURL: isLocal
+    ? 'http://localhost:3007'
+    : import.meta.env.VITE_DETECTOR_URL.replace('/api/vision', ''),
+  headers: {
+    'Content-Type': 'application/json',
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
+  }
 })
 
-// Inyectar token igual que los demás
 EcoBotApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`

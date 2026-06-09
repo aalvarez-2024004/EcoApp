@@ -1,9 +1,18 @@
 import { create } from 'zustand'
 import axios from 'axios'
 
-const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
+const isLocal = window.location.hostname === 'localhost'
 
-const ForoApi = axios.create({ baseURL: FORO_BASE })
+const FORO_BASE = isLocal
+  ? 'http://localhost:3006/ForoEcoKinal/v1'
+  : import.meta.env.VITE_FORO_URL
+
+const ForoApi = axios.create({
+  baseURL: FORO_BASE,
+  headers: {
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
+  }
+})
 
 ForoApi.interceptors.request.use((config) => {
     const token = localStorage.getItem('token')

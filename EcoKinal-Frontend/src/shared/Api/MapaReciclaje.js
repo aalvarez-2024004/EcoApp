@@ -1,7 +1,15 @@
 import axios from 'axios'
+const isLocal = window.location.hostname === 'localhost'
 
 const MapaApi = axios.create({
-    baseURL: import.meta.env.VITE_MAPA_URL
+    baseURL: isLocal
+    ? 'http://localhost:3001/api'
+    : import.meta.env.VITE_MAPA_URL,
+    timeout: 60000,
+    headers: {
+    'Content-Type': 'application/json',
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
+    }
 })
 
 MapaApi.interceptors.request.use((config) => {
