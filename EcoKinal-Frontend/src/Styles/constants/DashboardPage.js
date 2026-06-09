@@ -79,10 +79,13 @@ export const dashboardCss = `
   .db-hero-illustration {
     position: relative;
     z-index: 1;
-    font-size: 8rem;
-    color: rgba(255, 255, 255, 0.88);
-    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
     flex-shrink: 0;
+    mix-blend-mode: screen;
+    opacity: 0.88;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
   }
 
   /* ══ CONTENIDO ══ */

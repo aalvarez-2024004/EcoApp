@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useUser } from '../store/useUserStore'
 import { dashboardCss, dashboardImg } from '../../../Styles/constants/DashboardPage.js'
 import EcoBotFlotante from './EcoBotFlotante.jsx'
+import icon2 from '../../../assets/icon_2.png'
 
 const MODULES = [
   {
@@ -75,9 +76,7 @@ export default function DashboardPage() {
             <h2>¡Bienvenido de vuelta, {name}!</h2>
             <p>@{username} · Tu cuenta está activa. Cada residuo procesado mitiga el calentamiento global</p>
           </div>
-          <div className="db-hero-illustration">
-            <i className="ti ti-seeding" />
-          </div>
+          <img src={icon2} alt="" className="db-hero-illustration" />
         </section>
 
         <div className="db-content">
