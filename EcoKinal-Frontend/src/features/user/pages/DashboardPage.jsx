@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../store/useUserStore'
 import { dashboardCss, dashboardImg } from '../../../Styles/constants/DashboardPage.js'
-import { ecoBotCss } from '../../../Styles/constants/EcoBot.js'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
+
 const MODULES = [
   {
     href: '/dashboard/usuario/detector',
@@ -51,51 +52,17 @@ const MODULES = [
   },
 ]
 
+const INITIAL_MESSAGES = [{ from: 'bot', text: '¡Hola! Soy EcoBot 🌿 ¿En qué puedo ayudarte hoy?' }]
+
 export default function DashboardPage() {
   const { name, username } = useUser()
   const navigate = useNavigate()
-  const [botOpen, setBotOpen] = useState(false)
-  const [botInput, setBotInput] = useState('')
-  const [botMessages, setBotMessages] = useState([
-    { from: 'bot', text: '¡Hola! Soy EcoBot 🌿 ¿En qué puedo ayudarte hoy?' }
-  ])
-  const [botLoading, setBotLoading] = useState(false)
-
-  const sendBotMessage = async () => {
-    const text = botInput.trim()
-    if (!text || botLoading) return
-    setBotMessages(prev => [...prev, { from: 'user', text }])
-    setBotInput('')
-    setBotLoading(true)
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: 'Eres EcoBot, un asistente ecológico amigable de la plataforma EcoKinal. Ayudas a los usuarios con preguntas sobre reciclaje, sostenibilidad y el uso de la plataforma. Responde siempre en español, de forma concisa y amigable.',
-          messages: [{ role: 'user', content: text }],
-        }),
-      })
-      const data = await res.json()
-      const reply = data.content?.[0]?.text || 'No pude procesar tu pregunta, intenta de nuevo.'
-      setBotMessages(prev => [...prev, { from: 'bot', text: reply }])
-    } catch {
-      setBotMessages(prev => [...prev, { from: 'bot', text: 'Ocurrió un error. Intenta de nuevo.' }])
-    } finally {
-      setBotLoading(false)
-    }
-  }
 
   return (
     <>
       <style>{dashboardCss}</style>
-      <style>{ecoBotCss}</style>
-
       <div className="db-page-container">
 
-        {/* ── Hero pantalla completa ── */}
         <section
           className="db-hero-banner"
           style={{ backgroundImage: `url(${dashboardImg})` }}
@@ -113,7 +80,6 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Módulos ── */}
         <div className="db-content">
           <p className="db-section-title">Módulos de sistema</p>
           <div className="db-modules-grid">
@@ -146,65 +112,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── EcoBot flotante ── */}
-      <div className="ecobot-wrap">
-
-        {/* Ventana del chat */}
-        {botOpen && (
-          <div className="ecobot-window">
-            <div className="ecobot-header">
-              <div className="ecobot-header-left">
-                <div className="ecobot-avatar-sm">
-                  <i className="ti ti-leaf" />
-                </div>
-                <div>
-                  <p className="ecobot-header-name">EcoBot</p>
-                  <p className="ecobot-header-sub">Asistente ecológico IA</p>
-                </div>
-              </div>
-              <button className="ecobot-close-btn" onClick={() => setBotOpen(false)}>
-                <i className="ti ti-x" />
-              </button>
-            </div>
-
-            <div className="ecobot-messages">
-              {botMessages.map((msg, i) => (
-                <div key={i} className={`ecobot-msg ecobot-msg--${msg.from}`}>
-                  {msg.text}
-                </div>
-              ))}
-              {botLoading && (
-                <div className="ecobot-msg ecobot-msg--bot ecobot-typing">
-                  <span /><span /><span />
-                </div>
-              )}
-            </div>
-
-            <div className="ecobot-input-row">
-              <input
-                className="ecobot-input"
-                value={botInput}
-                onChange={e => setBotInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && sendBotMessage()}
-                placeholder="Escribe tu pregunta..."
-              />
-              <button
-                className="ecobot-send-btn"
-                onClick={sendBotMessage}
-                disabled={botLoading}
-              >
-                <i className="ti ti-send" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Botón flotante */}
-        <button className="ecobot-fab" onClick={() => setBotOpen(o => !o)}>
-          <i className={botOpen ? 'ti ti-x' : 'ti ti-robot'} />
-          {!botOpen && <span>EcoBot</span>}
-        </button>
-
-      </div>
+      <EcoBotFlotante />
     </>
   )
 }

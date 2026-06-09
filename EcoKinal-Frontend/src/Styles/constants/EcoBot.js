@@ -53,6 +53,7 @@ export const ecoBotCss = `
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
   }
 
   .ecobot-header-left {
@@ -65,6 +66,7 @@ export const ecoBotCss = `
     border: 1px solid rgba(255,255,255,0.2);
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: 18px;
+    flex-shrink: 0;
   }
 
   .ecobot-header-name {
@@ -82,9 +84,16 @@ export const ecoBotCss = `
     color: white; font-size: 16px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s;
+    flex-shrink: 0;
   }
 
   .ecobot-close-btn:hover { background: rgba(255,255,255,0.22); }
+
+  .ecobot-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
   .ecobot-messages {
     flex: 1;
@@ -95,6 +104,8 @@ export const ecoBotCss = `
     flex-direction: column;
     gap: 10px;
     background: #f8f9f2;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .ecobot-msg {
@@ -105,6 +116,8 @@ export const ecoBotCss = `
     line-height: 1.55;
     font-family: 'Plus Jakarta Sans', sans-serif;
     white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .ecobot-msg--bot {
@@ -147,19 +160,24 @@ export const ecoBotCss = `
     border-top: 1px solid rgba(45,90,39,0.08);
     display: flex; gap: 8px; align-items: center;
     background: white;
+    flex-shrink: 0;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 
   .ecobot-input {
     flex: 1;
+    min-width: 0;
     padding: 10px 14px;
     border: 1px solid rgba(45,90,39,0.18);
     border-radius: 12px;
-    font-size: 13.5px;
+    font-size: 16px;
     font-family: 'Plus Jakarta Sans', sans-serif;
     outline: none;
     color: #1a2e1a;
     background: #f8f9f2;
     transition: border-color 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .ecobot-input:focus { border-color: #2d5a27; }
@@ -171,13 +189,121 @@ export const ecoBotCss = `
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: opacity 0.15s;
     flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   .ecobot-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .ecobot-send-btn:not(:disabled):hover { opacity: 0.88; }
+  .ecobot-send-btn:not(:disabled):active { opacity: 0.75; transform: scale(0.95); }
 
+  /* ── Tablet / móvil ── */
   @media (max-width: 768px) {
-    .ecobot-window { width: calc(100vw - 32px); }
-    .ecobot-wrap { bottom: 16px; right: 16px; }
+    .ecobot-wrap {
+      bottom: max(16px, env(safe-area-inset-bottom));
+      right: 16px;
+      left: 16px;
+      align-items: flex-end;
+    }
+
+    .ecobot-window {
+      position: fixed;
+      bottom: 84px;
+      left: 16px;
+      right: 16px;
+      width: auto;
+      height: 420px;        
+      max-height: 75vh;    
+      border-radius: 18px;
+    }
+
+    .ecobot-messages {
+      flex: 1;
+      height: 0;           
+      max-height: none;    
+      overflow-y: auto;
+    }
+
+    .ecobot-fab {
+      align-self: flex-end;
+    }
   }
+
+  /* ── Teléfonos pequeños ── */
+  @media (max-width: 400px) {
+    .ecobot-wrap {
+      bottom: max(12px, env(safe-area-inset-bottom));
+      right: 12px;
+      left: 12px;
+    }
+
+    .ecobot-window {
+      bottom: 78px;
+      left: 12px;
+      right: 12px;
+      height: 380px;      
+      max-height: 75vh;
+      border-radius: 16px;
+    }
+
+    .ecobot-messages {
+      flex: 1;
+      height: 0;
+      max-height: none;
+    }
+
+    .ecobot-msg {
+      font-size: 14px;
+      padding: 9px 12px;
+    }
+
+    .ecobot-header {
+      padding: 14px 14px;
+    }
+
+    .ecobot-header-name {
+      font-size: 13px;
+    }
+
+    .ecobot-input-row {
+      padding: 10px 12px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+
+    .ecobot-fab {
+      height: 48px;
+      font-size: 14px;
+    }
+  }
+
+  /* ── Desktop mediano / tablet landscape (769px - 1024px) ── */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .ecobot-wrap {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .ecobot-window {
+      width: 320px;       
+      max-height: 70vh;
+    }
+
+    .ecobot-messages {
+      max-height: calc(70vh - 130px);
+    }
+  }
+
+  /* ── Landscape en móvil ── */
+  @media (max-height: 500px) and (max-width: 900px) {
+    .ecobot-window {
+      bottom: 72px;
+      height: 260px;
+      max-height: 85vh;
+    }
+
+    .ecobot-messages {
+      flex: 1;
+      height: 0;
+      max-height: none;
+    }
 `
