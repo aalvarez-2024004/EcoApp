@@ -6,6 +6,7 @@ import { BgPattern } from '../../../icons/DetectorIcons.jsx'
 import { mapaStyles } from '../../../Styles/constants/MapaPage.js'
 import { OpenChip } from '../../../ui/Mapa/OpenChip.jsx'
 import { G } from '../../../Styles/constants/ImpactoPage.js'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
 
 export default function MapaPage() {
   const {
@@ -110,6 +111,7 @@ export default function MapaPage() {
   }, [centers, userLat, userLon])
 
   return (
+    <> 
     <div className="mapa-page">
       <style>{mapaStyles}</style>
       <BgPattern />
@@ -261,5 +263,8 @@ export default function MapaPage() {
         ))}
       </div>
     </div>
+      {/* ── EcoBot flotante ── */}
+      <EcoBotFlotante />
+  </>
   )
 }

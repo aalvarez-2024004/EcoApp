@@ -7,6 +7,7 @@ import BadgeItem     from '../components/GamificacionComps/BadgeItem'
 import ChallengeCard from '../components/GamificacionComps/ChallengeCard'
 import RankingRow    from '../components/GamificacionComps/RankingRow'
 import {gamificacionCss, KEY_REDIRECT} from '../../../Styles/constants/GamificacionPage.js'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
 
 export default function GamificacionPage() {
   const {
@@ -76,6 +77,8 @@ export default function GamificacionPage() {
   const currentUserId = user?.id || user?.uid || ''
 
   return (
+    <>
+    
     <div className="gam-page">
       <style>{gamificacionCss}</style>
 
@@ -184,5 +187,9 @@ export default function GamificacionPage() {
       )}
 
     </div>
+      {/* ── EcoBot flotante ── */}
+      <EcoBotFlotante />
+    </>
+
   )
 }

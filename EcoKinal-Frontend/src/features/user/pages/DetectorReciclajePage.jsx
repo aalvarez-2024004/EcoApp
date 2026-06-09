@@ -8,6 +8,7 @@ import { TabBtn } from '../../../ui/DetectorReciclaje/TabBtn.jsx'
 import UploadPanel from '../components/DetectorReciclajeComps/UploadPanel'
 import CameraPanel from '../components/DetectorReciclajeComps/CameraPanel'
 import ResultPanel from '../components/DetectorReciclajeComps/ResultPanel'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
 
 export default function DetectorReciclajePage() {
   const videoRef  = useRef(null)
@@ -177,6 +178,8 @@ export default function DetectorReciclajePage() {
           </div>
         </div>
       </div>
+      {/* ── EcoBot flotante ── */}
+      <EcoBotFlotante />
     </>
   )
 }

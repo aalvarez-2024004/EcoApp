@@ -9,6 +9,7 @@ import { TipoBar } from '../../../ui/Impacto/TipoBar.jsx'
 import { HistorialRow } from '../../../ui/Impacto/HistorialRow.jsx'
 import { EmptyState } from '../../../ui/Impacto/EmptyState.jsx'
 import { LoadingSkeleton } from '../../../ui/Impacto/LoadingSkeleton.jsx'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
 
 export function useCountUp(target, duration = 1400) {
   const [value, setValue] = useState(0)
@@ -252,6 +253,8 @@ export default function ImpactoPage() {
           </div>
         )}
       </div>
+      {/* ── EcoBot flotante ── */}
+      <EcoBotFlotante />
     </>
   )
 }

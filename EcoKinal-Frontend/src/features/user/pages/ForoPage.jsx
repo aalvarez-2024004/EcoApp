@@ -9,6 +9,7 @@ import {EmptyState} from '../../../ui/Foro/EmptyState'
 import {FilterBtn} from '../../../ui/Foro/FilterBtn'
 import { LeftSidebar, RightSidebar } from '../../../ui/Foro/Sidebars'
 import { TAGS, TAG_STYLES, NAV_ITEMS, pageStyles } from '../../../Styles/constants/ForoPage.js'
+import EcoBotFlotante from './EcoBotFlotante.jsx'
 
 export default function ForoPage() {
     const navigate = useNavigate()
@@ -129,6 +130,7 @@ export default function ForoPage() {
     const isLoading = isSearchMode ? searchLoading : loading
 
     return (
+        <>
         <div 
             className="foro-page-wrapper"
             style={{ background: '#EEF3ED', minHeight: '100vh', padding: '2rem 2rem', boxSizing: 'border-box' }}
@@ -430,5 +432,8 @@ export default function ForoPage() {
 
             </div>
         </div>
+        {/* ── EcoBot flotante ── */}
+        <EcoBotFlotante />
+        </>
     )
 }
