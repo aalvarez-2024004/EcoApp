@@ -2,19 +2,18 @@ import dashboardImg from '../../assets/Dashboard.jpeg'
 
 export const dashboardCss = `
   .db-page-container {
-    min-height: 100vh;
-    background-color: #f8f9f2;
+    background-color: #ffffff;
     color: #121212;
     font-family: 'Plus Jakarta Sans', sans-serif;
     position: relative;
+    overflow-x: hidden;
   }
 
   /* ══ HERO pantalla completa ══ */
   .db-hero-banner {
     position: relative;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    min-height: 380px;
+    width: 100%;
+    min-height: 480px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -23,7 +22,7 @@ export const dashboardCss = `
     overflow: hidden;
     background-size: cover;
     background-position: center;
-    margin-bottom: 3rem;
+    margin-bottom: 3.6rem;
   }
 
   .db-hero-banner::before {
@@ -56,7 +55,7 @@ export const dashboardCss = `
   }
 
   .db-hero-text p {
-    font-size: 1.05rem;
+    font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.82);
     line-height: 1.5;
     margin: 0;
@@ -66,7 +65,7 @@ export const dashboardCss = `
     background: rgba(255, 255, 255, 0.15);
     padding: 0.45rem 1.1rem;
     border-radius: 100px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     display: inline-flex;
@@ -79,8 +78,9 @@ export const dashboardCss = `
   .db-hero-illustration {
     position: relative;
     z-index: 1;
-    width: 220px;
-    height: 220px;
+    width: 320px;
+    height: 320px;
+    margin-right: 6rem;
     object-fit: contain;
     flex-shrink: 0;
     mix-blend-mode: screen;
@@ -90,16 +90,16 @@ export const dashboardCss = `
 
   /* ══ CONTENIDO ══ */
   .db-content {
-    padding: 0 2.5rem 3rem;
+    padding: 0 2.5rem 3.6rem;
   }
 
   .db-section-title {
-    font-size: 13px;
+    font-size: 17px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: #1b3c1a;
     text-transform: uppercase;
-    margin: 0 0 20px;
+    margin: 0 0 24px;
     padding-left: 1rem;
     border-left: 4px solid #2d5a27;
     display: flex;
@@ -108,7 +108,7 @@ export const dashboardCss = `
 
   .db-modules-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
   }
 
@@ -117,14 +117,14 @@ export const dashboardCss = `
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 20px;
-    padding: 1.75rem;
-    min-height: 200px;
+    padding: 2rem;
+    min-height: 260px;
     cursor: pointer;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     text-align: left;
     position: relative;
   }
@@ -145,27 +145,27 @@ export const dashboardCss = `
   }
 
   .dp-icon-wrap {
-    width: 52px; height: 52px;
+    width: 58px; height: 58px;
     border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
+    font-size: 28px;
     transition: transform 0.3s ease;
     flex-shrink: 0;
   }
 
   .dp-badge {
-    font-size: 11.5px; font-weight: 700;
-    padding: 3px 10px; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    padding: 4px 12px; border-radius: 8px;
   }
 
   .dp-card-name {
-    font-size: 17px; font-weight: 800;
-    color: #111827; margin: 0 0 6px;
+    font-size: 20px; font-weight: 800;
+    color: #111827; margin: 0 0 8px;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
   .dp-card-desc {
-    font-size: 13.5px; color: #6b7280;
+    font-size: 15px; color: #6b7280;
     margin: 0; line-height: 1.6;
   }
 
@@ -188,6 +188,10 @@ export const dashboardCss = `
   .badge-nuevo     { background: #E6F1FB; color: #185FA5; }
 
   /* ══ RESPONSIVE ══ */
+  @media (max-width: 1200px) {
+    .db-modules-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
   @media (max-width: 768px) {
     .db-hero-banner {
       flex-direction: column;
@@ -199,6 +203,10 @@ export const dashboardCss = `
     .db-hero-illustration { display: none; }
     .db-hero-text h2 { font-size: 2rem; }
     .db-content { padding: 0 1rem 2rem; }
+    .db-modules-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
     .db-modules-grid { grid-template-columns: 1fr; }
   }
 `

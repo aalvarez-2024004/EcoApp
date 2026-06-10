@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import PillNav from '../components/PillNav'
@@ -31,21 +30,22 @@ export default function DashboardLayout() {
 
         body {
           margin: 0;
-          background-color: #f8f9f2;
+          background-color: #ffffff;
           font-family: 'Plus Jakarta Sans', sans-serif;
+          overflow-x: hidden;
         }
 
         .db-layout {
           min-height: 100vh;
           position: relative;
+          overflow-x: hidden;
         }
 
         .db-main {
           padding-top: 68px;
-          padding-left: 20px;
-          padding-right: 20px;
+          padding-left: 0;
+          padding-right: 0;
           padding-bottom: 28px;
-          min-height: 100vh;
           position: relative;
           z-index: 1;
         }

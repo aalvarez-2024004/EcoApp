@@ -295,10 +295,16 @@ export const detectorCss = `
   @media (max-width: 1100px) {
     .top-row, .bottom-row { grid-template-columns: 1fr; gap: 24px; }
     .stats-strip { grid-template-columns: 1fr 1fr; }
-    .detector-page { padding: 36px 32px 40px; }
+    .detector-page { padding: 100px 32px 40px; }
   }
   @media (max-width: 768px) {
-    .detector-page { padding: 28px 20px 32px; }
+    .detector-page {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 0;
+      padding: 24px 20px 32px;
+    }
     .detector-title { font-size: 1.9rem; }
     .upload-area { padding: 16px; }
     .detector-toast { bottom: 16px; right: 16px; left: 16px; max-width: 100%; }
