@@ -3,7 +3,7 @@ import { useDetectorReciclaje } from '../store/useDetectorStore'
 import useGamificacionStore from '../store/useGamificacionStore'
 import { LEYENDA } from '../../../Styles/constants/detector.styles.js'
 import { detectorCss, BIN_COLORS} from '../../../Styles/constants/DetectorPage.js'
-import {BgPattern, HeaderIllustration } from '../../../icons/DetectorIcons.jsx'
+import {BgPattern} from '../../../icons/DetectorIcons.jsx'
 import { TabBtn } from '../../../ui/DetectorReciclaje/TabBtn.jsx'
 import UploadPanel from '../components/DetectorReciclajeComps/UploadPanel'
 import CameraPanel from '../components/DetectorReciclajeComps/CameraPanel'
@@ -21,8 +21,6 @@ export default function DetectorReciclajePage() {
     seleccionarImagen, clasificar, limpiar,
     setTab, activarCamara, detenerCamara, capturarFoto, retomar,
   } = useDetectorReciclaje()
-
-  const challenges = useGamificacionStore(s => s.challenges)
 
   const showToast = (ok, msg) => {
     setToast({ ok, msg })
@@ -64,7 +62,6 @@ export default function DetectorReciclajePage() {
     <>
       <style>{detectorCss}</style>
 
-      {/* ── Toast ── */}
       {toast && (
         <div className={`detector-toast ${toast.ok ? 'ok' : 'err'}`}>
           {toast.msg}
@@ -74,9 +71,11 @@ export default function DetectorReciclajePage() {
       <div className="detector-page">
         <BgPattern />
 
-        {/* ── Header ── */}
-        <div className="detector-header anim-1">
-          <div className="detector-header-left">
+        {/* ── Fila superior: header izquierda + stats derecha ── */}
+        <div className="top-row anim-1">
+
+          {/* Header */}
+          <div className="detector-header">
             <div className="detector-badge">
               <i className="ti ti-cpu" />
               AI Vision Engine v2.6 · Google Cloud
@@ -87,48 +86,47 @@ export default function DetectorReciclajePage() {
               artificial segmentará los materiales indicando su respectivo contenedor.
             </p>
           </div>
-          <HeaderIllustration />
-        </div>
 
-        {/* ── Stats strip ── */}
-        <div className="stats-strip anim-2">
-          {[
-            { val: '+ 10k', lbl: 'Residuos analizados', icon: 'ti-chart-bar' },
-            { val: '96%',   lbl: 'Precisión del modelo', icon: 'ti-brain' },
-          ].map(({ val, lbl, icon }) => (
-            <div className="stat-card" key={lbl}>
-              <div className="stat-icon">
-                <i className={`ti ${icon}`} />
+          {/* Stats */}
+          <div className="stats-strip">
+            {[
+              { val: '+ 10k', lbl: 'Residuos analizados', icon: 'ti-chart-bar' },
+              { val: '96%',   lbl: 'Precisión del modelo', icon: 'ti-brain' },
+            ].map(({ val, lbl, icon }) => (
+              <div className="stat-card" key={lbl}>
+                <div className="stat-icon">
+                  <i className={`ti ${icon}`} />
+                </div>
+                <div className="stat-val">{val}</div>
+                <div className="stat-lbl">{lbl}</div>
               </div>
-              <div className="stat-val">{val}</div>
-              <div className="stat-lbl">{lbl}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Main card ── */}
-        <div className="main-card anim-3">
-
-          {/* Tabs */}
-          <div className="tabs-bar">
-            <TabBtn active={activeTab === 'subir'} onClick={() => handleSwitchTab('subir')}>
-              <i className="ti ti-upload" />
-              Subir imagen
-            </TabBtn>
-            <TabBtn active={activeTab === 'camara'} onClick={() => handleSwitchTab('camara')}>
-              <i className="ti ti-camera" />
-              Cámara en vivo
-            </TabBtn>
-            <div className="tabs-spacer" />
-            <div className="module-indicator">
-              <div className="module-dot" />
-              Módulo activo
-            </div>
+            ))}
           </div>
 
-          {/* Grid */}
-          <div className="content-grid">
-            <div className="left-col">
+        </div>
+
+        {/* ── Fila inferior: main-card izquierda + protocolo derecha ── */}
+        <div className="bottom-row anim-2">
+
+          {/* Card izquierda: tabs + upload/cámara */}
+          <div className="main-card">
+            <div className="tabs-bar">
+              <TabBtn active={activeTab === 'subir'} onClick={() => handleSwitchTab('subir')}>
+                <i className="ti ti-upload" />
+                Subir imagen
+              </TabBtn>
+              <TabBtn active={activeTab === 'camara'} onClick={() => handleSwitchTab('camara')}>
+                <i className="ti ti-camera" />
+                Cámara en vivo
+              </TabBtn>
+              <div className="tabs-spacer" />
+              <div className="module-indicator">
+                <div className="module-dot" />
+                Módulo activo
+              </div>
+            </div>
+
+            <div className="upload-area">
               {activeTab === 'subir' ? (
                 <UploadPanel
                   preview={preview}
@@ -159,26 +157,29 @@ export default function DetectorReciclajePage() {
                 </div>
               )}
             </div>
-
-            <div className="right-col">
-              <ResultPanel resultado={resultado} isLoading={isLoading} onLimpiar={limpiar} />
-            </div>
           </div>
 
-          {/* Legend footer */}
-          <div className="legend-footer">
-            <span className="legend-label">Contenedores</span>
-            {LEYENDA.map(({ label, desc }) => (
-              <div className="bin-chip" key={label}>
-                <div className="bin-dot" style={{ background: BIN_COLORS[label] ?? '#888' }} />
-                <span className="bin-name">{label}</span>
-                <span className="bin-type">· {desc}</span>
-              </div>
-            ))}
+          {/* Panel derecho: protocolo/resultado */}
+          <div className="right-panel anim-3">
+            <ResultPanel resultado={resultado} isLoading={isLoading} onLimpiar={limpiar} />
           </div>
+
         </div>
+
+        {/* Legend — centrado, fuera de todo */}
+        <div className="legend-footer">
+          <span className="legend-label">Contenedores</span>
+          {LEYENDA.map(({ label, desc }) => (
+            <div className="bin-chip" key={label}>
+              <div className="bin-dot" style={{ background: BIN_COLORS[label] ?? '#888' }} />
+              <span className="bin-name">{label}</span>
+              <span className="bin-type">· {desc}</span>
+            </div>
+          ))}
+        </div>
+
       </div>
-      {/* ── EcoBot flotante ── */}
+
       <EcoBotFlotante />
     </>
   )

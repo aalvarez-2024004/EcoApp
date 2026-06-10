@@ -57,13 +57,13 @@ export default function UploadPanel({ preview, isLoading, onSelect, onLimpiar, o
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* Drop zone */}
       <div
         style={{
           position: 'relative', overflow: 'hidden',
-          width: '100%', maxWidth: 480,
+          width: '100%', maxWidth: 560,
           aspectRatio: '4 / 3',
           alignSelf: 'center',
           borderRadius: 20,

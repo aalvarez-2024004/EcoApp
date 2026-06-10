@@ -52,7 +52,7 @@ function Viewfinder() {
 /* Idle placeholder */
 function CameraIdle() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center', padding: '0 24px', zIndex: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, textAlign: 'center', padding: '0 24px', zIndex: 10 }}>
       <div style={{
         width: 72, height: 72, borderRadius: 20,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -97,7 +97,7 @@ export default function CameraPanel({
       {/* Visor */}
       <div style={{
         position: 'relative', overflow: 'hidden',
-        width: '100%', maxWidth: 480,
+        width: '100%', maxWidth: 560,
         aspectRatio: '4 / 3',
         alignSelf: 'center',
         borderRadius: 20,
