@@ -1,18 +1,18 @@
 export const TAGS = ['Logro', 'Pregunta', 'Consejo', 'Noticia']
 
 export const TAG_STYLES = {
-    Logro:    { bg: '#FFFBEB', color: '#B45309', border: '#FDE68A', dot: '#F59E0B' },
-    Pregunta: { bg: '#F0F9FF', color: '#0369A1', border: '#BAE6FD', dot: '#38BDF8' },
-    Consejo:  { bg: '#F5F3FF', color: '#6D28D9', border: '#DDD6FE', dot: '#A78BFA' },
-    Noticia:  { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
+  Logro: { bg: '#FFFBEB', color: '#B45309', border: '#FDE68A', dot: '#F59E0B' },
+  Pregunta: { bg: '#F0F9FF', color: '#0369A1', border: '#BAE6FD', dot: '#38BDF8' },
+  Consejo: { bg: '#F5F3FF', color: '#6D28D9', border: '#DDD6FE', dot: '#A78BFA' },
+  Noticia: { bg: '#FFF1F2', color: '#BE123C', border: '#FECDD3', dot: '#FB7185' },
 }
 
 export const NAV_ITEMS = [
-    { label: 'Detector de reciclaje', href: '/dashboard/usuario/detector', icon: 'ti ti-camera' },
-    { label: 'Foro eco',              href: '/dashboard/usuario/foro',     icon: 'ti ti-messages' },
-    { label: 'Gamificación',          href: '/dashboard/usuario/puntos',   icon: 'ti ti-trophy' },
-    { label: 'Mi impacto',            href: '/dashboard/usuario/impacto',  icon: 'ti ti-chart-bar' },
-    { label: 'Mapa reciclaje',        href: '/dashboard/usuario/mapa',     icon: 'ti ti-map-pin' },
+  { label: 'Detector de reciclaje', href: '/dashboard/usuario/detector', icon: 'ti ti-camera' },
+  { label: 'Foro eco', href: '/dashboard/usuario/foro', icon: 'ti ti-messages' },
+  { label: 'Gamificación', href: '/dashboard/usuario/puntos', icon: 'ti ti-trophy' },
+  { label: 'Mi impacto', href: '/dashboard/usuario/impacto', icon: 'ti ti-chart-bar' },
+  { label: 'Mapa reciclaje', href: '/dashboard/usuario/mapa', icon: 'ti ti-map-pin' },
 ]
 
 export const pageStyles = `
@@ -48,23 +48,60 @@ export const pageStyles = `
   ::-webkit-scrollbar-thumb { background: rgba(43, 95, 42, 0.15); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(43, 95, 42, 0.3); }
 
-  @media (max-width: 1024px) {
-    .foro-grid {
-      grid-template-columns: 160px minmax(0, 1fr) 160px !important;
-      gap: 12px !important;
-    }
-    .foro-page-wrapper {
-      padding: 1rem !important;
-    }
-  }
+  /* ── Grid base ── */
+  .foro-grid {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
 
-  @media (max-width: 768px) {
-    .foro-grid {
-      grid-template-columns: 1fr !important;
-    }
-    .foro-sidebar-left,
-    .foro-sidebar-right {
-      display: none !important;
-    }
+  /* ── Tablet ── */
+  @media (max-width: 1024px) {
+  .foro-grid {
+    grid-template-columns: 160px minmax(0, 1fr) !important;
+    gap: 12px !important;
   }
+  .foro-page-wrapper {
+    padding: 1rem !important;
+  }
+}
+
+  /* ── Mobile ── */
+  @media (max-width: 500px) {
+  .foro-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .foro-sidebar-left {
+    display: none !important;
+  }
+  .foro-page-wrapper {
+    padding: 0.75rem !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .foro-grid > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .foro-title-h1 { font-size: 28px !important; }
+  .foro-compose-header { padding: 12px 16px !important; }
+  .foro-compose-body { padding: 16px !important; gap: 14px !important; }
+  .foro-compose-footer { padding: 12px 16px !important; }
+  .foro-compose-bottom-row { flex-direction: column !important; gap: 16px !important; }
+  .foro-compose-bottom-row > div { min-width: unset !important; width: 100% !important; }
+  .foro-toast { left: 12px !important; right: 12px !important; bottom: 16px !important; width: auto !important; }
+  .foro-compose-trigger { padding: 14px 16px !important; gap: 12px !important; }
+  
+}
+
+  /* ── Extra small (< 400px) ── */
+  @media (max-width: 400px) {
+  .foro-title-h1 { font-size: 22px !important; }
+  .foro-page-wrapper { padding: 0.5rem !important; }
+}
 `

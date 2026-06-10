@@ -19,7 +19,7 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
             onClick={onClose}
             style={{
                 position: 'fixed', inset: 0, zIndex: 1000,
-                background: 'rgba(18, 38, 20, 0.88)', 
+                background: 'rgba(18, 38, 20, 0.88)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '24px',
                 animation: 'lbFadeIn 0.2s ease both',
@@ -42,7 +42,7 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
                 style={{
                     position: 'fixed', top: 20, right: 20,
                     width: 40, height: 40, borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.08)', 
+                    background: 'rgba(255, 255, 255, 0.08)',
                     border: '0.5px solid rgba(255, 255, 255, 0.2)',
                     color: '#ffffff', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -63,7 +63,7 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
                 </svg>
             </button>
 
-            {/* Imagen — Borde sutil basado en el fondo claro/verde de la app y sombra profunda */}
+            {/* Imagen — Borde sutil y sombra profunda. En móvil ocupa casi todo el ancho. */}
             <img
                 src={src}
                 alt={alt}
@@ -71,7 +71,9 @@ export default function ImageLightbox({ src, alt = 'Imagen', onClose }) {
                 style={{
                     maxWidth: '100%',
                     maxHeight: '85vh',
-                    borderRadius: 24,
+                    width: 'auto',       /* respeta aspect ratio */
+                    height: 'auto',      /* respeta aspect ratio */
+                    borderRadius: 20,
                     border: '1px solid rgba(255, 255, 255, 0.15)',
                     background: '#ffffff',
                     padding: '6px',

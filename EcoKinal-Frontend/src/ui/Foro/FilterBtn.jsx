@@ -1,4 +1,3 @@
-
 export function FilterBtn({ active, onClick, children, count }) {
     return (
         <button onClick={onClick} style={{
@@ -7,6 +6,7 @@ export function FilterBtn({ active, onClick, children, count }) {
             borderRadius: 99, cursor: 'pointer', transition: 'all 0.2s', border: 'none',
             background: active ? '#2B5F2A' : 'transparent',
             color: active ? '#EEF3ED' : '#4b5a8a',
+            flexShrink: 0,
         }}>
             {children}
             <span style={{
