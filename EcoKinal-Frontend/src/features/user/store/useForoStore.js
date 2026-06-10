@@ -1,31 +1,5 @@
 import { create } from 'zustand'
-import axios from 'axios'
-
-const isLocal = window.location.hostname === 'localhost'
-
-const FORO_BASE = isLocal
-  ? 'http://localhost:3006/ForoEcoKinal/v1'
-  : import.meta.env.VITE_FORO_URL
-
-const ForoApi = axios.create({
-  baseURL: FORO_BASE,
-  headers: {
-    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true' }),
-  }
-})
-
-ForoApi.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
-    if (token) config.headers.Authorization = `Bearer ${token}`
-    if (config.method === 'get') {
-        delete config.headers['Content-Type']
-    } else if (config.data instanceof FormData) {
-        delete config.headers['Content-Type']
-    } else {
-        config.headers['Content-Type'] = 'application/json'
-    }
-    return config
-})
+import { listarPosts, buscarPosts, crearPost, actualizarPost, eliminarPost, reaccionarPost } from '../../../shared/Api/ForoApi'
 
 export const useForoStore = create((set, get) => ({
     posts:          [],
@@ -40,8 +14,8 @@ export const useForoStore = create((set, get) => ({
     fetchPosts: async () => {
         set({ loading: true })
         try {
-            const { data } = await ForoApi.get('/posts/listar')
-            set({ posts: data.data || [] })
+            const posts = await listarPosts()
+            set({ posts })
         } catch (error) {
             console.error('Error al listar publicaciones:', error)
         } finally {
@@ -56,8 +30,8 @@ export const useForoStore = create((set, get) => ({
         }
         set({ searchLoading: true, searchQuery: q })
         try {
-            const { data } = await ForoApi.get('/posts/search', { params: { q } })
-            set({ searchResults: data.data || [] })
+            const searchResults = await buscarPosts(q)
+            set({ searchResults })
         } catch (error) {
             console.error('Error al buscar:', error)
             set({ searchResults: [] })
@@ -68,12 +42,9 @@ export const useForoStore = create((set, get) => ({
 
     clearSearch: () => set({ searchResults: [], searchQuery: '' }),
 
-    // ── Crear post ──────────────────────────────────────────────────────────
-    // NOTA: La acción de gamificación se registra en ForoPage DESPUÉS de
-    // que esta función retorna { success: true }, para evitar doble llamada.
     createPost: async (formData) => {
         try {
-            await ForoApi.post('/posts/create', formData)
+            await crearPost(formData)
             await get().fetchPosts()
             return { success: true }
         } catch (error) {
@@ -86,7 +57,7 @@ export const useForoStore = create((set, get) => ({
 
     updatePost: async (id, formData) => {
         try {
-            await ForoApi.put(`/posts/update/${id}`, formData)
+            await actualizarPost(id, formData)
             await get().fetchPosts()
             return { success: true }
         } catch (error) {
@@ -96,7 +67,7 @@ export const useForoStore = create((set, get) => ({
 
     deletePost: async (id) => {
         try {
-            await ForoApi.delete(`/posts/delete/${id}`)
+            await eliminarPost(id)
             await get().fetchPosts()
             return { success: true }
         } catch (error) {
@@ -106,9 +77,9 @@ export const useForoStore = create((set, get) => ({
 
     reactToPost: async (id, reaction) => {
         try {
-            await ForoApi.post(`/posts/react/${id}`, { reaction })
-            const { data } = await ForoApi.get('/posts/listar')
-            set({ posts: data.data || [] })
+            await reaccionarPost(id, reaction)
+            const posts = await listarPosts()
+            set({ posts })
         } catch (error) {
             console.error('Error al reaccionar:', error)
             throw error

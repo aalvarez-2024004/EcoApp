@@ -33,6 +33,17 @@ const GamificationApi = axios.create({
   }
 })
 
+const ForoApi = axios.create({
+  baseURL: isLocal
+    ? 'http://localhost:3006/ForoEcoKinal/v1'
+    : import.meta.env.VITE_FORO_URL,
+  headers: {
+    ...(!isLocal && { 'ngrok-skip-browser-warning': 'true',
+        'cf-skip-browser-warning': '1' 
+     }),
+  }
+})
+
 AuthApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) config.headers.Authorization = `Bearer ${token}`
@@ -92,4 +103,31 @@ GamificationApi.interceptors.response.use(
   }
 )
 
-export { AuthApi, DetectorApi, GamificationApi }
+ForoApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+
+  if (config.method === 'get') {
+    delete config.headers['Content-Type']
+  } else if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  } else {
+    config.headers['Content-Type'] = 'application/json'
+  }
+
+  return config
+})
+
+ForoApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
+
+export { AuthApi, DetectorApi, GamificationApi, ForoApi }

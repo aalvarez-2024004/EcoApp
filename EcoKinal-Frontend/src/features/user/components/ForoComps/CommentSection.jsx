@@ -1,16 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import axios from 'axios'
+import { getComentarios, agregarComentario, actualizarComentario, eliminarComentario } from '../../../../shared/Api/ForoApi'
 import { completarRetoPorAccion } from '../../../../shared/Api/Gamificacion'
 import Avatar from '../Avatar'
-
-const FORO_BASE = import.meta.env.VITE_FORO_URL || 'http://localhost:3006/ForoEcoKinal/v1'
-const ForoApi = axios.create({ baseURL: FORO_BASE })
-
-ForoApi.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
-    if (token) config.headers.Authorization = `Bearer ${token}`
-    return config
-})
 
 // ── Toast de reto (inline, sobre la sección de comentarios) ─────────────────
 function RetoToast({ msg, onDone }) {
@@ -46,13 +37,9 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     const [comments, setComments] = useState([])
     const [loadingComments, setLoadingComments] = useState(false)
     const [commentText, setCommentText] = useState('')
-
-    // ── Estados para Edición y Respuestas ─────────────────────────────────────
     const [editingCommentId, setEditingCommentId] = useState(null)
     const [editingCommentText, setEditingCommentText] = useState('')
-    const [replyingTo, setReplyingTo] = useState(null) // { id, name }
-
-    // ── Toast de reto completado ──────────────────────────────────────────────
+    const [replyingTo, setReplyingTo] = useState(null)
     const [retoToast, setRetoToast] = useState(null)
 
     const textRef = useRef(null)
@@ -60,8 +47,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     const loadComments = useCallback(async () => {
         setLoadingComments(true)
         try {
-            const { data } = await ForoApi.get(`/comments/get/${postId}`)
-            const list = data.comments || (Array.isArray(data) ? data : [])
+            const list = await getComentarios(postId)
             setComments(list)
             const total = list.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)
             onCommentCountChange?.(total)
@@ -78,7 +64,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     const handleSubmitComment = async () => {
         if (!commentText.trim()) return
         try {
-            await ForoApi.post('/comments/add', {
+            await agregarComentario({
                 content: commentText.trim(),
                 publicationId: postId,
                 parentCommentId: replyingTo ? replyingTo.id : undefined
@@ -88,7 +74,6 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
             loadComments()
             onToast?.('Comentario publicado', 'success')
 
-            // ── Completar reto y notificar si es la primera vez hoy ──────────
             const result = await completarRetoPorAccion('foro_comentar')
             if (result && !result.alreadyDone) {
                 setRetoToast('💬 ¡Reto completado! Ve a Gamificación para reclamar tus puntos 🌿')
@@ -101,7 +86,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     const handleUpdateComment = async (id) => {
         if (!editingCommentText.trim()) return
         try {
-            await ForoApi.put(`/comments/update/${id}`, { content: editingCommentText.trim() })
+            await actualizarComentario(id, editingCommentText.trim())
             setEditingCommentId(null)
             loadComments()
             onToast?.('Comentario actualizado', 'success')
@@ -113,7 +98,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     const handleDeleteComment = async (id) => {
         if (!window.confirm('¿Deseas eliminar este comentario?')) return
         try {
-            await ForoApi.delete(`/comments/delete/${id}`)
+            await eliminarComentario(id)
             loadComments()
             onToast?.('Comentario eliminado', 'success')
         } catch (err) {
@@ -153,14 +138,9 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                 display: 'flex', gap: 8, alignItems: 'flex-start',
                 background: isReply ? '#EEF3ED' : '#f8faf7',
                 padding: '10px 12px', borderRadius: 16,
-                /*
-                 * En móvil reducimos el margen izquierdo de las respuestas
-                 * para que no se corten en pantallas estrechas.
-                 * Usamos clamp() para escalar entre 12px (móvil) y 28px (desktop).
-                 */
                 marginLeft: isReply ? 'clamp(12px, 4vw, 28px)' : 0,
                 borderLeft: isReply ? '2px solid rgba(43, 95, 42, 0.15)' : 'none',
-                minWidth: 0, /* evita overflow */
+                minWidth: 0,
                 boxSizing: 'border-box',
             }}>
                 <div style={{ flexShrink: 0 }}>
@@ -218,12 +198,10 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-            {/* ── Toast de reto completado ── */}
             {retoToast && (
                 <RetoToast msg={retoToast} onDone={() => setRetoToast(null)} />
             )}
 
-            {/* ── Lista de comentarios ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 400, overflowY: 'auto', paddingRight: 2 }}>
                 {loadingComments ? (
                     <>
@@ -251,9 +229,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                 )}
             </div>
 
-            {/* ── Input nuevo comentario ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-
                 {replyingTo && (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px', background: '#EEF3ED', borderRadius: 8, border: '0.5px solid rgba(43, 95, 42, 0.15)', gap: 8 }}>
                         <span style={{ fontSize: 11, color: '#2B5F2A', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -282,7 +258,7 @@ export default function CommentSection({ postId, currentUserId, currentUser, onT
                             flex: 1, border: 'none', outline: 'none', background: 'transparent',
                             fontSize: 13, color: '#111827', resize: 'none', maxHeight: 96,
                             padding: '4px 0', fontFamily: 'inherit',
-                            minWidth: 0, /* evita overflow en móvil */
+                            minWidth: 0,
                         }}
                     />
                     <button
