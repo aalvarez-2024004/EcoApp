@@ -32,13 +32,13 @@ export default function DashboardLayout() {
           margin: 0;
           background-color: #ffffff;
           font-family: 'Plus Jakarta Sans', sans-serif;
-          overflow-x: hidden;
+          overflow-x: clip;
         }
 
         .db-layout {
           min-height: 100vh;
           position: relative;
-          overflow-x: hidden;
+          overflow-x: clip;
         }
 
         .db-main {
@@ -48,6 +48,10 @@ export default function DashboardLayout() {
           padding-bottom: 28px;
           position: relative;
           z-index: 1;
+        }
+
+        @media (max-width: 480px) {
+          .db-main { padding-top: 60px; }
         }
       `}</style>
 

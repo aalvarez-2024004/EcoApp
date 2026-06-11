@@ -29,7 +29,7 @@ export const pageStyles = `
   }
   .animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .skeleton {
-    background: linear-gradient(90deg, #EEF3ED 25%, rgba(43, 95, 42, 0.15) 50%, #EEF3ED 75%);
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 600px 100%;
     animation: shimmer 1.6s infinite linear;
   }
@@ -50,58 +50,72 @@ export const pageStyles = `
 
   /* ── Grid base ── */
   .foro-grid {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-}
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .foro-sidebar-left::-webkit-scrollbar { display: none; }
 
   /* ── Tablet ── */
-  @media (max-width: 1024px) {
-  .foro-grid {
-    grid-template-columns: 160px minmax(0, 1fr) !important;
-    gap: 12px !important;
+  @media (max-width: 1100px) {
+    .foro-grid {
+      grid-template-columns: 240px minmax(0, 1fr) !important;
+      gap: 20px !important;
+    }
+    .foro-page-wrapper {
+      padding: 1.25rem !important;
+    }
   }
-  .foro-page-wrapper {
-    padding: 1rem !important;
+
+  @media (max-width: 768px) {
+    .foro-grid {
+      grid-template-columns: 200px minmax(0, 1fr) !important;
+      gap: 14px !important;
+    }
+    .foro-page-wrapper {
+      padding: 1rem !important;
+    }
   }
-}
 
   /* ── Mobile ── */
   @media (max-width: 500px) {
-  .foro-grid {
-    display: flex !important;
-    flex-direction: column !important;
+    .foro-grid {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .foro-sidebar-left {
+      display: none !important;
+    }
+    .foro-page-wrapper {
+      padding: 0.75rem !important;
+      overflow-x: clip !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .foro-grid > div {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+    .foro-title-h1 { font-size: 28px !important; }
+    .foro-compose-header { padding: 12px 16px !important; }
+    .foro-compose-body { padding: 16px !important; gap: 14px !important; }
+    .foro-compose-footer { padding: 12px 16px !important; }
+    .foro-compose-bottom-row { flex-direction: column !important; gap: 16px !important; }
+    .foro-compose-bottom-row > div { min-width: unset !important; width: 100% !important; }
+    .foro-toast { left: 12px !important; right: 12px !important; bottom: 16px !important; width: auto !important; }
+    .foro-compose-trigger { padding: 14px 16px !important; gap: 12px !important; }
   }
-  .foro-sidebar-left {
-    display: none !important;
-  }
-  .foro-page-wrapper {
-    padding: 0.75rem !important;
-    overflow-x: hidden !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .foro-grid > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-  .foro-title-h1 { font-size: 28px !important; }
-  .foro-compose-header { padding: 12px 16px !important; }
-  .foro-compose-body { padding: 16px !important; gap: 14px !important; }
-  .foro-compose-footer { padding: 12px 16px !important; }
-  .foro-compose-bottom-row { flex-direction: column !important; gap: 16px !important; }
-  .foro-compose-bottom-row > div { min-width: unset !important; width: 100% !important; }
-  .foro-toast { left: 12px !important; right: 12px !important; bottom: 16px !important; width: auto !important; }
-  .foro-compose-trigger { padding: 14px 16px !important; gap: 12px !important; }
-  
-}
 
   /* ── Extra small (< 400px) ── */
   @media (max-width: 400px) {
-  .foro-title-h1 { font-size: 22px !important; }
-  .foro-page-wrapper { padding: 0.5rem !important; }
-}
+    .foro-title-h1 { font-size: 22px !important; }
+    .foro-page-wrapper { padding: 0.5rem !important; }
+  }
 `

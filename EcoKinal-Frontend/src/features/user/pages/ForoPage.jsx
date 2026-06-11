@@ -134,12 +134,11 @@ export default function ForoPage() {
             <div
                 className="foro-page-wrapper"
                 style={{
-                    background: '#EEF3ED',
+                    background: '#ffffff',
                     minHeight: '100vh',
                     padding: '2rem',
                     boxSizing: 'border-box',
                     width: '100%',
-                    overflowX: 'hidden',
                 }}
             >
                 <style>{pageStyles}</style>
@@ -168,15 +167,16 @@ export default function ForoPage() {
                 )}
 
                 {/* ── Layout 2 columnas ── */}
-                <div
-                    className="foro-grid"
-                    style={{
-                        maxWidth: 1200,
-                        margin: '0 auto',
-                    }}
-                >
-                    {/* Columna izquierda */}
-                    <div className="foro-sidebar-left">
+                <div className="foro-grid">
+                    {/* Columna izquierda — sticky */}
+                    <div className="foro-sidebar-left" style={{
+                        position: 'sticky',
+                        top: '80px',
+                        maxHeight: 'calc(100vh - 96px)',
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        scrollbarWidth: 'none',
+                    }}>
                         <LeftSidebar
                             currentUser={currentUser}
                             posts={posts}
@@ -189,35 +189,26 @@ export default function ForoPage() {
                     {/* Columna central — feed */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
-                        {/* Header */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {/* Header estilo Detector */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div style={{
-                                display: 'inline-flex', alignItems: 'center', gap: 8,
-                                padding: '6px 14px', borderRadius: 99, width: 'fit-content',
-                                background: 'rgba(219, 230, 221, 1)', border: '0.5px solid #2B5F2A',
+                                display: 'inline-flex', alignItems: 'center', gap: 6,
+                                padding: '5px 14px', borderRadius: 100, width: 'fit-content',
+                                background: '#f0f7f0', border: '1px solid rgba(82,183,136,0.3)',
+                                color: '#2d5a27',
                             }}>
-                                <svg viewBox="0 0 24 24" fill="none" style={{ width: 13, height: 13 }} stroke="#2B5F2A" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#2B5F2A', textTransform: 'uppercase' }}>
+                                <i className="ti ti-messages" style={{ fontSize: 12 }} />
+                                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', color: '#2d5a27', textTransform: 'uppercase' }}>
                                     V2.6 · ECOKINAL FORO
                                 </span>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-                                <h1
-                                    className="outline-title foro-title-h1"
-                                    style={{ fontSize: 42, fontWeight: 800, color: '#2B5F2A', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}
-                                >
-                                    Foro
-                                </h1>
-                                <h1
-                                    className="filled-title foro-title-h1"
-                                    style={{ fontSize: 42, fontWeight: 800, color: '#2B5F2A', lineHeight: 1.1, letterSpacing: '-0.02em', margin: 0 }}
-                                >
-                                    Comunitario
-                                </h1>
-                            </div>
-                            <p style={{ fontSize: 14, color: '#4b5a8a', lineHeight: 1.75, margin: 0 }}>
+                            <h1
+                                className="foro-title-h1"
+                                style={{ fontSize: 40, fontWeight: 800, color: '#1b3c1a', lineHeight: 1.1, letterSpacing: '-0.03em', margin: 0 }}
+                            >
+                                Foro Comunitario
+                            </h1>
+                            <p style={{ fontSize: 14, color: '#6b8e66', lineHeight: 1.65, margin: 0 }}>
                                 Comparte ideas, publica tus logros ambientales y resuelve tus dudas con otros usuarios.
                             </p>
                         </div>

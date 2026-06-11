@@ -98,7 +98,7 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
     `
 
     return (
-        <aside id="left-sidebar-container" style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+        <aside id="left-sidebar-container" style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
             <style>{responsiveStyles}</style>
 
             {/* ── SELECTOR DESPLEGABLE MOBILE: Ocupando toda la línea de extremo a extremo ── */}
@@ -135,10 +135,10 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
             </div>
 
             {/* Cuadro de Perfil */}
-            <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <div style={{ background: '#fff', borderRadius: 16, border: '0.5px solid rgba(43,95,42,0.15)', padding: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                     <div style={{
-                        width: 42, height: 42, borderRadius: 12, flexShrink: 0, overflow: 'hidden',
+                        width: 44, height: 44, borderRadius: 12, flexShrink: 0, overflow: 'hidden',
                         background: '#2B5F2A', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                         {currentUser?.photo || currentUser?.profilePicture
@@ -150,33 +150,33 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
                         }
                     </div>
                     <div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
                             {currentUser?.name || 'Usuario'}
                         </div>
-                        <div style={{ fontSize: 11, color: '#6b7280' }}>
+                        <div style={{ fontSize: 13, color: '#6b7280' }}>
                             @{currentUser?.username || 'usuario'}
                         </div>
                     </div>
                 </div>
 
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Mis publicaciones
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {TAGS.map(tag => (
-                        <div key={tag} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '4px 0', fontSize: 12, color: '#374151' }}>
-                            <div style={{ width: 6, height: 6, borderRadius: '50%', background: tagDots[tag], flexShrink: 0 }} />
+                        <div key={tag} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', fontSize: 13, color: '#374151' }}>
+                            <div style={{ width: 7, height: 7, borderRadius: '50%', background: tagDots[tag], flexShrink: 0 }} />
                             {tag}
-                            <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: '#2B5F2A' }}>
+                            <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700, color: '#2B5F2A' }}>
                                 {myCounts[tag]}
                             </span>
                         </div>
                     ))}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 0 2px', fontSize: 12, color: '#374151', borderTop: '0.5px solid rgba(43,95,42,0.1)', marginTop: 4 }}>
-                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#2B5F2A', flexShrink: 0 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0 2px', fontSize: 14, color: '#374151', borderTop: '0.5px solid rgba(43,95,42,0.1)', marginTop: 4 }}>
+                        <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2B5F2A', flexShrink: 0 }} />
                         Total
-                        <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: '#2B5F2A' }}>
+                        <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700, color: '#2B5F2A' }}>
                             {myPosts.length}
                         </span>
                     </div>
@@ -184,19 +184,19 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
             </div>
 
             {/* Cuadro de Accesos rápidos */}
-            <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 14 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+            <div style={{ background: '#fff', borderRadius: 16, border: '0.5px solid rgba(43,95,42,0.15)', padding: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Accesos rápidos
                 </div>
                 {NAV_ITEMS.map(item => {
                     const isCurrent = item.href === '/dashboard/usuario/foro'
                     return (
                         <button key={item.href} onClick={() => navigate(item.href)} style={{
-                            display: 'flex', alignItems: 'center', gap: 9, width: '100%',
-                            padding: '8px 10px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                            padding: '7px 10px', borderRadius: 10, border: 'none', cursor: 'pointer',
                             background: isCurrent ? 'rgba(43,95,42,0.1)' : 'transparent',
                             color: isCurrent ? '#2B5F2A' : '#374151',
-                            fontSize: 12, fontWeight: isCurrent ? 700 : 500,
+                            fontSize: 13, fontWeight: isCurrent ? 700 : 500,
                             textAlign: 'left', transition: 'background 0.15s',
                         }}>
                             <i className={item.icon} style={{ fontSize: 15 }} />
@@ -207,8 +207,8 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
             </div>
 
             {/* Cuadro de Actividad del foro */}
-            <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 16 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+            <div style={{ background: '#fff', borderRadius: 16, border: '0.5px solid rgba(43,95,42,0.15)', padding: 14 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Actividad del foro
                 </div>
                 {[
@@ -216,9 +216,9 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
                     { label: 'Comentarios', value: totalComments, icon: 'ti-message' },
                     { label: 'Participantes', value: new Set(posts.map(p => p.autorId)).size, icon: 'ti-users' },
                 ].map(({ label, value, icon }) => (
-                    <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid rgba(43,95,42,0.08)', fontSize: 12 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#6b7280' }}>
-                            <i className={`ti ${icon}`} style={{ fontSize: 13 }} />
+                    <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', borderBottom: '0.5px solid rgba(43,95,42,0.08)', fontSize: 13 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6b7280' }}>
+                            <i className={`ti ${icon}`} style={{ fontSize: 15 }} />
                             {label}
                         </div>
                         <span style={{ fontWeight: 700, color: '#2B5F2A' }}>{value}</span>
@@ -228,15 +228,15 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
 
             {/* Cuadro de Top colaboradores */}
             {collaborators.length > 0 && (
-                <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 16 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                <div style={{ background: '#fff', borderRadius: 16, border: '0.5px solid rgba(43,95,42,0.15)', padding: 14 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                         Top colaboradores
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {collaborators.map((user, idx) => (
                             <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: idx === 0 ? 1 : idx === 1 ? 0.7 : 0.45 }}>
                                 <div style={{
-                                    width: 32, height: 32, borderRadius: 10, flexShrink: 0, overflow: 'hidden',
+                                    width: 32, height: 32, borderRadius: 9, flexShrink: 0, overflow: 'hidden',
                                     background: 'rgba(43,95,42,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 }}>
                                     {user.photo
@@ -245,8 +245,8 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
                                     }
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: '#111827' }}>{user.name}</div>
-                                    <div style={{ fontSize: 10, color: '#9ca3af' }}>{user.count} publicacion{user.count !== 1 ? 'es' : ''}</div>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{user.name}</div>
+                                    <div style={{ fontSize: 11, color: '#9ca3af' }}>{user.count} publicacion{user.count !== 1 ? 'es' : ''}</div>
                                 </div>
                                 <i className={`ti ${medals[idx]}`} style={{ fontSize: 15, color: medalColors[idx], flexShrink: 0 }} />
                             </div>
@@ -257,13 +257,13 @@ export function LeftSidebar({ currentUser, posts, navigate, filter, setFilter })
 
             {/* Cuadro de Hashtags populares */}
             {topHashtags.length > 0 && (
-                <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 16 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                <div style={{ background: '#fff', borderRadius: 20, border: '0.5px solid rgba(43,95,42,0.15)', padding: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#2B5F2A', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
                         Hashtags populares
                     </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                         {topHashtags.map(tag => (
-                            <span key={tag} style={{ padding: '4px 10px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: '#EEF3ED', color: '#2B5F2A' }}>
+                            <span key={tag} style={{ padding: '5px 12px', borderRadius: 99, fontSize: 13, fontWeight: 600, background: '#EEF3ED', color: '#2B5F2A' }}>
                                 {tag}
                             </span>
                         ))}
