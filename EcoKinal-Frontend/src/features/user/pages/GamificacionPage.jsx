@@ -23,19 +23,16 @@ export default function GamificacionPage() {
   const [toast, setToast] = useState(null)
   const [tab,   setTab]   = useState('retos')
 
-  // Función de recarga completa
   const recargarTodo = useCallback(() => {
     fetchProfile()
     fetchRanking()
     fetchChallenges()
   }, [fetchProfile, fetchRanking, fetchChallenges])
 
-  // Carga inicial (y cada vez que se navega a esta página)
   useEffect(() => {
     recargarTodo()
   }, [location.pathname]) // eslint-disable-line
 
-  // Refrescar al recuperar foco de ventana (alt-tab, etc.)
   useEffect(() => {
     const onFocus   = () => recargarTodo()
     const onVisible = () => { if (document.visibilityState === 'visible') recargarTodo() }
@@ -52,7 +49,6 @@ export default function GamificacionPage() {
     setTimeout(() => setToast(null), 3500)
   }
 
-  // El usuario clickea "Reclamar" en una ChallengeCard
   const handleClaim = async (ch) => {
     const result = await claimChallenge(ch._id)
     if (result.ok) {
@@ -62,14 +58,11 @@ export default function GamificacionPage() {
     }
   }
 
-  // El usuario clickea "Ir a…" en una ChallengeCard
   const handleOpen = (ch) => {
     const path = KEY_REDIRECT[ch.verificationKey] || '/dashboard/usuario/detector'
     navigate(path)
   }
 
-  // La barra solo sube cuando los puntos ya fueron otorgados:
-  // claimed:true para retos externos, o completed:true para detector/detector_3
   const completedClaimed = challenges.filter(c =>
     c.claimed || (['detector','detector_3'].includes(c.verificationKey) && c.completed)
   ).length
@@ -78,118 +71,135 @@ export default function GamificacionPage() {
 
   return (
     <>
-    
-    <div className="gam-page">
-      <style>{gamificacionCss}</style>
+      <div className="gam-page">
+        <style>{gamificacionCss}</style>
 
-      {/* ── Toast de notificación ── */}
-      {toast && (
-        <div className={`gam-toast ${toast.ok ? 'ok' : 'err'}`}>
-          <i className={`ti ${toast.ok ? 'ti-circle-check' : 'ti-alert-circle'}`} />
-          {toast.msg}
-        </div>
-      )}
-
-      <div className="gam-header">
-        <h2>🏆 Gamificación</h2>
-        <p>Gana eco-puntos, desbloquea insignias y sube en el ranking.</p>
-      </div>
-
-      {loadingProfile ? (
-        <div className="gam-skel-row">{[1,2,3,4].map(i => <div key={i} className="gam-skel" style={{height:100}} />)}</div>
-      ) : (
-        <div className="gam-stats-row">
-          <StatCard icon="ti-coin"        value={profile?.points ?? 0}         label="Eco-puntos"  color="#3b6b35" />
-          <StatCard icon="ti-recycle"     value={profile?.recyclingCount ?? 0} label="Reciclajes"  color="#21491e" />
-          <StatCard icon="ti-shield-star" value={profile?.badges?.length ?? 0} label="Insignias"   color="#5b7c56" />
-          <StatCard
-            icon="ti-podium"
-            value={profile?.rankPosition ? `#${profile.rankPosition}` : '—'}
-            label={profile?.totalUsers ? `de ${profile.totalUsers} usuarios` : 'Tu posición'}
-            color="#1a3316"
-          />
-        </div>
-      )}
-
-      {(profile?.badges?.length ?? 0) > 0 && (
-        <div className="gam-badges-wrap">
-          <span className="gam-section-label">MIS INSIGNIAS</span>
-          <div className="gam-badges-list">
-            {profile.badges.map(b => <BadgeItem key={b} name={b} />)}
+        {/* ── Toast ── */}
+        {toast && (
+          <div className={`gam-toast ${toast.ok ? 'ok' : 'err'}`}>
+            <i className={`ti ${toast.ok ? 'ti-circle-check' : 'ti-alert-circle'}`} />
+            {toast.msg}
           </div>
+        )}
+
+        {/* ── Breadcrumb ── */}
+        <div className="gam-breadcrumb gam-anim-1">
+          <i className="ti ti-trophy" />
+          <span>Gamification V2.6 – Eco Kinal</span>
         </div>
-      )}
 
-      {/* ── Barra de progreso ── */}
-      {!loadingChallenges && total > 0 && (
-        <div className="gam-prog-wrap">
-          <div className="gam-prog-label">
-            <span>Retos completados hoy</span>
-            <span className="gam-prog-count">{completedClaimed}/{total}</span>
-          </div>
-          <div className="gam-prog-track">
-            <div
-              className="gam-prog-fill"
-              style={{ width: `${(completedClaimed / total) * 100}%` }}
-            />
-          </div>
+        {/* ── Título + subtítulo ── */}
+        <div className="gam-hero-text gam-anim-2">
+          <h1>Gamificación</h1>
+          <p>Gana eco-puntos, desbloquea insignias y sube en el ranking.</p>
         </div>
-      )}
 
-      <div className="gam-tabs">
-        <button className={`gam-tab ${tab === 'retos' ? 'active' : ''}`} onClick={() => setTab('retos')}>
-          <i className="ti ti-bolt" /> Retos del día
-        </button>
-        <button className={`gam-tab ${tab === 'ranking' ? 'active' : ''}`} onClick={() => setTab('ranking')}>
-          <i className="ti ti-trophy" /> Ranking global
-        </button>
-      </div>
-
-      {tab === 'retos' && (
-        <div className="gam-grid">
-          {loadingChallenges
-            ? [1,2,3,4,5,6].map(i => <div key={i} className="gam-skel" style={{height:200}} />)
-            : challenges.length === 0
-            ? <p className="gam-empty">No hay retos disponibles.</p>
-            : challenges.map(ch => (
-                <ChallengeCard
-                  key={ch._id}
-                  challenge={ch}
-                  onOpen={handleOpen}
-                  onClaim={handleClaim}
-                  claiming={completingChallenge === ch._id}
-                />
-              ))
-          }
-        </div>
-      )}
-
-      {tab === 'ranking' && (
-        <div className="gam-rank-list">
-          {profile?.rankPosition && (
-            <div className="gam-my-rank">
-              <i className="ti ti-podium" />
-              <span>Tu posición actual: <strong>#{profile.rankPosition}</strong> de {profile.totalUsers} usuarios</span>
+        {/* ── Insignias ── */}
+        {(profile?.badges?.length ?? 0) > 0 && (
+          <div className="gam-badges-wrap gam-anim-3">
+            <span className="gam-section-label">MIS INSIGNIAS</span>
+            <div className="gam-badges-list">
+              {profile.badges.map(b => <BadgeItem key={b} name={b} />)}
             </div>
-          )}
-          <div className="gam-rank-header">
-            <span>Pos</span><span>Usuario</span><span>Puntos</span><span>Recicl.</span>
           </div>
-          {loadingRanking
-            ? [1,2,3,4,5].map(i => <div key={i} className="gam-skel" style={{height:56, marginBottom:8}} />)
-            : ranking.length === 0
-            ? <p className="gam-empty">Aún no hay usuarios en el ranking.</p>
-            : ranking.map((entry, i) => (
-                <RankingRow key={entry._id || entry.userId} entry={entry} index={i} currentUserId={currentUserId} />
-              ))
-          }
-        </div>
-      )}
+        )}
 
-    </div>
-      {/* ── EcoBot flotante ── */}
+        {/* ── Barra de progreso ── */}
+        {!loadingChallenges && total > 0 && (
+          <div className="gam-prog-wrap gam-anim-4">
+            <div className="gam-prog-label">
+              <span>Retos completados hoy</span>
+              <span className="gam-prog-count">{completedClaimed}/{total}</span>
+            </div>
+            <div className="gam-prog-track">
+              <div
+                className="gam-prog-fill"
+                style={{ width: `${(completedClaimed / total) * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* ── Layout de dos columnas ── */}
+        <div className="gam-body gam-anim-5">
+
+          {/* Columna izquierda: stat cards */}
+          <div className="gam-sidebar">
+            {loadingProfile
+              ? [1,2,3,4].map(i => <div key={i} className="gam-skel" style={{height: 110, borderRadius: 20}} />)
+              : (
+                <>
+                  <div className="gam-anim-s1"><StatCard icon="ti-coin"        value={profile?.points ?? 0}         label="Eco-puntos"  color="#3b6b35" /></div>
+                  <div className="gam-anim-s2"><StatCard icon="ti-recycle"     value={profile?.recyclingCount ?? 0} label="Reciclajes"  color="#21491e" /></div>
+                  <div className="gam-anim-s3"><StatCard icon="ti-shield-star" value={profile?.badges?.length ?? 0} label="Insignias"   color="#5b7c56" /></div>
+                  <div className="gam-anim-s4"><StatCard
+                    icon="ti-podium"
+                    value={profile?.rankPosition ? `#${profile.rankPosition}` : '—'}
+                    label={profile?.totalUsers ? `de ${profile.totalUsers} usuarios` : 'Tu posición'}
+                    color="#1a3316"
+                  /></div>
+                </>
+              )
+            }
+          </div>
+
+          {/* Columna derecha: tabs + contenido */}
+          <div className="gam-main">
+            <div className="gam-tabs">
+              <button className={`gam-tab ${tab === 'retos' ? 'active' : ''}`} onClick={() => setTab('retos')}>
+                <i className="ti ti-bolt" /> Retos del día
+              </button>
+              <button className={`gam-tab ${tab === 'ranking' ? 'active' : ''}`} onClick={() => setTab('ranking')}>
+                <i className="ti ti-trophy" /> Ranking global
+              </button>
+            </div>
+
+            {tab === 'retos' && (
+              <div className="gam-grid">
+                {loadingChallenges
+                  ? [1,2,3,4,5,6].map(i => <div key={i} className="gam-skel" style={{height: 220}} />)
+                  : challenges.length === 0
+                  ? <p className="gam-empty">No hay retos disponibles.</p>
+                  : challenges.map((ch, idx) => (
+                      <div key={ch._id} className={`gam-anim-c${Math.min(idx + 1, 6)}`} style={{display:'contents'}}>
+                        <ChallengeCard
+                          challenge={ch}
+                          onOpen={handleOpen}
+                          onClaim={handleClaim}
+                          claiming={completingChallenge === ch._id}
+                        />
+                      </div>
+                    ))
+                }
+              </div>
+            )}
+
+            {tab === 'ranking' && (
+              <div className="gam-rank-list">
+                {profile?.rankPosition && (
+                  <div className="gam-my-rank">
+                    <i className="ti ti-podium" />
+                    <span>Tu posición actual: <strong>#{profile.rankPosition}</strong> de {profile.totalUsers} usuarios</span>
+                  </div>
+                )}
+                <div className="gam-rank-header">
+                  <span>Pos</span><span>Usuario</span><span>Puntos</span><span>Recicl.</span>
+                </div>
+                {loadingRanking
+                  ? [1,2,3,4,5].map(i => <div key={i} className="gam-skel" style={{height:56, marginBottom:8}} />)
+                  : ranking.length === 0
+                  ? <p className="gam-empty">Aún no hay usuarios en el ranking.</p>
+                  : ranking.map((entry, i) => (
+                      <RankingRow key={entry._id || entry.userId} entry={entry} index={i} currentUserId={currentUserId} />
+                    ))
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
       <EcoBotFlotante />
     </>
-
   )
 }
