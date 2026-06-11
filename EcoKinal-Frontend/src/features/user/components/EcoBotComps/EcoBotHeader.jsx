@@ -7,7 +7,7 @@ const G = {
   textMuted: '#6b8e66',
 }
 
-export default function EcoBotHeader() {
+export default function EcoBotHeader({ onLimpiar, hayMensajes }) {
   return (
     <div style={{
       display: 'flex',
@@ -67,7 +67,7 @@ export default function EcoBotHeader() {
         </p>
       </div>
 
-      {/* Info pills derecha */}
+      {/* Info pills + botón limpiar */}
       <div style={{
         display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0,
       }}>
@@ -91,6 +91,29 @@ export default function EcoBotHeader() {
           <i className="ti ti-plant" style={{ fontSize: 13, color: G.green3 }} />
           Eco
         </div>
+
+        {/* Botón limpiar — solo visible cuando hay mensajes */}
+        {hayMensajes && onLimpiar && (
+          <button
+            onClick={onLimpiar}
+            title="Limpiar conversación"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '5px 10px', borderRadius: 20,
+              background: 'rgba(220,38,38,0.07)',
+              border: '1px solid rgba(220,38,38,0.15)',
+              fontSize: 11, color: '#dc2626', fontWeight: 600,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              cursor: 'pointer',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(220,38,38,0.13)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(220,38,38,0.07)'}
+          >
+            <i className="ti ti-trash" style={{ fontSize: 13 }} />
+            Limpiar
+          </button>
+        )}
       </div>
     </div>
   )

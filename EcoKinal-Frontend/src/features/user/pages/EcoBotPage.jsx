@@ -4,10 +4,17 @@ import EcoBotMessages from '../components/EcoBotComps/EcoBotMessages'
 import EcoBotInput    from '../components/EcoBotComps/EcoBotInput'
 import { useEffect }  from 'react'
 
-export default function EcoBotPage() {
-  const { mensajes, isLoading, error, enviar, cargarHistorial } = useEcoBotStore()
+// Altura del navbar del DashboardLayout
+const NAVBAR_H = 68
 
-  useEffect(() => { cargarHistorial() }, [])
+export default function EcoBotPage() {
+  const { mensajes, isLoading, error, enviar, limpiar, cargarHistorial } = useEcoBotStore()
+
+  useEffect(() => {
+    // cargarHistorial se encarga internamente de no recargar
+    // si el usuario ya limpió el chat (wasCleared flag en el store)
+    cargarHistorial()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -32,41 +39,58 @@ export default function EcoBotPage() {
           0%, 100% { box-shadow: 0 0 0 2px rgba(82,183,136,0.35); }
           50%       { box-shadow: 0 0 0 4px rgba(82,183,136,0.15); }
         }
-        .ecobot-scroll::-webkit-scrollbar       { width: 4px; }
-        .ecobot-scroll::-webkit-scrollbar-track { background: transparent; }
-        .ecobot-scroll::-webkit-scrollbar-thumb { background: #ddeedd; border-radius: 4px; }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* El page ocupa exactamente el viewport restante debajo del navbar */
+        .ecobot-page {
+          position: fixed;
+          top: ${NAVBAR_H}px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          display: flex;
+          flex-direction: column;
+          background: white;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          overflow: hidden;
+        }
+
+        /* Zona de mensajes, crece y tiene su propio scroll */
+        .ecobot-messages-area {
+          flex: 1;
+          overflow-y: auto;
+          min-height: 0;
+          scrollbar-width: thin;
+          scrollbar-color: #ddeedd transparent;
+        }
+        .ecobot-messages-area::-webkit-scrollbar       { width: 4px; }
+        .ecobot-messages-area::-webkit-scrollbar-track { background: transparent; }
+        .ecobot-messages-area::-webkit-scrollbar-thumb { background: #ddeedd; border-radius: 4px; }
+
+        /* Input nunca se mueve */
+        .ecobot-input-bar {
+          flex-shrink: 0;
+        }
       `}</style>
 
-      {/* Wrapper: ocupa el espacio disponible de la página sin forzar 100vh */}
-      <div style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-      }}>
-        <div style={{
-          background: 'white',
-          border: '1px solid #ddeedd',
-          borderRadius: 0,          
-          boxShadow: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          height: '100%',
-          overflow: 'hidden',
-        }}>
-          <EcoBotHeader />
+      <div className="ecobot-page">
+        {/* Header fijo arriba */}
+        <EcoBotHeader onLimpiar={limpiar} hayMensajes={mensajes.length > 0} />
 
-          {/* Zona de mensajes — crece y scrollea */}
-          <div className="ecobot-scroll" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-            <EcoBotMessages
-              mensajes={mensajes}
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
+        {/* Mensajes con scroll propio */}
+        <div className="ecobot-messages-area">
+          <EcoBotMessages
+            mensajes={mensajes}
+            isLoading={isLoading}
+            error={error}
+          />
+        </div>
 
+        {/* Input siempre pegado abajo */}
+        <div className="ecobot-input-bar">
           <EcoBotInput
             onEnviar={enviar}
             isLoading={isLoading}

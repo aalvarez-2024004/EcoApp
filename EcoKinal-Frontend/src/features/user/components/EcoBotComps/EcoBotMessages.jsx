@@ -6,9 +6,11 @@ const G = {
   green1:    '#1b3c1a',
   green2:    '#2d5a27',
   green3:    '#52b788',
+  green4:    '#74c69d',
   green5:    '#d8eed8',
   border:    '#ddeedd',
   textMuted: '#6b8e66',
+  pageBg:    '#f7fdf7',
 }
 
 function ParsedText({ text }) {
@@ -138,37 +140,105 @@ function TypingIndicator() {
   )
 }
 
-function WelcomeBubble() {
+const SUGGESTION_CARDS = [
+  { icon: '♻️', title: 'Clasificar residuos', desc: '¿Qué basura va en cada contenedor?' },
+  { icon: '🍌', title: 'Residuos orgánicos', desc: 'Cómo compostar en casa fácilmente' },
+  { icon: '📱', title: 'Electrónicos viejos', desc: '¿Dónde tirar celulares y baterías?' },
+  { icon: '🌿', title: 'Ideas de upcycling', desc: 'Transforma lo que ibas a botar' },
+]
+
+function WelcomeScreen() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '12px 0 4px' }}>
-      <div style={{
-        width: 52, height: 52, borderRadius: 16,
-        background: `linear-gradient(135deg, ${G.green2} 0%, #3d7a35 100%)`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 6px 20px rgba(45,90,39,0.25)',
-      }}>
-        <i className="ti ti-robot" style={{ fontSize: 26, color: 'white' }} />
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <p style={{
-          margin: '0 0 4px', fontSize: 14, fontWeight: 700,
-          color: G.green1, fontFamily: "'Plus Jakarta Sans', sans-serif",
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flex: 1,
+      padding: '32px 24px',
+      gap: 28,
+      animation: 'fadeUp 0.4s ease both',
+    }}>
+      {/* Avatar + texto */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: 22,
+          background: `linear-gradient(135deg, ${G.green2} 0%, #3d7a35 100%)`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 8px 28px rgba(45,90,39,0.28)',
         }}>
-          ¡Hola! Soy EcoBot 🌿
-        </p>
-        <p style={{
-          margin: 0, fontSize: 12.5, color: G.textMuted,
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          lineHeight: 1.5, maxWidth: 300,
-        }}>
-          Pregúntame cómo clasificar residuos, ideas de upcycling o cualquier duda eco.
-        </p>
+          <i className="ti ti-robot" style={{ fontSize: 34, color: 'white' }} />
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{
+            margin: '0 0 6px', fontSize: 20, fontWeight: 800,
+            color: G.green1, fontFamily: "'Plus Jakarta Sans', sans-serif",
+            letterSpacing: '-0.02em',
+          }}>
+            ¡Hola! Soy EcoBot 🌿
+          </p>
+          <p style={{
+            margin: 0, fontSize: 13.5, color: G.textMuted,
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            lineHeight: 1.6, maxWidth: 360, textAlign: 'center',
+          }}>
+            Tu asistente de reciclaje. Pregúntame sobre clasificación de residuos,
+            upcycling o cualquier duda eco.
+          </p>
+        </div>
       </div>
+
+      {/* Divisor */}
       <div style={{
-        width: '100%', height: 1,
+        width: '100%', maxWidth: 480,
+        height: 1,
         background: 'linear-gradient(90deg, transparent, #ddeedd, transparent)',
-        marginTop: 4,
       }} />
+
+      {/* Suggestion cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: 10,
+        width: '100%',
+        maxWidth: 480,
+      }}>
+        {SUGGESTION_CARDS.map(({ icon, title, desc }) => (
+          <div
+            key={title}
+            style={{
+              background: G.pageBg,
+              border: `1px solid ${G.border}`,
+              borderRadius: 16,
+              padding: '14px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              cursor: 'default',
+            }}
+          >
+            <span style={{ fontSize: 22 }}>{icon}</span>
+            <p style={{
+              margin: 0, fontSize: 12.5, fontWeight: 700,
+              color: G.green1, fontFamily: "'Plus Jakarta Sans', sans-serif",
+            }}>{title}</p>
+            <p style={{
+              margin: 0, fontSize: 11.5, color: G.textMuted,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              lineHeight: 1.45,
+            }}>{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer hint */}
+      <p style={{
+        margin: 0, fontSize: 11.5, color: '#b0c8b0',
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        textAlign: 'center',
+      }}>
+        Escribe tu pregunta abajo para comenzar ↓
+      </p>
     </div>
   )
 }
@@ -181,19 +251,20 @@ export default function EcoBotMessages({ mensajes, isLoading, error }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [mensajes, isLoading])
 
+  // Sin mensajes → pantalla de bienvenida completa
+  if (mensajes.length === 0 && !isLoading && !error) {
+    return <WelcomeScreen />
+  }
+
   return (
     <div style={{
-      flex: 1,
-      overflowY: 'auto',
       display: 'flex',
       flexDirection: 'column',
       gap: 14,
-      padding: '20px 20px 12px',
+      padding: '20px 24px 12px',
       scrollbarWidth: 'thin',
       scrollbarColor: '#ddeedd transparent',
     }}>
-      <WelcomeBubble />
-
       {mensajes.map((m, i) =>
         m.rol === 'user'
           ? <UserBubble key={i} texto={m.texto} image={image} initials={initials} />
