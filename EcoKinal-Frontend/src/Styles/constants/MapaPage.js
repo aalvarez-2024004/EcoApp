@@ -8,11 +8,10 @@ export const mapaStyles = `
   .mapa-page {
     background: ${G.pageBg};
     min-height: 100vh;
-    padding: 60px 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 40px 32px 40px 32px;
     font-family: 'Plus Jakarta Sans', sans-serif;
     position: relative;
+    width: 100%;
   }
 
   /* ── Animations ── */
@@ -29,14 +28,6 @@ export const mapaStyles = `
   .anim-3 { animation: fadeUp 0.45s 0.16s ease both; }
   .anim-4 { animation: fadeUp 0.45s 0.24s ease both; }
 
-  /* ── BgPattern ── */
-  .mapa-bg-pattern {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none; z-index: 0;
-    opacity: 0.035;
-  }
-
   /* ── Badge ── */
   .mapa-badge {
     display: inline-flex; align-items: center; gap: 6px;
@@ -48,31 +39,29 @@ export const mapaStyles = `
 
   /* ── Title ── */
   .mapa-title {
-    font-size: 2.2rem; font-weight: 800;
+    font-size: 2rem; font-weight: 800;
     letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 8px;
-    background: linear-gradient(135deg, ${G.green1} 0%, ${G.green2} 60%, ${G.green3} 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    color: ${G.green1};
   }
   .mapa-title-accent {
-    background: linear-gradient(135deg, ${G.green3}, ${G.green4});
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    color: ${G.green3};
   }
 
   .mapa-subtitle {
-    font-size: 14px; color: ${G.textMuted};
-    max-width: 520px; line-height: 1.6; margin: 0 0 24px; font-weight: 400;
+    font-size: 13.5px; color: ${G.textMuted};
+    max-width: 480px; line-height: 1.6; margin: 0; font-weight: 400;
   }
 
   /* ── Controls ── */
   .mapa-controls {
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
   }
 
   .mapa-btn-primary {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 22px; border-radius: 14px; border: none;
+    padding: 11px 20px; border-radius: 14px; border: none;
     background: ${G.green2}; color: #fff;
-    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
     font-family: 'Plus Jakarta Sans', sans-serif;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 4px 16px rgba(45,90,39,0.2);
@@ -87,7 +76,7 @@ export const mapaStyles = `
   }
 
   .mapa-select {
-    padding: 12px 16px; border-radius: 14px;
+    padding: 11px 16px; border-radius: 14px;
     border: 1px solid ${G.border}; background: ${G.cardBg};
     font-size: 13px; color: ${G.green1}; font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 500; cursor: pointer; outline: none;
@@ -107,20 +96,46 @@ export const mapaStyles = `
     animation: pulse-dot 2s ease-in-out infinite;
   }
 
+  /* ── Two-column layout: map left + list right ── */
+  .mapa-body {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Left column (map) ── */
+  .mapa-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+  }
+
   /* ── Map wrapper ── */
   .mapa-map-wrapper {
     background: ${G.cardBg}; border: 1px solid ${G.border};
-    border-radius: 24px; overflow: hidden;
-    box-shadow: 0 4px 32px rgba(45,90,39,0.07);
-    margin-bottom: 24px; position: relative; z-index: 1;
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(45,90,39,0.07);
+    position: relative;
   }
 
-  #mapa-leaflet { height: 500px; width: 100%; }
+  #mapa-leaflet { height: calc(100vh - 240px); min-height: 440px; width: 100%; }
+
+  /* ── Right column (scrollable list) ── */
+  .mapa-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+  }
 
   /* ── List header ── */
   .mapa-lista-header {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px; position: relative; z-index: 1;
+    margin-bottom: 10px; position: relative; z-index: 1;
   }
   .mapa-lista-title {
     display: flex; align-items: center; gap: 6px;
@@ -128,63 +143,86 @@ export const mapaStyles = `
     color: ${G.textSub}; text-transform: uppercase;
   }
 
-  /* ── Grid ── */
+  /* ── Scrollable list container ── */
   .mapa-lista {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    position: relative; z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: calc(100vh - 240px);
+    min-height: 440px;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: ${G.green3} transparent;
+  }
+  .mapa-lista::-webkit-scrollbar { width: 5px; }
+  .mapa-lista::-webkit-scrollbar-track { background: transparent; }
+  .mapa-lista::-webkit-scrollbar-thumb {
+    background: ${G.green4};
+    border-radius: 99px;
   }
 
   /* ── Card ── */
   .mapa-card {
     background: ${G.cardBg}; border: 1px solid ${G.border};
-    border-radius: 20px;
-    overflow: hidden;           /* clips the cover image corners */
-    padding: 0;                 /* padding handled per-section below */
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0;
     cursor: pointer;
     transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
-    display: flex; flex-direction: column;
-    box-shadow: 0 2px 12px rgba(45,90,39,0.05);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(45,90,39,0.04);
   }
   .mapa-card:hover {
     border-color: ${G.green3};
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(45,90,39,0.10);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45,90,39,0.10);
   }
 
-  /* Cover image — full-width, top of card, only rendered once */
+  /* Cover image — full-width top of card */
   .mapa-card-cover {
-    width: 100%; height: 240px;
+    width: 100%; height: 160px;
     overflow: hidden; flex-shrink: 0;
     background: ${G.green5};
   }
   .mapa-card-cover img {
     width: 100%; height: 100%; object-fit: cover;
-    object-position: center;
-    display: block;
+    object-position: center; display: block;
     transition: transform 0.35s ease;
   }
   .mapa-card:hover .mapa-card-cover img { transform: scale(1.04); }
 
-  /* Placeholder cover for cards without photo — keeps uniform height */
+  /* NOT FOUND placeholder */
   .mapa-card-cover-placeholder {
-    width: 100%; height: 240px;
+    width: 100%; height: 160px;
     flex-shrink: 0;
-    background: linear-gradient(135deg, #e8f5e9 0%, #d4edda 100%);
+    background: linear-gradient(135deg, ${G.green5} 0%, #d4edda 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px;
+  }
+  .mapa-card-cover-placeholder-icon {
+    width: 44px; height: 44px;
+    background: rgba(82,183,136,0.15);
+    border-radius: 12px; border: 1px solid rgba(82,183,136,0.25);
     display: flex; align-items: center; justify-content: center;
-    font-size: 40px; opacity: 0.6;
+    font-size: 20px;
+  }
+  .mapa-card-cover-placeholder-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    color: ${G.green3}; text-transform: uppercase; opacity: 0.8;
   }
 
   /* Inner content padding */
   .mapa-card-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 14px 16px 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 12px 0;
   }
 
-  /* Small avatar — circular, 36px, shows photo or number */
+  /* Small avatar */
   .mapa-card-avatar {
-    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
     background: #e8f5e9; border: 2px solid ${G.border};
     overflow: hidden;
     display: flex; align-items: center; justify-content: center;
@@ -196,30 +234,30 @@ export const mapaStyles = `
 
   .mapa-card-name {
     flex: 1;
-    font-size: 13px; font-weight: 700; color: ${G.green1}; line-height: 1.35;
+    font-size: 12.5px; font-weight: 700; color: ${G.green1}; line-height: 1.35;
     margin: 0;
   }
   .mapa-card-dist {
-    font-size: 11px; font-weight: 700; color: ${G.green2};
-    background: #e8f5e9; padding: 3px 10px; border-radius: 99px;
+    font-size: 10.5px; font-weight: 700; color: ${G.green2};
+    background: #e8f5e9; padding: 3px 8px; border-radius: 99px;
     white-space: nowrap; flex-shrink: 0; border: 1px solid ${G.border};
   }
 
   .mapa-card-address {
-    font-size: 11.5px; color: ${G.textMuted}; line-height: 1.5;
-    padding: 6px 16px 0;
+    font-size: 11px; color: ${G.textMuted}; line-height: 1.5;
+    padding: 5px 12px 0;
     margin: 0; flex: 1;
   }
 
   .mapa-card-footer {
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    padding: 10px 16px 14px;
+    display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+    padding: 8px 12px 12px;
     margin-top: auto;
   }
 
   .mapa-chip {
     display: inline-flex; align-items: center; gap: 4px;
-    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px;
+    font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 7px;
   }
   .mapa-chip-open    { background: #e8f5e9; color: ${G.green2}; border: 1px solid ${G.border}; }
   .mapa-chip-closed  { background: #fff5f5; color: #dc2626; border: 1px solid #ffcccc; }
@@ -227,10 +265,10 @@ export const mapaStyles = `
   .mapa-chip-rating  { background: rgba(217,119,6,0.08); color: #92400e; border: 1px solid rgba(217,119,6,0.2); }
 
   .mapa-link {
-    margin-left: auto; font-size: 11px; font-weight: 600;
+    margin-left: auto; font-size: 10.5px; font-weight: 600;
     color: ${G.green2}; text-decoration: none;
     display: inline-flex; align-items: center; gap: 3px;
-    padding: 4px 10px; border-radius: 8px;
+    padding: 3px 8px; border-radius: 7px;
     background: #e8f5e9; border: 1px solid ${G.border};
     transition: background 0.15s, border-color 0.15s;
   }
@@ -238,20 +276,20 @@ export const mapaStyles = `
 
   /* ── Empty state ── */
   .mapa-empty {
-    grid-column: 1 / -1;
     display: flex; flex-direction: column; align-items: center;
-    text-align: center; padding: 60px 24px; gap: 14px;
+    text-align: center; padding: 48px 24px; gap: 14px;
     background: ${G.cardBg}; border: 1px solid ${G.border};
-    border-radius: 24px; box-shadow: 0 2px 12px rgba(45,90,39,0.05);
+    border-radius: 18px; box-shadow: 0 2px 12px rgba(45,90,39,0.05);
+    height: 100%;
   }
   .mapa-empty-icon {
-    width: 72px; height: 72px; border-radius: 20px;
+    width: 64px; height: 64px; border-radius: 18px;
     background: #e8f5e9; border: 1px solid ${G.border};
-    display: flex; align-items: center; justify-content: center; font-size: 30px;
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
     box-shadow: 0 8px 24px rgba(45,90,39,0.1);
   }
-  .mapa-empty h3 { font-size: 16px; font-weight: 700; color: ${G.green1}; margin: 0; }
-  .mapa-empty p  { font-size: 13px; color: ${G.textMuted}; line-height: 1.65; margin: 0; max-width: 360px; }
+  .mapa-empty h3 { font-size: 15px; font-weight: 700; color: ${G.green1}; margin: 0; }
+  .mapa-empty p  { font-size: 12.5px; color: ${G.textMuted}; line-height: 1.65; margin: 0; max-width: 280px; }
 
   /* ── Error ── */
   .mapa-error {
@@ -271,8 +309,9 @@ export const mapaStyles = `
     background: linear-gradient(90deg, ${G.green5} 25%, ${G.border} 50%, ${G.green5} 75%);
     background-size: 400px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
-    border-radius: 20px; height: 160px;
+    border-radius: 16px; height: 200px;
     border: 1px solid ${G.border};
+    flex-shrink: 0;
   }
 
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -296,11 +335,18 @@ export const mapaStyles = `
   }
 
   /* ── Responsive ── */
-  @media (max-width: 1024px) { .mapa-lista { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 1024px) {
+    .mapa-body { grid-template-columns: 1fr; }
+    .mapa-lista {
+      height: auto;
+      max-height: 480px;
+    }
+    #mapa-leaflet { height: 420px; }
+  }
   @media (max-width: 700px) {
-    .mapa-page { padding: 40px 16px; }
-    .mapa-title { font-size: 1.8rem; }
+    .mapa-page { padding: 24px 16px; }
+    .mapa-title { font-size: 1.6rem; }
     #mapa-leaflet { height: 320px; }
-    .mapa-lista { grid-template-columns: 1fr; }
+    .mapa-lista { max-height: 400px; }
   }
 `
