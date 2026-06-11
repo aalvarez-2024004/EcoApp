@@ -28,6 +28,16 @@ export const pageStyles = `
     to { transform: rotate(360deg); }
   }
   .animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* ── Animaciones de entrada escalonadas ── */
+  .foro-anim-1  { animation: fadeUp 0.4s 0.00s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .foro-anim-2  { animation: fadeUp 0.4s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .foro-anim-3  { animation: fadeUp 0.4s 0.16s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .foro-anim-4  { animation: fadeUp 0.4s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .foro-anim-5  { animation: fadeUp 0.4s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .foro-anim-6  { animation: fadeUp 0.4s 0.40s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  /* Posts: cada uno con delay progresivo */
+  .foro-post-anim { animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 600px 100%;

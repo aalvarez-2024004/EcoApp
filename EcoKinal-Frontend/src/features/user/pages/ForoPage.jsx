@@ -169,7 +169,7 @@ export default function ForoPage() {
                 {/* ── Layout 2 columnas ── */}
                 <div className="foro-grid">
                     {/* Columna izquierda — sticky */}
-                    <div className="foro-sidebar-left" style={{
+                    <div className="foro-sidebar-left foro-anim-1" style={{
                         position: 'sticky',
                         top: '80px',
                         maxHeight: 'calc(100vh - 96px)',
@@ -190,7 +190,7 @@ export default function ForoPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
                         {/* Header estilo Detector */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div className="foro-anim-2" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <div style={{
                                 display: 'inline-flex', alignItems: 'center', gap: 6,
                                 padding: '5px 14px', borderRadius: 100, width: 'fit-content',
@@ -214,7 +214,7 @@ export default function ForoPage() {
                         </div>
 
                         {/* Barra de búsqueda */}
-                        <div style={{
+                        <div className="foro-anim-3" style={{
                             display: 'flex', alignItems: 'center', gap: 12,
                             background: '#fff', border: `0.5px solid ${isSearchMode ? '#2B5F2A' : 'rgba(43, 95, 42, 0.15)'}`,
                             borderRadius: 16, padding: '10px 16px', transition: 'border-color 0.2s',
@@ -251,6 +251,7 @@ export default function ForoPage() {
 
                         {/* Filtros */}
                         {!isSearchMode && (
+                            <div className="foro-anim-4">
                             <>
                                 {/* EN ESCRITORIO: Barra de botones horizontales */}
                                 <div className="foro-filtros foro-filtros-desktop" style={{
@@ -302,6 +303,7 @@ export default function ForoPage() {
                                     ))}
                                 </select>
                             </>
+                            </div>
                         )}
 
                         {/* Etiqueta modo búsqueda */}
@@ -320,7 +322,7 @@ export default function ForoPage() {
 
                         {/* Compose Box */}
                         {!isSearchMode && (
-                            <div style={{
+                            <div className="foro-anim-5" style={{
                                 background: '#fff', border: '0.5px solid rgba(43, 95, 42, 0.15)', borderRadius: 18,
                                 overflow: 'hidden', transition: 'all 0.3s ease',
                             }}>
@@ -467,14 +469,19 @@ export default function ForoPage() {
                             {isLoading ? (
                                 <><SkeletonCard /><SkeletonCard /><SkeletonCard /></>
                             ) : displayPosts.length > 0 ? (
-                                displayPosts.map(post => (
-                                    <PostCard
+                                displayPosts.map((post, idx) => (
+                                    <div
                                         key={post._id}
-                                        post={post}
-                                        currentUserId={currentUser.id}
-                                        currentUser={currentUser}
-                                        onToast={showToast}
-                                    />
+                                        className="foro-post-anim"
+                                        style={{ animationDelay: `${Math.min(idx * 0.06, 0.36)}s` }}
+                                    >
+                                        <PostCard
+                                            post={post}
+                                            currentUserId={currentUser.id}
+                                            currentUser={currentUser}
+                                            onToast={showToast}
+                                        />
+                                    </div>
                                 ))
                             ) : (
                                 <EmptyState filter={filter} isSearch={isSearchMode} query={searchQuery} />
