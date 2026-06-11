@@ -48,6 +48,15 @@ export const pageStyles = `
   ::-webkit-scrollbar-thumb { background: rgba(43, 95, 42, 0.15); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(43, 95, 42, 0.3); }
 
+  /* ── Filtros: mostrar solo uno según pantalla ── */
+  .foro-filtros-desktop { display: flex; }
+  .foro-filtros-mobile  { display: none; }
+
+  @media (max-width: 500px) {
+    .foro-filtros-desktop { display: none !important; }
+    .foro-filtros-mobile  { display: block !important; }
+  }
+
   /* ── Grid base ── */
   .foro-grid {
     display: grid;
