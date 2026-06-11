@@ -16,10 +16,11 @@ export default function DetectorReciclajePage() {
   const [toast, setToast] = useState(null)
 
   const {
-    resultado, isLoading, error,
-    activeTab, camaraActiva, fotoCapturada, preview,
-    seleccionarImagen, clasificar, limpiar,
-    setTab, activarCamara, detenerCamara, capturarFoto, retomar,
+      resultado, isLoading, error,
+      activeTab, camaraActiva, fotoCapturada, preview,
+      facingMode, toggleFacingMode, 
+      seleccionarImagen, clasificar, limpiar,
+      setTab, activarCamara, detenerCamara, capturarFoto, retomar,
   } = useDetectorReciclaje()
 
   const showToast = (ok, msg) => {
@@ -142,12 +143,14 @@ export default function DetectorReciclajePage() {
                   camaraActiva={camaraActiva}
                   fotoCapturada={fotoCapturada}
                   isLoading={isLoading}
+                  facingMode={facingMode}                              
+                  onToggleFacingMode={() => toggleFacingMode(videoRef)} 
                   onActivar={() => activarCamara(videoRef)}
                   onDetener={() => detenerCamara(videoRef)}
                   onCapturar={() => capturarFoto(videoRef, canvasRef)}
                   onClasificar={handleClasificar}
                   onRetomar={retomar}
-                />
+              />
               )}
 
               {error && (

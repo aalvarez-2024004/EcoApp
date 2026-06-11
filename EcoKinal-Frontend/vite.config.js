@@ -9,7 +9,7 @@ export default defineConfig({
   ],
   server: {
     allowedHosts: [
-      'surveillance-main-crop-associate.trycloudflare.com'
+      'historical-steal-lone-considers.trycloudflare.com'
     ]
   }
 })

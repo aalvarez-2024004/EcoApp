@@ -76,6 +76,7 @@ function CameraIdle() {
 export default function CameraPanel({
   videoRef, canvasRef,
   camaraActiva, fotoCapturada, isLoading,
+  facingMode, onToggleFacingMode,
   onActivar, onDetener, onCapturar, onClasificar, onRetomar,
 }) {
   const [capturedSrc, setCapturedSrc] = useState(null)
@@ -146,6 +147,28 @@ export default function CameraPanel({
         {camCapturada && isLoading && <ScanOverlay />}
         {camIdle && <CameraIdle />}
         {camLive && <Viewfinder />}
+
+        {/* Botón cambiar cámara — esquina inferior derecha del visor */}
+        {camLive && (
+          <button
+            onClick={onToggleFacingMode}
+            style={{
+              position: 'absolute', bottom: 14, right: 14, zIndex: 20,
+              width: 52, height: 52, borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(255,255,255,0.95)',
+              border: `2px solid ${G.green3}`,
+              cursor: 'pointer', backdropFilter: 'blur(4px)',
+              boxShadow: '0 6px 18px rgba(0,0,0,0.18)',
+              transition: 'transform 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.08)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
+            title={facingMode === 'environment' ? 'Cambiar a cámara frontal' : 'Cambiar a cámara trasera'}
+          >
+            <i className="ti ti-camera-rotate" style={{ fontSize: 26, color: G.green2 }} />
+          </button>
+        )}
 
         {/* Badge fotograma fijado */}
         {camCapturada && !isLoading && (

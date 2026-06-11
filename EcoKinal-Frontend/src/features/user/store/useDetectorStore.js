@@ -12,6 +12,9 @@ export const useDetectorReciclaje = create((set, get) => ({
   activeTab:     'subir',
   camaraActiva:  false,
   fotoCapturada: false,
+  facingMode:    'environment',
+  cameraIndex:   0,
+  totalCameras:  1,
   _stream:       null,
 
   // ── seleccionar imagen (upload) ───────────────────────────────────────────
@@ -39,10 +42,8 @@ export const useDetectorReciclaje = create((set, get) => ({
       const response = await clasificarImagen(imagen)
       if (response.success) {
         set({ resultado: response.data })
-        // Notificar al módulo de gamificación que se realizó un reciclaje exitoso
         const { completarRetoPorAccion } = useGamificacionStore.getState()
         await completarRetoPorAccion('detector')
-        // También intentar completar el reto de 3 reciclajes
         await completarRetoPorAccion('detector_3_check')
       }
       return response
@@ -76,7 +77,6 @@ export const useDetectorReciclaje = create((set, get) => ({
         camaraActiva:  false,
         fotoCapturada: false,
         _stream:       null,
-        // limpiar preview de cámara al cambiar tab, pero no el de upload
         imagen:        tab === 'camara' ? null : state.imagen,
         preview:       (tab === 'camara' && state.fotoCapturada) ? null : state.preview,
         resultado:     null,
@@ -85,85 +85,65 @@ export const useDetectorReciclaje = create((set, get) => ({
     })
   },
 
+  // ── cambiar cámara (frontal/trasera) ──────────────────────────────────────
+  toggleFacingMode: async (videoRef) => {
+    const { camaraActiva, _stream } = get()
+
+    if (_stream) _stream.getTracks().forEach(t => t.stop())
+
+    const video = videoRef?.current
+    if (video) {
+      video.pause()
+      video.srcObject = null
+      video.load()
+    }
+
+    // Alterna entre índice 0 y 1 de la lista de cámaras
+    set((state) => ({
+      cameraIndex: state.cameraIndex === 0 ? 1 : 0,
+      _stream: null,
+      camaraActiva: false
+    }))
+
+    await new Promise(resolve => setTimeout(resolve, 400))
+
+    if (camaraActiva) {
+      await get().activarCamara(videoRef)
+    }
+  },
+
   // ── activar cámara ────────────────────────────────────────────────────────
-  // videoRef: React ref del elemento <video>
   activarCamara: async (videoRef) => {
     set({ error: null })
 
     try {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const cameras = devices.filter(d => d.kind === 'videoinput')
 
-      console.log("Solicitando acceso a cámara...")
+      const { cameraIndex = 0 } = get()
+      const index = Math.min(cameraIndex, cameras.length - 1)
+      const selectedCamera = cameras[index]
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false
-      })
+      const constraints = selectedCamera?.deviceId
+        ? { video: { deviceId: { exact: selectedCamera.deviceId } }, audio: false }
+        : { video: true, audio: false }
 
-      console.log("Stream obtenido:", stream)
+      const stream = await navigator.mediaDevices.getUserMedia(constraints)
 
       const video = videoRef?.current
-
-      console.log("Video ref:", video)
-
-      if (!video) {
-        console.error("No existe videoRef.current")
-        return
-      }
-
-      video.addEventListener("loadedmetadata", () => {
-        console.log("EVENTO loadedmetadata")
-      })
-
-      video.addEventListener("loadeddata", () => {
-        console.log("EVENTO loadeddata")
-      })
-
-      video.addEventListener("canplay", () => {
-        console.log("EVENTO canplay")
-      })
-
-      video.addEventListener("playing", () => {
-        console.log("EVENTO playing")
-      })
-
-      video.addEventListener("error", (e) => {
-        console.log("ERROR VIDEO:", e)
-      })
+      if (!video) return
 
       video.srcObject = stream
 
-      console.log("Stream asignado al video")
-
-      setTimeout(async () => {
-
-        console.log("========== ESTADO VIDEO ==========")
-
-        console.log("readyState:", video.readyState)
-        console.log("networkState:", video.networkState)
-        console.log("videoWidth:", video.videoWidth)
-        console.log("videoHeight:", video.videoHeight)
-        console.log("paused:", video.paused)
-
-        try {
-          await video.play()
-          console.log("PLAY EXITOSO")
-        } catch (error) {
-          console.error("ERROR PLAY:", error)
-        }
-
-        console.log("==================================")
-
-      }, 2000)
-
-      set({
-        camaraActiva: true,
-        _stream: stream
+      await new Promise((resolve) => {
+        video.onloadedmetadata = () => resolve()
       })
 
+      await video.play().catch(() => {})
+
+      set({ camaraActiva: true, _stream: stream, totalCameras: cameras.length })
+
     } catch (err) {
-
-      console.error("ERROR DE CAMARA:", err)
-
       const msg =
         err.name === 'NotAllowedError'
           ? 'Permiso de cámara denegado.'
@@ -173,7 +153,7 @@ export const useDetectorReciclaje = create((set, get) => ({
           ? 'La cámara está siendo utilizada por otra aplicación.'
           : `No se pudo acceder a la cámara: ${err.message}`
 
-      set({ error: msg })
+      set({ error: msg, camaraActiva: false })
     }
   },
 
@@ -197,12 +177,10 @@ export const useDetectorReciclaje = create((set, get) => ({
     canvas.height = h
     canvas.getContext('2d').drawImage(video, 0, 0, w, h)
 
-    // Detener stream tras captura
     const { _stream } = get()
     if (_stream) _stream.getTracks().forEach(t => t.stop())
     if (videoRef?.current) videoRef.current.srcObject = null
 
-    // Convertir canvas → File y guardar
     canvas.toBlob((blob) => {
       if (!blob) { set({ error: 'No se pudo capturar la foto.' }); return }
       const file = new File([blob], `ecokinal-${Date.now()}.jpg`, { type: 'image/jpeg' })
