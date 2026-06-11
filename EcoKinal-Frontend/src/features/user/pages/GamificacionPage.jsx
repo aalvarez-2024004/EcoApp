@@ -85,7 +85,7 @@ export default function GamificacionPage() {
         {/* ── Breadcrumb ── */}
         <div className="gam-breadcrumb gam-anim-1">
           <i className="ti ti-trophy" />
-          <span>Gamification V2.6 – Eco Kinal</span>
+          <span>GAMIFICATION V2.6 – ECO KINAL</span>
         </div>
 
         {/* ── Título + subtítulo ── */}
