@@ -36,7 +36,6 @@ export const pageStyles = `
   .foro-anim-4  { animation: fadeUp 0.4s 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .foro-anim-5  { animation: fadeUp 0.4s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .foro-anim-6  { animation: fadeUp 0.4s 0.40s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  /* Posts: cada uno con delay progresivo */
   .foro-post-anim { animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
   .skeleton {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -58,14 +57,11 @@ export const pageStyles = `
   ::-webkit-scrollbar-thumb { background: rgba(43, 95, 42, 0.15); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(43, 95, 42, 0.3); }
 
-  /* ── Filtros: mostrar solo uno según pantalla ── */
-  .foro-filtros-desktop { display: flex; }
-  .foro-filtros-mobile  { display: none; }
-
-  @media (max-width: 500px) {
-    .foro-filtros-desktop { display: none !important; }
-    .foro-filtros-mobile  { display: block !important; }
-  }
+  /* ── Filtros y Sidedars: Visibilidad por defecto (Escritorio) ── */
+  .foro-filtros-desktop         { display: flex; }
+  .foro-filtros-mobile          { display: none; }
+  .foro-sidebar-desktop         { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .foro-sidebar-mobile-trigger  { display: none !important; } /* Oculto en desktop por defecto */
 
   /* ── Grid base ── */
   .foro-grid {
@@ -80,7 +76,7 @@ export const pageStyles = `
 
   .foro-sidebar-left::-webkit-scrollbar { display: none; }
 
-  /* ── Tablet ── */
+  /* ── Tablet (1100px) ── */
   @media (max-width: 1100px) {
     .foro-grid {
       grid-template-columns: 240px minmax(0, 1fr) !important;
@@ -91,24 +87,23 @@ export const pageStyles = `
     }
   }
 
+  /* ── Mobile / Breakpoint Global (768px) ── */
   @media (max-width: 768px) {
-    .foro-grid {
-      grid-template-columns: 200px minmax(0, 1fr) !important;
-      gap: 14px !important;
-    }
-    .foro-page-wrapper {
-      padding: 1rem !important;
-    }
-  }
+    .foro-filtros-desktop         { display: none !important; }
+    .foro-filtros-mobile          { display: block !important; }
+    .foro-sidebar-desktop         { display: none !important; }
+    .foro-sidebar-mobile-trigger  { display: block !important; } /* Se activa sólo aquí */
 
-  /* ── Mobile ── */
-  @media (max-width: 500px) {
     .foro-grid {
       display: flex !important;
       flex-direction: column !important;
+      gap: 14px !important;
     }
     .foro-sidebar-left {
-      display: none !important;
+      position: static !important;
+      max-height: unset !important;
+      overflow: visible !important;
+      width: 100% !important;
     }
     .foro-page-wrapper {
       padding: 0.75rem !important;
