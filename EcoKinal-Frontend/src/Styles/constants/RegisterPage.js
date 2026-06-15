@@ -438,20 +438,16 @@ export const css = `
 
   /* ── TABLET LANDSCAPE (≤ 768px) — ambos paneles visibles ── */
   @media (max-width: 768px) {
-    .ek-wrap { flex-direction: row; }
+    .ek-wrap { flex-direction: column; }
 
     .ek-left {
-      flex: 1 1 55%;
-      max-width: none;
+      flex: 1 1 100%;
+      max-width: 100%;
       padding: 32px 24px;
       justify-content: center;
     }
 
-    .ek-right {
-      flex: 0 0 45%;
-      display: flex;
-      padding: 0 16px 28px;
-    }
+    .ek-right { display: none; }
 
     .ek-brand        { margin-bottom: 16px; padding-bottom: 16px; }
     .ek-heading      { margin-bottom: 14px; }
@@ -490,12 +486,9 @@ export const css = `
   /* ── MÓVIL (≤ 540px) — ambos paneles, derecho compacto ── */
   @media (max-width: 540px) {
     .ek-left {
-      flex: 1 1 58%;
+      flex: 1 1 100%;
+      max-width: 100%;
       padding: 24px 16px;
-    }
-    .ek-right {
-      flex: 0 0 42%;
-      padding: 0 10px 18px;
     }
 
     .ek-heading h1   { font-size: 22px; }

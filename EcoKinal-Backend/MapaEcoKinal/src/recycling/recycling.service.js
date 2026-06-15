@@ -14,8 +14,65 @@ const FIELD_MASK = [
     "places.currentOpeningHours",
     "places.rating",
     "places.googleMapsUri",
-    "places.photos"
+    "places.photos",
+    "places.types"          // necesario para el filtro de relevancia
 ].join(",");
+
+// ─── FILTRO DE RELEVANCIA ────────────────────────────────────────────────────
+// Tipos de Google Places que corresponden a centros de reciclaje o
+// puntos de gestión de residuos legítimos.
+const ALLOWED_TYPES = new Set([
+    "recycling_center",
+    "waste_management_facility",
+    "garbage_collection",
+    "scrap_metal_dealer",
+    "junk_dealer",
+    "junk_store",
+    "car_dealer",           // raramente relevante, pero algunos chatarreros lo usan
+    "moving_company",
+    "storage",
+]);
+
+// Palabras clave en el nombre que confirman que es un centro de reciclaje
+const RECYCLING_NAME_KEYWORDS = [
+    "recicl",       // reciclaje, recicladora, recicladora, etc.
+    "residuo",
+    "basura",
+    "chatarra",
+    "punto limpio",
+    "desecho",
+    "ecocentro",
+    "acopio",
+    "compost",
+    "scrap",
+    "waste",
+    "junk",
+    "metal",        // chatarrería de metales
+];
+
+/**
+ * Decide si un lugar devuelto por Google es realmente un centro de reciclaje.
+ * Acepta si:
+ *  - tiene el tipo "recycling_center" o "waste_management_facility", O
+ *  - su nombre contiene alguna palabra clave de reciclaje.
+ * Rechaza si ninguna de las dos condiciones se cumple.
+ */
+const isRecyclingRelevant = (place) => {
+    const types = place.types || [];
+
+    // Tipo explícito de reciclaje → siempre aceptar
+    if (types.includes("recycling_center") || types.includes("waste_management_facility")) {
+        return true;
+    }
+
+    // Nombre con keyword de reciclaje → aceptar
+    const nameLower = (place.displayName?.text || "").toLowerCase();
+    if (RECYCLING_NAME_KEYWORDS.some((kw) => nameLower.includes(kw))) {
+        return true;
+    }
+
+    return false;
+};
 
 /**
  * ESTRATEGIA 1: searchNearby con tipo recycling_center
@@ -31,7 +88,8 @@ const searchNearby = async (lat, lon, radiusMeters, maxResults) => {
                 locationRestriction: {
                     circle: {
                         center: { latitude: lat, longitude: lon },
-                        radius: radiusMeters
+                        // BUG FIX: searchNearby también tiene límite de 50 000 m
+                        radius: Math.min(radiusMeters, 50000)
                     }
                 }
             },
@@ -58,6 +116,11 @@ const searchNearby = async (lat, lon, radiusMeters, maxResults) => {
  * NOTA: searchText no soporta locationRestriction (solo locationBias),
  * por lo que Google puede devolver resultados fuera del radio.
  * El filtrado estricto se aplica después con calculateDistance.
+ *
+ * BUG FIX: locationBias tiene un límite máximo de 50 000 m en Google Places API.
+ * Antes se usaba radiusMeters * 3, lo que para 20 km = 60 000 m → Google rechazaba
+ * la petición silenciosamente y devolvía 0 resultados.
+ * Ahora se aplica Math.min(..., 50000) para respetar ese límite.
  */
 const searchByText = async (lat, lon, radiusMeters) => {
     const keywords = [
@@ -66,19 +129,19 @@ const searchByText = async (lat, lon, radiusMeters) => {
         "Punto limpio reciclaje"
     ];
 
+    // Bias generoso para capturar más candidatos, pero nunca > 50 000 m (límite de la API)
+    const biasRadius = Math.min(radiusMeters * 3, 50000);
+
     const requests = keywords.map((keyword) =>
         axios.post(
             `${PLACES_BASE_URL}/places:searchText`,
             {
                 textQuery: keyword,
                 maxResultCount: 10,
-                // locationBias: Google puede ignorar el radio y devolver resultados lejanos.
-                // Usamos un radio generoso (3x) para capturar más candidatos,
-                // y luego filtramos estrictamente por distancia Haversine.
                 locationBias: {
                     circle: {
                         center: { latitude: lat, longitude: lon },
-                        radius: radiusMeters * 3
+                        radius: biasRadius
                     }
                 }
             },
@@ -140,10 +203,10 @@ export const formatPlace = (place, userLat, userLon) => {
         place.currentOpeningHours?.weekdayDescriptions ||
         place.regularOpeningHours?.weekdayDescriptions ||
         [];
-    const firstPhoto = place.photos?.[0]?.name
+    const firstPhoto = place.photos?.[0]?.name;
     const photoUrl = firstPhoto
         ? `https://places.googleapis.com/v1/${firstPhoto}/media?maxWidthPx=400&key=${GOOGLE_API_KEY}`
-        : null
+        : null;
 
     return {
         id: place.id || null,
@@ -168,9 +231,9 @@ export const formatPlace = (place, userLat, userLon) => {
  * Estrategia:
  *  1. Ejecuta searchNearby y searchText en PARALELO.
  *  2. Fusiona los resultados deduplicando por place ID.
- *  3. Filtra estrictamente por radio usando distancia Haversine.
- *     (searchNearby respeta el radio; searchText solo usa locationBias y puede ignorarlo)
- *  4. Si searchNearby ya tiene suficientes resultados (>= 3), omite el text search.
+ *  3. Filtra por relevancia: solo acepta lugares que sean realmente
+ *     centros de reciclaje (por tipo de Google o por nombre).
+ *  4. Filtra estrictamente por radio usando distancia Haversine.
  */
 export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, maxResults = 20) => {
     const radiusKm = radiusMeters / 1000;
@@ -181,18 +244,7 @@ export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, 
         searchByText(lat, lon, radiusMeters)
     ]);
 
-    // Si searchNearby ya trajo suficientes, usarlo solo (más barato)
-    // Igual aplicamos el filtro de distancia como segunda línea de defensa
-    if (nearbyResults.length >= 3) {
-        return nearbyResults.filter((place) => {
-            const pLat = place.location?.latitude;
-            const pLon = place.location?.longitude;
-            if (!pLat || !pLon) return false;
-            return calculateDistance(lat, lon, pLat, pLon) <= radiusKm;
-        });
-    }
-
-    // Fusionar ambos resultados deduplicando por ID
+    // Fusionar deduplicando por ID
     const seen = new Set(nearbyResults.map((p) => p.id));
     const merged = [...nearbyResults];
 
@@ -203,14 +255,17 @@ export const findNearbyRecyclingCenters = async (lat, lon, radiusMeters = 5000, 
         }
     }
 
-    // ─── FILTRO ESTRICTO DE RADIO ───────────────────────────────────────────
-    // searchText usa locationBias, no locationRestriction: Google puede devolver
-    // lugares fuera del radio elegido por el usuario. Este filtro garantiza que
-    // solo se incluyan centros dentro del radio real seleccionado.
     return merged.filter((place) => {
         const pLat = place.location?.latitude;
         const pLon = place.location?.longitude;
         if (!pLat || !pLon) return false;
-        return calculateDistance(lat, lon, pLat, pLon) <= radiusKm;
+
+        // ── Filtro 1: distancia estricta ──────────────────────────────────────
+        if (calculateDistance(lat, lon, pLat, pLon) > radiusKm) return false;
+
+        // ── Filtro 2: relevancia — solo centros de reciclaje reales ──────────
+        if (!isRecyclingRelevant(place)) return false;
+
+        return true;
     });
 };

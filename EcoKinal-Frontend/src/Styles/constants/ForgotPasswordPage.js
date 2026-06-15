@@ -438,19 +438,18 @@ export const css = `
 
   /* ── TABLET LANDSCAPE (≤ 768px) ── */
   @media (max-width: 768px) {
-    .ek-wrap { flex-direction: row; }
+    .ek-wrap { flex-direction: column; }
 
     .ek-left {
-      flex: 1 1 55%;
-      max-width: none;
+      flex: 1 1 100%;
+      max-width: 100%;
       padding: 32px 28px;
       justify-content: center;
       overflow-y: auto;
     }
 
     .ek-right {
-      flex: 0 0 45%;
-      display: flex;
+      display: none;
     }
 
     .ek-heading { margin-bottom: 16px; }
@@ -484,8 +483,7 @@ export const css = `
 
   /* ── MÓVIL (≤ 540px) ── */
   @media (max-width: 540px) {
-    .ek-left { flex: 1 1 58%; padding: 24px 18px; }
-    .ek-right { flex: 0 0 42%; }
+    .ek-left { flex: 1 1 100%; max-width: 100%; padding: 24px 18px; }
 
     .ek-heading h1 { font-size: 26px; }
     .ek-heading p  { font-size: 12px; }

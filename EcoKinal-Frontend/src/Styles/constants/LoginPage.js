@@ -432,16 +432,12 @@ export const css = `
     .ek-wrap { flex-direction: row; }
 
     .ek-left {
-      flex: 1 1 55%;
-      max-width: none;
-      padding: 32px 28px;
-      justify-content: center;
-      overflow-y: auto;
+      flex: 1 1 100%;
+      max-width: 100%;
     }
 
     .ek-right {
-      flex: 0 0 45%;
-      display: flex;
+      display: none;
     }
 
     .ek-heading { margin-bottom: 16px; }
@@ -490,12 +486,9 @@ export const css = `
   /* ── MÓVIL (≤ 540px) ── */
   @media (max-width: 540px) {
     .ek-left {
-      flex: 1 1 58%;
+      flex: 1 1 100%;
+      max-width: 100%;
       padding: 24px 18px;
-    }
-
-    .ek-right {
-      flex: 0 0 42%;
     }
 
     .ek-heading h1 { font-size: 26px; }

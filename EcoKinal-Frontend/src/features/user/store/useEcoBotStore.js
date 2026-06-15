@@ -5,11 +5,13 @@ export const useEcoBotStore = create((set, get) => ({
   mensajes: [],       // [{ rol: 'user'|'bot', texto, fecha }]
   isLoading: false,
   error: null,
+  wasCleared: false,  // true cuando el usuario limpió manualmente el chat
 
   cargarHistorial: async () => {
+    // Si el usuario ya limpió el chat, no recargar el historial del backend
+    if (get().wasCleared) return
     try {
       const data = await obtenerHistorial()
-      // Convertir historial a formato de chat
       const mensajes = data.historial.flatMap(h => [
         { rol: 'user', texto: h.mensajeUsuario, fecha: h.fecha },
         { rol: 'bot',  texto: h.respuestaIA,    fecha: h.fecha },
@@ -22,7 +24,6 @@ export const useEcoBotStore = create((set, get) => ({
 
   enviar: async (texto) => {
     if (!texto.trim()) return
-    // Agregar mensaje del usuario optimistamente
     set(s => ({
       mensajes: [...s.mensajes, { rol: 'user', texto, fecha: new Date() }],
       isLoading: true,
@@ -40,5 +41,5 @@ export const useEcoBotStore = create((set, get) => ({
     }
   },
 
-  limpiar: () => set({ mensajes: [], error: null }),
+  limpiar: () => set({ mensajes: [], error: null, wasCleared: true }),
 }))

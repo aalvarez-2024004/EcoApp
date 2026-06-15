@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import useMapaStore from '../store/useMapaStore'
 import { completarRetoPorAccion } from '../../../shared/Api/Gamificacion'
-import { HeaderIllustration } from '../../../icons/ImpactoIcons.jsx'
-import { BgPattern } from '../../../icons/DetectorIcons.jsx'
 import { mapaStyles } from '../../../Styles/constants/MapaPage.js'
 import { OpenChip } from '../../../ui/Mapa/OpenChip.jsx'
 import { G } from '../../../Styles/constants/ImpactoPage.js'
@@ -111,11 +109,9 @@ export default function MapaPage() {
   }, [centers, userLat, userLon])
 
   return (
-    <> 
+    <>
     <div className="mapa-page">
       <style>{mapaStyles}</style>
-      <BgPattern />
-
       {/* Toast */}
       {toast && (
         <div className={`mapa-toast ${toast.ok ? 'ok' : 'err'}`}>
@@ -125,8 +121,8 @@ export default function MapaPage() {
       )}
 
       {/* ── Header ── */}
-      <div className="anim-1" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative', zIndex: 1, marginBottom: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <div className="anim-1" style={{ position: 'relative', zIndex: 1, marginBottom: 16 }}>
+        <div>
           <div className="mapa-badge">
             <i className="ti ti-map-pin" style={{ fontSize: 12 }} />
             EcoKinal · Google Places API
@@ -138,7 +134,6 @@ export default function MapaPage() {
             Encuentra los centros de reciclaje y recicladoras más cercanos a tu ubicación actual.
           </p>
         </div>
-        <HeaderIllustration />
       </div>
 
       {/* Error */}
@@ -177,94 +172,102 @@ export default function MapaPage() {
         )}
       </div>
 
-      {/* Map */}
-      <div className="mapa-map-wrapper anim-3">
-        <div id="mapa-leaflet" />
-      </div>
+      {/* ── Two-column body: map left | list right ── */}
+      <div className="mapa-body anim-3">
 
-      {/* List header */}
-      {(centers.length > 0 || isLoading) && (
-        <div className="mapa-lista-header">
-          <span className="mapa-lista-title">
-            <i className="ti ti-building" style={{ fontSize: 11 }} />
-            Centros de reciclaje cercanos
-          </span>
+        {/* Left: map */}
+        <div className="mapa-left">
+          <div className="mapa-map-wrapper">
+            <div id="mapa-leaflet" />
+          </div>
         </div>
-      )}
 
-      {/* Cards */}
-      <div className="mapa-lista">
-        {isLoading && [1, 2, 3, 4, 5, 6].map((n) => <div key={n} className="mapa-skeleton" />)}
+        {/* Right: scrollable list */}
+        <div className="mapa-right">
+          {(centers.length > 0 || isLoading) && (
+            <div className="mapa-lista-header">
+              <span className="mapa-lista-title">
+                <i className="ti ti-building" style={{ fontSize: 11 }} />
+                Centros de reciclaje cercanos
+              </span>
+            </div>
+          )}
 
-        {!isLoading && !centers.length && !error && (
-          <div className="mapa-empty">
-            <div className="mapa-empty-icon">🗺️</div>
-            <h3>Sin resultados aún</h3>
-            <p>Presiona <strong>"Buscar centros cercanos"</strong> para encontrar recicladoras y puntos limpios cerca de ti.</p>
-          </div>
-        )}
+          <div className="mapa-lista">
+            {isLoading && [1, 2, 3, 4, 5].map((n) => <div key={n} className="mapa-skeleton" />)}
 
-        {!isLoading && centers.map((c, i) => (
-          <div
-            key={c.id || i}
-            className="mapa-card"
-            style={{ animationDelay: `${i * 40}ms`, animation: 'fadeUp 0.4s ease both' }}
-            onClick={() => {
-              if (mapRef.current && c.lat && c.lon) {
-                mapRef.current.setView([c.lat, c.lon], 16)
-                // +1 because index 0 is the user marker
-                markersRef.current[i + 1]?.openPopup()
-              }
-            }}
-          >
-            {/* Cover image — always shown, placeholder if no photo */}
-            {c.photo_url
-              ? (
-                <div className="mapa-card-cover">
-                  <img src={c.photo_url} alt={c.name} />
-                </div>
-              ) : (
-                <div className="mapa-card-cover-placeholder">♻️</div>
-              )
-            }
-
-            {/* Header row: avatar + name + distance */}
-            <div className="mapa-card-header">
-              <div className="mapa-card-avatar">
-                {c.photo_url
-                  ? <img src={c.photo_url} alt={c.name} />
-                  : <span>{i + 1}</span>
-                }
+            {!isLoading && !centers.length && !error && (
+              <div className="mapa-empty">
+                <div className="mapa-empty-icon">🗺️</div>
+                <h3>Sin resultados aún</h3>
+                <p>Presiona <strong>"Buscar centros cercanos"</strong> para encontrar recicladoras y puntos limpios cerca de ti.</p>
               </div>
-              <p className="mapa-card-name">{c.name}</p>
-              {c.distance_km && (
-                <span className="mapa-card-dist">{c.distance_km} km</span>
-              )}
-            </div>
+            )}
 
-            <p className="mapa-card-address">{c.address}</p>
+            {!isLoading && centers.map((c, i) => (
+              <div
+                key={c.id || i}
+                className="mapa-card"
+                style={{ animationDelay: `${i * 40}ms`, animation: 'fadeUp 0.4s ease both' }}
+                onClick={() => {
+                  if (mapRef.current && c.lat && c.lon) {
+                    mapRef.current.setView([c.lat, c.lon], 16)
+                    markersRef.current[i + 1]?.openPopup()
+                  }
+                }}
+              >
+                {/* Cover image — always rendered, placeholder if no photo */}
+                {c.photo_url ? (
+                  <div className="mapa-card-cover">
+                    <img src={c.photo_url} alt={c.name} />
+                  </div>
+                ) : (
+                  <div className="mapa-card-cover-placeholder">
+                    <div className="mapa-card-cover-placeholder-icon">♻️</div>
+                    <span className="mapa-card-cover-placeholder-label">Not Found</span>
+                  </div>
+                )}
 
-            <div className="mapa-card-footer">
-              <OpenChip status={c.open_status} />
-              {c.rating && <span className="mapa-chip mapa-chip-rating">★ {c.rating}</span>}
-              {c.google_maps_url && (
-                <a
-                  href={c.google_maps_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mapa-link"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Maps ↗
-                </a>
-              )}
-            </div>
+                {/* Header row: avatar + name + distance */}
+                <div className="mapa-card-header">
+                  <div className="mapa-card-avatar">
+                    {c.photo_url
+                      ? <img src={c.photo_url} alt={c.name} />
+                      : <span>{i + 1}</span>
+                    }
+                  </div>
+                  <p className="mapa-card-name">{c.name}</p>
+                  {c.distance_km && (
+                    <span className="mapa-card-dist">{c.distance_km} km</span>
+                  )}
+                </div>
+
+                <p className="mapa-card-address">{c.address}</p>
+
+                <div className="mapa-card-footer">
+                  <OpenChip status={c.open_status} />
+                  {c.rating && <span className="mapa-chip mapa-chip-rating">★ {c.rating}</span>}
+                  {c.google_maps_url && (
+                    <a
+                      href={c.google_maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mapa-link"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Maps ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+
+      </div>{/* end mapa-body */}
     </div>
-      {/* ── EcoBot flotante ── */}
-      <EcoBotFlotante />
+    {/* ── EcoBot flotante ── */}
+    <EcoBotFlotante />
   </>
   )
 }
