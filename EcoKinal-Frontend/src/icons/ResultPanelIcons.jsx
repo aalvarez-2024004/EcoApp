@@ -1,4 +1,13 @@
-import {G} from '../Styles/constants/ImpactoPage.js'
+import { G } from '../Styles/constants/ImpactoPage.js'
+import { ConfidenceBar } from '../ui/DetectorReciclaje/ConfidenceBar.jsx'
+import { LeafSpinner } from '../ui/DetectorReciclaje/LeafSpinner.jsx'
+import {
+  emptyHeaderStyle, emptyHeaderIconWrapStyle, emptyHeaderLabelStyle,
+  emptyStepNumberStyle, emptyStepConnectorStyle,
+  emptyStepBadgeStyle, emptyStepTitleStyle, emptyStepDescStyle,
+  emptyFooterStyle, emptyFooterDotStyle, emptyFooterTextStyle,
+  loadingWrapStyle, loadingTitleStyle, loadingSubStyle, loadingBarsWrapStyle,
+} from '../Styles/constants/ResultPanel.js'
 
 const STEPS = [
   { n: '01', label: 'Sube o captura',      desc: 'Introduce un registro visual claro del residuo sólido.',      icon: <i className="ti ti-upload" style={{ fontSize: 16, color: G.green2 }} /> },
