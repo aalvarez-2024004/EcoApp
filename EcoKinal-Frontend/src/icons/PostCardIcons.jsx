@@ -1,3 +1,5 @@
+import Avatar from '../features/user/components/Avatar.jsx'
+import {REACTIONS} from '../Styles/constants/PostCard.js'
 export function PostHeader({ displayName, displayPhoto, displayInitials, createdAt, currentTag, tag }) {
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: 8 }}>

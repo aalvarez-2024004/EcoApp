@@ -12,7 +12,6 @@ const fetchAuthorProfile = async (uid) => {
     }
 }
 
-// Crear una nueva publicación
 export const createPublication = async (req, res) => {
     try {
         const { title, content, tag } = req.body;
@@ -21,8 +20,7 @@ export const createPublication = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
         }
 
-        const hashtags =
-        content.match(/#[a-zA-Z0-9_áéíóúñÁÉÍÓÚÑ]+/g) || [];
+        const hashtags = content.match(/#[a-zA-Z0-9_áéíóúñÁÉÍÓÚÑ]+/g) || [];
 
         const profile = await fetchAuthorProfile(req.user.uid);
 
@@ -51,7 +49,6 @@ export const createPublication = async (req, res) => {
     }
 };
 
-// Listar todas las publicaciones
 export const getPublications = async (req, res) => {
     try {
         const { page = 1, limit = 15 } = req.query;
@@ -106,7 +103,6 @@ export const getPublications = async (req, res) => {
     }
 };
 
-// Actualizar publicación
 export const updatePublication = async (req, res) => {
     try {
         const { id } = req.params;
@@ -119,11 +115,8 @@ export const updatePublication = async (req, res) => {
 
         const updateData = { ...req.body };
 
-        if(updateData.content){
-            updateData.hashtags =
-                updateData.content.match(
-                    /#[a-zA-Z0-9_áéíóúñÁÉÍÓÚÑ]+/g
-                ) || [];
+        if (updateData.content) {
+            updateData.hashtags = updateData.content.match(/#[a-zA-Z0-9_áéíóúñÁÉÍÓÚÑ]+/g) || [];
         }
 
         if (req.files?.length > 0) {
@@ -140,7 +133,6 @@ export const updatePublication = async (req, res) => {
     }
 };
 
-// Eliminar publicación
 export const deletePublication = async (req, res) => {
     try {
         const post = await Publication.findById(req.params.id);
@@ -155,113 +147,66 @@ export const deletePublication = async (req, res) => {
     }
 };
 
-// funcion para reaccionar a publicaciones
 export const reactPublication = async (req, res) => {
     try {
-
         const { id } = req.params;
         const { reaction } = req.body;
 
         const publication = await Publication.findById(id);
 
         if (!publication) {
-            return res.status(404).json({
-                success: false,
-                message: 'Publicación no encontrada'
-            });
+            return res.status(404).json({ success: false, message: 'Publicación no encontrada' });
         }
 
         const userId = req.user.uid.toString();
-
         const types = ['like', 'love', 'haha', 'wow', 'sad'];
 
-        if (!types.includes(reaction)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Reacción inválida'
-            });
+        // ✅ 'none' ahora es válido para quitar la reacción
+        if (reaction !== 'none' && !types.includes(reaction)) {
+            return res.status(400).json({ success: false, message: 'Reacción inválida' });
         }
 
         // Elimina cualquier reacción previa del usuario
         types.forEach(type => {
-            publication.reactions[type] =
-                publication.reactions[type].filter(
-                    id => id.toString() !== userId
-                );
+            publication.reactions[type] = publication.reactions[type].filter(
+                uid => uid.toString() !== userId
+            );
         });
 
-        // Si quiere quitar la reacción
+        // Solo agrega si no es 'none'
         if (reaction !== 'none') {
             publication.reactions[reaction].push(userId);
         }
 
         publication.markModified('reactions');
-
         await publication.save();
 
-        return res.status(200).json({
-            success: true,
-            data: publication
-        });
+        return res.status(200).json({ success: true, data: publication });
 
     } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// funcion para poder buscar publicaciones
 export const searchPublications = async (req, res) => {
-
     try {
-
         const { q } = req.query;
 
         if (!q) {
-            return res.status(400).json({
-                success: false,
-                message: 'Debes enviar un término de búsqueda'
-            });
+            return res.status(400).json({ success: false, message: 'Debes enviar un término de búsqueda' });
         }
 
         const publications = await Publication.find({
             $or: [
-                {
-                    title: {
-                        $regex: q,
-                        $options: 'i'
-                    }
-                },
-                {
-                    content: {
-                        $regex: q,
-                        $options: 'i'
-                    }
-                },
-                {
-                    hashtags: {
-                        $in: [new RegExp(q, 'i')]
-                    }
-                }
+                { title:    { $regex: q, $options: 'i' } },
+                { content:  { $regex: q, $options: 'i' } },
+                { hashtags: { $in: [new RegExp(q, 'i')] } }
             ]
         }).sort({ createdAt: -1 });
 
-        return res.status(200).json({
-            success: true,
-            total: publications.length,
-            data: publications
-        });
+        return res.status(200).json({ success: true, total: publications.length, data: publications });
 
     } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-
+        return res.status(500).json({ success: false, message: error.message });
     }
 };

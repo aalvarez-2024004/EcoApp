@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import  Avatar  from '../features/user/components/Avatar.jsx'
-
+import {C, S} from '../Styles/constants/Comment.js'
 export function RetoToast({ msg, onDone }) {
   useEffect(() => {
     const t = setTimeout(onDone, 4000)
